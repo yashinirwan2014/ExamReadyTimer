@@ -1,34 +1,122 @@
 ExamReadyTimer
 
-A student-focused exam preparation and productivity application designed to help students prepare efficiently for important examinations such as CBSE Board Exams and JEE.
+ExamReadyTimer is a student-focused Python productivity application designed to help students organise their exam preparation, manage study sessions and track academic progress. 
 
-Features
+Features:
 
-- Exam countdown
-- Pomodoro study timer
-- Personalised study timetable
-- Subject and chapter tracker
-- Study progress tracking
-- Focus mode
-- Local data storage
+Exam Countdown:
 
-Used:
+* Add multiple exams
+* Store exam dates in a CSV file
+* Automatically calculate the number of days remaining
 
-- Python
-- Date and Time handling
-- File handling
-- CSV
-- Tkinter
+Pomodoro Timer:
+
+* Set study duration
+* Set break duration
+* Choose the number of sessions
+* Live countdown timer
+
+Study Timetable:
+
+* Add study sessions
+* Organise subjects and chapters by day
+* Save timetable data in a CSV file
+
+Subject Tracker:
+
+* View Physics, Chemistry and Mathematics chapters
+* Mark chapters as completed
+* Calculate subject-wise completion percentage
+* Store chapter status in CSV format
+
+Progress Analytics:
+
+* Read subject data using Pandas
+* Calculate completion percentages
+* Display progress using a Matplotlib bar graph
+
+Focus Mode:
+
+* Start a distraction-free focus session
+* Live countdown
+* Completion message after the session
+
+---
+
+Technologies Used:
+
+* Python
+* Tkinter
+* Pandas
+* Matplotlib
+* CSV File Handling
+* Basic Python Data Structures
+* Loops and Conditional Statements
+
+---
+
+Project Structure:
+
+ExamReadyTimer
+│
+├── README.md
+├── main.py
+├── gui.py
+├── countdown.py
+├── pomodoro.py
+├── timetable.py
+├── tracker.py
+├── progress.py
+├── focus.py
+│
+├── dataorsubjects.csv
+├── dataexams.csv
+└── datatimetable.csv
+
+## ▶️ How to Run
+
+1. Download or clone the repository.
+2. Make sure Python IDLE or any suitable python software is installed.
+3. Keep all Python files and CSV files in the same project folder.
+4. Run:
+python main.py
+The ExamReadyTimer dashboard will open.
+
+CBSE Class 12 IP Concepts Demonstrated
+
+This project demonstrates practical use of:
+
+* Variables
+* Input and output
+* Data types
+* Conditional statements
+* 'for' and 'while' loops
+* lists
+* Dictionaries
+* Functions
+* File handling
+* CSV files
+* Pandas DataFrames
+* Data filtering
+* Matplotlib graphs
+* Date and time operations
+* Basic GUI programming with Tkinter
 
 Educational Purpose
 
-This project is developed as a Class 12 Informatics Practices level project while applying Python programming and data-handling concepts to a practical student productivity application.
+ExamReady was created as a learning project to apply Python and Informatics Practices concepts to a practical student productivity application.
 
-Planned Improvements
+The aim is to keep the program understandable while demonstrating how basic programming concepts can be combined to create a useful application.
 
-- Multiple examination countdowns
-- Custom Pomodoro durations
-- Daily study statistics
-- Subject-wise progress
-- Improved graphical interface
-- Persistent user data
+Future Improvements:
+
+Possible future improvements include:
+
+* Multiple timetable views
+* Daily study statistics
+* More detailed progress reports
+* Improved GUI design
+* Better navigation between features
+* Additional exam planning tools
+* More visual analytics
