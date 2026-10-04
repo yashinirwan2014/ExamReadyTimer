@@ -2,45 +2,119 @@ print("================================")
 print("       EXAMREADY TRACKER")
 print("================================")
 
-file = open("dataorsubjects.csv", "r")
+while True:
 
-header = file.readline()
+    file = open("data/subjects.csv", "r")
+    header = file.readline()
 
-subjects = {}
+    subjects = {}
 
-for line in file:
-    data = line.strip().split(",")
+    for line in file:
+        data = line.strip().split(",")
 
-    subject = data[0]
-    chapter = data[1]
-    status = data[2]
+        subject = data[0]
+        chapter = data[1]
+        status = data[2]
 
-    if subject not in subjects:
-        subjects[subject] = []
+        if subject not in subjects:
+            subjects[subject] = []
 
-    subjects[subject].append([chapter, status])
+        subjects[subject].append([chapter, status])
 
-file.close()
+    file.close()
 
-for subject in subjects:
-
-    print("\n" + subject)
+    print("\nTRACKER MENU")
     print("----------------------------")
+    print("1. View Progress")
+    print("2. Mark Chapter Completed")
+    print("3. Exit")
 
-    completed = 0
-    total = len(subjects[subject])
+    choice = input("\nEnter your choice: ")
 
-    for chapter in subjects[subject]:
+    if choice == "1":
 
-        name = chapter[0]
-        status = chapter[1]
+        for subject in subjects:
 
-        if status == "Completed":
-            print("[✓]", name)
-            completed = completed + 1
+            print("\n" + subject)
+            print("----------------------------")
+
+            completed = 0
+            total = len(subjects[subject])
+
+            for chapter in subjects[subject]:
+
+                name = chapter[0]
+                status = chapter[1]
+
+                if status == "Completed":
+                    print("[✓]", name)
+                    completed = completed + 1
+                else:
+                    print("[ ]", name)
+
+            percentage = (completed / total) * 100
+
+            print("Progress:", round(percentage, 1), "%")
+
+    elif choice == "2":
+
+        print("\nSubjects:")
+        print("1. Physics")
+        print("2. Chemistry")
+        print("3. Mathematics")
+
+        subject_choice = input("Select subject: ")
+
+        if subject_choice == "1":
+            subject = "Physics"
+
+        elif subject_choice == "2":
+            subject = "Chemistry"
+
+        elif subject_choice == "3":
+            subject = "Mathematics"
+
         else:
-            print("[ ]", name)
+            print("Invalid subject.")
+            continue
 
-    percentage = (completed / total) * 100
+        print("\nChapters:")
 
-    print("\nProgress:", round(percentage, 1), "%")
+        for i in range(len(subjects[subject])):
+            print(i + 1, ".", subjects[subject][i][0])
+
+        chapter_choice = int(input("\nEnter chapter number: "))
+
+        if 1 <= chapter_choice <= len(subjects[subject]):
+
+            subjects[subject][chapter_choice - 1][1] = "Completed"
+
+            file = open("dataorsubjects.csv", "w")
+
+            file.write(header)
+
+            for sub in subjects:
+
+                for chapter in subjects[sub]:
+
+                    file.write(
+                        sub + "," +
+                        chapter[0] + "," +
+                        chapter[1] + "\n"
+                    )
+
+            file.close()
+
+            print("\nChapter marked as completed! ✓")
+
+        else:
+            print("Invalid chapter number.")
+
+    elif choice == "3":
+
+        print("\nReturning to ExamReady...")
+        break
+
+    else:
+
+        print("\nInvalid choice. Please try again.")
