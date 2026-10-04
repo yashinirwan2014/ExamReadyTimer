@@ -4,7 +4,7 @@ print("================================")
 
 while True:
 
-    file = open("data/subjects.csv", "r")
+    file = open("dataorsubjects.csv", "r")
     header = file.readline()
 
     subjects = {}
