@@ -11,7 +11,8 @@ while True:
     print("2. Pomodoro Planner")
     print("3. Timetable")
     print("4. Subject Tracker")
-    print("5. Exit")
+    print("5. Progress Analytics")
+    print("6. Exit")
 
     choice = input("\nEnter your choice: ")
 
@@ -28,10 +29,14 @@ while True:
         exec(open("timetable.py").read())
 
     elif choice == "4":
-        print("\nOpening Subject and Chapter Tracker...")
+        print("\nOpening Subject Tracker...")
         exec(open("tracker.py").read())
 
     elif choice == "5":
+        print("\nOpening Progress Analytics...")
+        exec(open("progress.py").read())
+
+    elif choice == "6":
         print("\nThank you for using ExamReadyTimer!")
         break
 
