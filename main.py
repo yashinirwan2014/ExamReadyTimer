@@ -12,7 +12,8 @@ while True:
     print("3. Timetable")
     print("4. Subject Tracker")
     print("5. Progress Analytics")
-    print("6. Exit")
+    print("6. Focus Mode")
+    print("7. Exit")
 
     choice = input("\nEnter your choice: ")
 
@@ -37,7 +38,11 @@ while True:
         exec(open("progress.py").read())
 
     elif choice == "6":
-        print("\nThank you for using ExamReadyTimer!")
+        print("\nOpening Focus Mode...")
+        exec(open("focus.py").read())
+
+    elif choice == "7":
+        print("\nThank you for using ExamReady!")
         break
 
     else:
