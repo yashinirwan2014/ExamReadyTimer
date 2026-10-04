@@ -2,8 +2,6 @@ print("================================")
 print("       EXAMREADY TIMETABLE")
 print("================================")
 
-timetable = {}
-
 while True:
 
     print("\nTIMETABLE MENU")
@@ -17,32 +15,42 @@ while True:
     if choice == "1":
 
         day = input("\nEnter the day: ").capitalize()
-
         subject = input("Enter the subject/chapter: ")
 
-        if day not in timetable:
-            timetable[day] = []
+        file = open("datatimetable.csv", "a")
 
-        timetable[day].append(subject)
+        file.write(day + "," + subject + "\n")
 
-        print("\nStudy plan added! ✓")
+        file.close()
+
+        print("\nStudy plan saved! ✓")
 
     elif choice == "2":
 
-        if len(timetable) == 0:
-            print("\nNo study plan added yet.")
+        file = open("datatimetable.csv", "r")
 
-        else:
+        header = file.readline()
 
-            print("\nYOUR STUDY TIMETABLE")
-            print("----------------------------")
+        print("\nYOUR STUDY TIMETABLE")
+        print("----------------------------")
 
-            for day in timetable:
+        found = False
 
-                print("\n" + day)
+        for line in file:
 
-                for i in range(len(timetable[day])):
-                    print("Session", i + 1, ":", timetable[day][i])
+            data = line.strip().split(",")
+
+            day = data[0]
+            subject = data[1]
+
+            print(day, ":", subject)
+
+            found = True
+
+        file.close()
+
+        if found == False:
+            print("No study plans added yet.")
 
     elif choice == "3":
 
