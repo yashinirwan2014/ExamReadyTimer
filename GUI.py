@@ -1,4 +1,3 @@
-
 import tkinter as tk
 import subprocess
 import sys
@@ -6,8 +5,13 @@ import sys
 window = tk.Tk()
 
 window.title("ExamReadyTimer | Study Dashboard")
-window.geometry("750x650")
+window.geometry("750x700")
 window.configure(bg="#F3F5FB")
+
+
+def open_feature(filename):
+    subprocess.Popen([sys.executable, filename])
+
 
 title = tk.Label(
     window,
@@ -16,7 +20,9 @@ title = tk.Label(
     bg="#F3F5FB",
     fg="#25316D"
 )
-title.pack(pady=(25, 5))
+
+title.pack(pady=(30, 5))
+
 
 subtitle = tk.Label(
     window,
@@ -25,20 +31,19 @@ subtitle = tk.Label(
     bg="#F3F5FB",
     fg="#68708A"
 )
-subtitle.pack(pady=(0, 20))
+
+subtitle.pack()
+
 
 description = tk.Label(
     window,
-    text="What would you like to work on today?",
+    text="Your personal exam preparation dashboard",
     font=("Arial", 14),
     bg="#F3F5FB",
     fg="#30364F"
 )
-description.pack(pady=10)
 
-
-def open_feature(filename):
-    subprocess.Popen([sys.executable, filename])
+description.pack(pady=(25, 20))
 
 
 features = [
@@ -50,13 +55,14 @@ features = [
     ("Focus Mode", "focus.py")
 ]
 
+
 for feature, filename in features:
 
     button = tk.Button(
         window,
         text=feature,
         font=("Arial", 13, "bold"),
-        width=25,
+        width=28,
         height=2,
         bg="#FFFFFF",
         fg="#25316D",
@@ -66,7 +72,8 @@ for feature, filename in features:
         command=lambda f=filename: open_feature(f)
     )
 
-    button.pack(pady=6)
+    button.pack(pady=5)
+
 
 footer = tk.Label(
     window,
@@ -75,6 +82,8 @@ footer = tk.Label(
     bg="#F3F5FB",
     fg="#68708A"
 )
-footer.pack(pady=20)
+
+footer.pack(pady=25)
+
 
 window.mainloop()
