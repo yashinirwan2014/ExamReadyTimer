@@ -41,6 +41,6 @@ jobs:
 
     - name: Run Headless UI Sanity Verification with Auto-Timeout
       run: |
-        # xvfb runs the GUI in the background, and 'timeout 10s' forces it to shut down cleanly after 10 seconds so the build can finish!
+        # xvfb runs the GUI in the background, and 'timeout 10s' forces it to shut down cleanly after 10 seconds.
         xvfb-run --auto-servernum timeout 10s python main.py || [[ $? -eq 124 ]]
         
