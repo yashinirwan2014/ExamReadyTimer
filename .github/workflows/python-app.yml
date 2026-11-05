@@ -39,8 +39,8 @@ jobs:
         # This ensures all your script files parse and link without breaking syntax errors
         python -m py_compile main.py GUI.py countdown.py pomodoro.py timetable.py tracker.py progress.py focus.py
 
-    - name: Run Headless UI Sanity Verification
+    - name: Run Headless UI Sanity Verification with Auto-Timeout
       run: |
-        # Uses a virtual screen buffer to verify python can import your GUI files without crashing
-        xvfb-run --auto-servernum python -c "import GUI; import progress; print('UI and Data systems initialized successfully!')"
+        # xvfb runs the GUI in the background, and 'timeout 10s' forces it to shut down cleanly after 10 seconds so the build can finish!
+        xvfb-run --auto-servernum timeout 10s python main.py || [[ $? -eq 124 ]]
         
