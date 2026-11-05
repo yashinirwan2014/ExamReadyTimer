@@ -1,0 +1,36 @@
+name: ExamReadyTimer Cross-Platform Package Matrix
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  cross-platform-matrix:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pandas matplotlib
+
+    - name: Test Pandas Data Pipeline Loading
+      run: |
+        # Verifies that Python can parse your structure and CSV columns across Windows & Linux environments
+        python -c "import pandas as pd; df = pd.read_csv('dataorsubjects.csv'); print('Dataframe successfully mapped on matrix platform. Total rows:', len(df))"
+        
