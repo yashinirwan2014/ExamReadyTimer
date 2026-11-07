@@ -103,7 +103,7 @@ class PomodoroTimer:
 
     def reset(self):
         self.pause()
-        self.session, self.phase, self.remaining = 1, "Study", 0
+        self.session, self.phase, self.remaining = 1, "Study", 0\n        self.completed = False
         self.clock.config(text=f"{self.study_minutes.get():02d}:00")
         self.phase_label.config(text="Ready to focus?")
         self.session_label.config(text=f"Session 1 of {self.total_sessions.get()}")
