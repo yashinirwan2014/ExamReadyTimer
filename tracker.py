@@ -143,20 +143,40 @@ class SyllabusTracker:
         return True
 
     def refresh_subjects(self, keep=None):
-        names = list(self.subjects)
+        curricula = sorted({
+            " | ".join(name.split(" | ")[:2])
+            for name in self.subjects
+            if " | " in name
+        })
+        choices = ["All curricula"] + curricula
+        self.curriculum_combo["values"] = choices
+        if self.curriculum_var.get() not in choices:
+            self.curriculum_var.set("All curricula")
+
+        selected_curriculum = self.curriculum_var.get()
+        query = self.search_var.get().strip().casefold()
+        names = [name for name in self.subjects if query in name.casefold()]
+        if selected_curriculum != "All curricula":
+            names = [name for name in names if name.startswith(selected_curriculum + " | ")]
+
         self.subject_list.delete(0, tk.END)
         for name in names:
             self.subject_list.insert(tk.END, name)
+
         if keep in names:
             index = names.index(keep)
         elif names:
             index = 0
         else:
             index = None
+
         if index is None:
             self.selected_subject = None
-            self.subject_heading.config(text="Choose a subject")
-            self.progress_label.config(text="Add a subject to start building your syllabus.")
+            self.subject_heading.config(text="No matching subjects" if query or selected_curriculum != "All curricula" else "Choose a subject")
+            self.progress_label.config(
+                text="Adjust your curriculum filter or search." if query or selected_curriculum != "All curricula"
+                else "Add a subject to start building your syllabus."
+            )
             self.progress["value"] = 0
             self.chapter_table.delete(*self.chapter_table.get_children())
         else:
