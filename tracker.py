@@ -63,7 +63,7 @@ def add_subject(subjects):
     elif name in subjects:
         print("That subject already exists.")
     else:
-        subjects[name] = []
+        subjects[name] = [{"chapter": PLACEHOLDER, "status": "Pending"}]
         save_subjects(subjects)
         print(f"Added '{name}'. Now add its chapters/topics.")
 
