@@ -37,10 +37,10 @@ jobs:
 
       - name: Verify Module Compilation (Syntax Check)
         run: |
-          python -m py_compile main.py GUI.py countdown.py pomodoro.py timetable.py tracker.py progress.py focus.py storage.py
+          python -m py_compile main.py GUI.py countdown.py pomodoro.py timetable.py tracker.py progress.py focus.py settings.py backup.py storage.py
 
       - name: Run Portable Storage Unit Tests
-        run: python -m pytest -q tests/test_storage.py
+        run: python -m pytest -q tests
 
       - name: Verify System Python Has Tkinter
         run: |
