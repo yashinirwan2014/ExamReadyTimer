@@ -2,7 +2,7 @@
 import os
 import subprocess
 import sys
-import tkinter as tk
+import sys\nfrom pathlib import Path\nimport tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 from pathlib import Path
 
@@ -10,7 +10,7 @@ from storage import initialize_user_data
 from backup import backup_data, restore_data
 
 BG, NAVY, MUTED = "#F3F5FB", "#25316D", "#68708A"
-DATA_DIR = initialize_user_data()
+APP_DIR = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent\nDATA_DIR = initialize_user_data(app_dir=APP_DIR)
 
 
 class SettingsWindow:
