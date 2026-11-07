@@ -4,7 +4,7 @@ from __future__ import annotations
 from pathlib import Path
 import zipfile
 
-from storage import DATA_FILES, get_user_data_dir, initialize_user_data
+from storage import DATA_FILES, initialize_user_data
 
 
 def backup_data(destination: str | Path, data_dir: str | Path | None = None) -> Path:
