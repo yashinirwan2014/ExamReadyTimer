@@ -78,7 +78,7 @@ class SyllabusTracker:
         left.pack_propagate(False)
         tk.Label(left, text="SUBJECTS", bg="#F3F5FB", fg="#25316D",
                  font=("Arial", 11, "bold")).pack(anchor="w", pady=(0, 8))
-        self.subject_list = tk.Listbox(left, font=("Arial", 10), relief="flat",
+        tk.Label(left, text="FIND SUBJECT / CURRICULUM", bg="#F3F5FB", fg="#68708A",\n                 font=("Arial", 8, "bold")).pack(anchor="w", pady=(0, 4))\n        self.search_var = tk.StringVar()\n        search_entry = ttk.Entry(left, textvariable=self.search_var)\n        search_entry.pack(fill="x", pady=(0, 8))\n        self.search_var.trace_add("write", lambda *_args: self.refresh_subjects(keep=self.selected_subject))\n        self.subject_list = tk.Listbox(left, font=("Arial", 10), relief="flat",
                                        bg="white", fg="#30364F",
                                        selectbackground="#DDE4FF",
                                        selectforeground="#25316D",
