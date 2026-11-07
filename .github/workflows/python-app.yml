@@ -37,7 +37,7 @@ jobs:
 
       - name: Verify Module Compilation (Syntax Check)
         run: |
-          python -m py_compile main.py GUI.py countdown.py pomodoro.py timetable.py tracker.py progress.py focus.py settings.py backup.py storage.py
+          python -m py_compile main.py GUI.py countdown.py pomodoro.py timetable.py tracker.py progress.py focus.py settings.py backup.py storage.py schedule_utils.py scripts/validate_study_data.py
 
       - name: Run Portable Storage Unit Tests
         run: python -m pytest -q tests
