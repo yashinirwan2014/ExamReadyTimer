@@ -3,12 +3,13 @@ name: ExamReadyTimer Cross-Platform Package Matrix
 
 on:
   push:
-    branches: ["main"]
+    branches: [main]
   pull_request:
-    branches: ["main"]
+    branches: [main]
 
 jobs:
-  cross-platform-matrix:
+  test:
+    name: Test on ${{ matrix.os }} with Python ${{ matrix.python-version }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
 
@@ -24,15 +25,15 @@ jobs:
       MPLBACKEND: Agg
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install pandas matplotlib
@@ -45,58 +46,31 @@ jobs:
           import sys
           import pandas as pd
 
-          # Force UTF-8 output
-          if hasattr(sys.stdout, "reconfigure"):
-              sys.stdout.reconfigure(
-                  encoding="utf-8",
-                  errors="replace"
-              )
-
-          filename = "dataorsubjects.csv"
-
-          # Create mock data only if the CSV is missing
-          if not os.path.exists(filename):
-              print("[WARNING] Datafile not found.")
-              print("[INFO] Creating mock CSV for pipeline check.")
-
-              df_mock = pd.DataFrame({
-                  "subject": ["Math", "Science"],
-                  "time": [25, 50]
-              })
-
-              df_mock.to_csv(
-                  filename,
-                  index=False,
-                  encoding="utf-8"
-              )
+          csv_file = "dataorsubjects.csv"
 
           try:
-              # Load CSV
-              df = pd.read_csv(
-                  filename,
-                  encoding="utf-8-sig"
-              )
+              if not os.path.exists(csv_file):
+                  raise FileNotFoundError(f"{csv_file} not found")
 
-              # Validate expected columns
-              required_columns = {"subject", "time"}
+              df = pd.read_csv(csv_file, encoding="utf-8-sig")
 
-              missing_columns = (
-                  required_columns - set(df.columns)
-              )
+              if df.empty:
+                  raise ValueError("CSV file is empty")
+
+              required_columns = {"Subject", "Chapter", "Status"}
+              missing_columns = required_columns - set(df.columns)
 
               if missing_columns:
                   raise ValueError(
-                      f"Missing required columns: {missing_columns}"
+                      f"Missing columns: {sorted(missing_columns)}"
                   )
 
-              print("[PASS] Pandas DataFrame loaded successfully.")
-              print("[INFO] Total rows:", len(df))
-              print("[INFO] Columns:", list(df.columns))
-              print("[INFO] Python version:", sys.version)
+              print("CSV pipeline test passed!")
+              print(f"Rows loaded: {len(df)}")
+              print(f"Columns: {list(df.columns)}")
 
           except Exception as e:
-              print("[FAIL] Pipeline verification failed:", str(e))
+              print(f"Pipeline verification failed: {e}")
               sys.exit(1)
-
           PY
           
