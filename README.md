@@ -117,3 +117,15 @@ This project functions as a practical framework applying technical concepts thro
 * Core Software Principles: Modular Python programming, Tkinter event-driven interfaces, dictionaries, file I/O, and automated testing.
 * Cross-Platform Development: GitHub Actions workflows for testing and preparing desktop builds on multiple operating systems.
 
+∆ Copyright & Usage
+
+Copyright (c) 2026 yashinirwan2014. All rights reserved.
+
+ExamReadyTimer is proprietary software. Official, unmodified releases may be
+downloaded and used for personal, non-commercial study purposes. Copying,
+modifying, republishing, redistributing, or commercially exploiting the
+project requires prior written permission from the copyright holder.
+
+See the LICENSE and COPYRIGHT files for the full terms. Access to this public
+repository does not mean the project is open source or that reuse is permitted.
+
