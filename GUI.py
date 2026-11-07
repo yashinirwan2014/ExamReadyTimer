@@ -13,7 +13,7 @@ window.configure(bg="#F3F5FB")
 def open_feature(filename):
     app_dir = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent
     if getattr(sys, "frozen", False):
-        executable_name = Path(filename).stem + (".exe" if sys.platform == "win32" else "")
+        executable_names = {\n            "countdown.py": "ExamCountdown",\n            "pomodoro.py": "PomodoroTimer",\n            "timetable.py": "StudyTimetable",\n            "tracker.py": "SubjectTracker",\n            "progress.py": "ProgressAnalytics",\n            "focus.py": "FocusMode",\n        }\n        executable_name = executable_names[filename] + (".exe" if sys.platform == "win32" else "")
         command = [str(app_dir / executable_name)]
     else:
         command = [sys.executable, str(app_dir / filename)]
