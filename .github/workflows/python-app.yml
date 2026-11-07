@@ -37,7 +37,7 @@ jobs:
 
       - name: Verify Module Compilation (Syntax Check)
         run: |
-          python -m py_compile main.py GUI.py countdown.py pomodoro.py timetable.py tracker.py progress.py focus.py
+          python -m py_compile main.py GUI.py countdown.py pomodoro.py timetable.py tracker.py progress.py focus.py storage.py
 
       - name: Verify System Python Has Tkinter
         run: |
