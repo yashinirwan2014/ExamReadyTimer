@@ -57,7 +57,7 @@ jobs:
             "StudyTimetable:timetable.py" \
             "SubjectTracker:tracker.py" \
             "ProgressAnalytics:progress.py" \
-            "FocusMode:focus.py" \\
+            "FocusMode:focus.py" \
             "ExamReadySettings:settings.py"
           do
             name="${spec%%:*}"
