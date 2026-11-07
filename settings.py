@@ -1,12 +1,12 @@
 """Settings and data backup/restore window for ExamReadyTimer."""
 import os
 import subprocess
-import sys
+import os
+import subprocess
 import sys
 from pathlib import Path
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
-from pathlib import Path
 
 from storage import initialize_user_data
 from backup import backup_data, restore_data
