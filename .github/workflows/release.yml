@@ -36,6 +36,9 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install pyinstaller pandas matplotlib
 
+      - name: Verify release source compilation
+        run: python -m py_compile main.py GUI.py countdown.py pomodoro.py timetable.py tracker.py progress.py focus.py storage.py
+
       - name: Build dashboard and feature executables
         shell: bash
         run: |
@@ -74,7 +77,7 @@ jobs:
           Linux: make the files executable if needed (chmod +x ExamReadyTimer ExamCountdown PomodoroTimer StudyTimetable SubjectTracker ProgressAnalytics FocusMode), then run ./ExamReadyTimer.
 
           Keep all executables and CSV files together in the same folder.
-          Your study progress is stored in the CSV files in this folder. Back them up before replacing the folder with a newer release.
+          Your study data is stored in your operating system's per-user ExamReadyTimer data folder, not in the installation folder. Existing data is preserved when you upgrade. Back up that data folder before reinstalling or moving to another computer.
           EOF
 
       - name: Create ZIP archive
