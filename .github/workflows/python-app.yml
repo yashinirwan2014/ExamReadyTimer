@@ -39,6 +39,9 @@ jobs:
         run: |
           python -m py_compile main.py GUI.py countdown.py pomodoro.py timetable.py tracker.py progress.py focus.py storage.py
 
+      - name: Run Portable Storage Unit Tests
+        run: python -m pytest -q tests/test_storage.py
+
       - name: Verify System Python Has Tkinter
         run: |
           /usr/bin/python3 -c "import tkinter; print('System Tkinter import successful')"
