@@ -90,7 +90,7 @@ class SettingsWindow:
             return
         try:
             restored = restore_data(source, DATA_DIR)
-        except (OSError, ValueError, Exception) as exc:
+        except Exception as exc:
             messagebox.showerror("Restore failed", str(exc), parent=self.root)
             return
         messagebox.showinfo("Restore complete", "Restored: " + ", ".join(restored) +
