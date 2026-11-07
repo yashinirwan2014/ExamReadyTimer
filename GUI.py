@@ -25,6 +25,7 @@ def open_feature(filename):
             "tracker.py": "SubjectTracker",
             "progress.py": "ProgressAnalytics",
             "focus.py": "FocusMode",
+            "settings.py": "ExamReadySettings",
         }
         executable_name = executable_names[filename] + (".exe" if sys.platform == "win32" else "")
         command = [str(app_dir / executable_name)]
@@ -67,7 +68,8 @@ features = [
     ("Study Timetable", "timetable.py"),
     ("Subject Tracker", "tracker.py"),
     ("Progress Analytics", "progress.py"),
-    ("Focus Mode", "focus.py")
+    ("Focus Mode", "focus.py"),
+    ("Settings & Backup", "settings.py")
 ]
 
 for feature, filename in features:
