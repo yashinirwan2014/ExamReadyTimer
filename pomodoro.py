@@ -19,6 +19,7 @@ class PomodoroTimer:
         self.phase = "Study"
         self.remaining = 0
         self.running = False
+        self.completed = False
         self.after_id = None
         self.build()
 
@@ -57,6 +58,9 @@ class PomodoroTimer:
                  bg=BG, fg=MUTED, font=("Arial", 9)).pack(pady=(8, 0))
 
     def start(self):
+        if self.completed:
+            messagebox.showinfo("Sessions completed", "Reset the timer to begin another set of sessions.", parent=self.root)
+            return
         if self.running:
             return
         if self.remaining <= 0:
@@ -81,6 +85,7 @@ class PomodoroTimer:
             if self.phase == "Study":
                 if self.session >= self.total_sessions.get():
                     self.running = False
+                    self.completed = True
                     self.phase_label.config(text="All sessions completed! 🎉")
                     messagebox.showinfo("Well done!", "You've completed all your Pomodoro sessions.", parent=self.root)
                     return
@@ -103,7 +108,8 @@ class PomodoroTimer:
 
     def reset(self):
         self.pause()
-        self.session, self.phase, self.remaining = 1, "Study", 0\n        self.completed = False
+        self.session, self.phase, self.remaining = 1, "Study", 0
+        self.completed = False\n        self.completed = False
         self.clock.config(text=f"{self.study_minutes.get():02d}:00")
         self.phase_label.config(text="Ready to focus?")
         self.session_label.config(text=f"Session 1 of {self.total_sessions.get()}")
