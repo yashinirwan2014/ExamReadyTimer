@@ -1,11 +1,11 @@
 """Graphical exam countdown manager for ExamReadyTimer."""
 import csv
 from datetime import date
-import tkinter as tk
+import sys\nfrom pathlib import Path\nimport tkinter as tk
 from tkinter import ttk, messagebox
 from storage import initialize_user_data
 
-DATA_DIR = initialize_user_data()
+APP_DIR = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent\nDATA_DIR = initialize_user_data(app_dir=APP_DIR)
 DATA_FILE = DATA_DIR / "dataexams.csv"
 BG, NAVY, MUTED = "#F3F5FB", "#25316D", "#68708A"
 
