@@ -1,77 +1,40 @@
 # ExamReadyTimer
 
-ExamReadyTimer is a modular, data-driven Python desktop productivity application designed to help high school students organize intensive exam preparation, manage focus intervals, and track curriculum analytics. 
+ExamReadyTimer is a modular, data-driven Python desktop productivity application designed to help students organize exam preparation, manage focus intervals, plan study time, and track syllabus progress.
 
-Developed originally as a practical execution of CBSE Class 12 Informatics Practices (IP) concepts, this project scales basic programming models into a unified student dashboard.
+## Features
 
-System Features
+- **Exam Countdown:** Track important exam dates and milestones.
+- **Pomodoro Timer:** Configure focused study and break intervals.
+- **Study Timetable:** Organize daily study sessions and chapters.
+- **Editable Syllabus Tracker:** View subject-wise progress; add subjects and chapters/units/topics; rename or delete entries; toggle completion between Pending and Completed. Changes are saved locally in `dataorsubjects.csv`.
+- **Progress Analytics:** Review study progress using the app's analytics module.
+- **Focus Mode:** Use a distraction-reduced focus window.
 
-∆ Advanced Exam Countdown Engine
-* Dynamic Loading: Supports tracking across multiple concurrent competitive streams (Boards, JEE, NEET).
-* Persistent Data Architecture: Stores and modifies milestone target dates using a robust local CSV layer.
-* Temporal Calculations: Utilizes localized datetime matrices to automatically compute real-time delta days remaining.
+## Using the syllabus tracker
 
-∆ Event-Driven Pomodoro Timer
-* Custom Intervals: Configurable study blocks, strategic break limits, and session counters.
-* UI Threading: Built-in asynchronous digital countdown display ensuring UI stability during countdown loops.
+Open **Subject Tracker** from the ExamReady dashboard. The tracker starts with the available subject list. Many curriculum entries are intentionally supplied as **Full subject syllabus** placeholders rather than claiming to contain every board's official chapter list.
 
-∆ Relational Study Timetable Planner
-* Grid Mapping: Categorizes daily objectives, subjects, and specific chapters.
-* State Management: Seamlessly reads or writes live timetable shifts straight to datatimetable.csv.
+To personalize a subject:
+1. Choose **Add chapter / unit / topic**.
+2. Select the subject and type a chapter, unit, practical, or topic name.
+3. Repeat to build the complete syllabus you want to follow.
+4. Use **Mark chapter completed / pending** to update progress.
+5. Use **Edit chapter / topic name** or **Delete chapter / topic** to maintain your list.
 
-∆ Syllabus Analytics & Progress Tracker
-* Subject Mapping: Populates complete core chapter structures for Physics, Chemistry, and Mathematics.
-* Completion Aggregation: Tracks per-chapter completion checkboxes and pushes boolean status flags back to the CSV storage layer.
+You can also add a completely new subject. The first real chapter you add automatically replaces that subject's generic **Full subject syllabus** placeholder. All edits are saved to `dataorsubjects.csv` beside the application, so keep that file with the app and make a backup before manually editing it.
 
-∆ Data Analytics Visualization Suite (Pandas & Matplotlib)
-* Data Integration: Utilizes the Pandas framework to isolate, clean, and pipe real-time tracking metrics into high-fidelity DataFrames.
-* Statistical Rendering: Transforms numerical text data into clear visual progress analytics via custom Matplotlib graphical bar subplots.
+## Run from source
 
-∆ Distraction-Free Focus Mode
-* Minimalist UI Overlay: Disables distracting secondary views to locking down user focus.
-* Telemetry alerts: Deploys completion messaging states upon cross-checking targeted focus times.
+1. Install Python 3.
+2. Install the dependencies listed in `requirements.txt`, if present.
+3. Keep the Python scripts and CSV data files together.
+4. Run `python GUI.py` (or the repository's documented entry point).
 
-∆ Architecture & Project Structure
+## Data files
 
-The project utilizes a clean modular architectural blueprint, separating core logic from GUI components:
+- `dataorsubjects.csv` — subject, chapter/topic, and completion status.
+- `dataexams.csv` — exam dates and targets.
+- `datatimetable.csv` — study timetable entries.
 
-ExamReadyTimer→
-
-°README.md           
-∆ Project documentation and architectural overview
-main.py             
-∆ System entry point and master dashboard loop
-°gui.py              
-∆ Central Tkinter GUI layout management
-°countdown.py        
-∆ Date-time computations & countdown calculations
-°pomodoro.py         
-∆ Pomodoro core looping logic
-°timetable.py        
-∆ Calendar & timetable database operations
-°tracker.py          
-∆ Syllabus progress arrays and layout controls
-°progress.py         
-∆ Pandas DataFrame processing & metrics pipeline
-°focus.py            
-∆ Focus mode states and execution windows
-°dataorsubjects.csv  
-∆ Chapter metrics storage
-°dataexams.csv       
-∆ Exam target configurations
-°datatimetable.csv   
-∆ Student schedule storage
-
-∆ Technical Setup & Execution
-
-1. Clone or download the source repository files to your local workspace.
-2. Ensure Python 3 (IDLE or IDE) along with requirements are set up.
-3. Install missing python libraries if necessary: pip install pandas as pd (or) pip install matplotlib.pyplot as plt, etc.
-4. Maintain all core script and database components in the same folder structure.
-
-∆ Academic Framework: Implementation of Informatics Practices
-
-This project functions as a comprehensive, end-to-end framework applying advanced technical concepts practically:
-* Data Pipelines: Pandas DataFrames parsing, conditional database filtering, and multi-file handling.
-* Mathematical Graphics: Matplotlib data visualization, bar charts, plot configurations, and dynamic scaling.
-* Core Software Principles: OOP architectures, Tkinter Event-Driven Programming, complex dictionaries, and file I/O operations.
+The syllabus CSV keeps a simple three-column format: `Subject,Chapter,Status`.
