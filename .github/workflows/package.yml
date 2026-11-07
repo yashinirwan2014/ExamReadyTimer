@@ -36,10 +36,10 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install pandas matplotlib pytest
+          python -m pip install pytest
 
       - name: Test Portable User Data Storage
-        run: python -m pytest -q tests/test_storage.py
+        run: python -m pytest -q tests
 
       - name: Test Pandas Data Pipeline Loading
         shell: bash
