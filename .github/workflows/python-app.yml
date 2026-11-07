@@ -40,14 +40,21 @@ jobs:
         python -m py_compile main.py GUI.py countdown.py pomodoro.py timetable.py tracker.py progress.py focus.py
 
     - name: Run Headless UI Sanity Verification with Auto-Timeout
+      shell: bash
       run: |
-        # Safely run the app for 10 seconds and explicitly treat timeout (124) as a success (0)
-        xvfb-run --auto-servernum timeout 10s python main.py || EXIT_CODE=$?
-        if [ $EXIT_CODE -eq 124 ]; then
-          echo "Application launched successfully and timed out cleanly as expected."
-          exit 0
+        # The Tkinter application should remain open until the 10-second timeout.
+        set +e
+        xvfb-run --auto-servernum timeout --signal=TERM --kill-after=5s 10s python main.py
+        EXIT_CODE=$?
+        set -e
+
+        if [ "$EXIT_CODE" -eq 124 ]; then
+          echo "Application stayed running for 10 seconds under the virtual display."
+        elif [ "$EXIT_CODE" -eq 0 ]; then
+          echo "::error::Application exited before the 10-second UI sanity timeout."
+          exit 1
         else
-          echo "Application crashed with unexpected exit code: $EXIT_CODE"
-          exit $EXIT_CODE
+          echo "::error::Application launch failed with exit code $EXIT_CODE."
+          exit "$EXIT_CODE"
         fi
         
