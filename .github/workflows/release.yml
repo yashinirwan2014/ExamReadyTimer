@@ -1,0 +1,102 @@
+name: Build downloadable desktop apps
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build for ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            artifact: ExamReadyTimer-Windows
+          - os: ubuntu-latest
+            artifact: ExamReadyTimer-Linux
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install packaging dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pyinstaller pandas matplotlib
+
+      - name: Build dashboard and feature executables
+        shell: bash
+        run: |
+          set -e
+          mkdir -p release
+          if [ "${{ runner.os }}" = "Windows" ]; then
+            EXT=".exe"
+          else
+            EXT=""
+          fi
+
+          pyinstaller --noconfirm --clean --onefile --windowed --name ExamReadyTimer GUI.py
+          for spec in \
+            "ExamCountdown:countdown.py" \
+            "PomodoroTimer:pomodoro.py" \
+            "StudyTimetable:timetable.py" \
+            "SubjectTracker:tracker.py" \
+            "ProgressAnalytics:progress.py" \
+            "FocusMode:focus.py"
+          do
+            name="${spec%%:*}"
+            script="${spec#*:}"
+            pyinstaller --noconfirm --clean --onefile --name "$name" "$script"
+          done
+
+          cp "dist/ExamReadyTimer$EXT" release/
+          for name in ExamCountdown PomodoroTimer StudyTimetable SubjectTracker ProgressAnalytics FocusMode; do
+            cp "dist/$name$EXT" release/
+          done
+          cp dataorsubjects.csv dataexams.csv datatimetable.csv release/
+
+          cat > release/README-FIRST.txt <<'EOF'
+          ExamReadyTimer desktop release
+
+          Windows: double-click ExamReadyTimer.exe
+          Linux: make the files executable if needed (chmod +x ExamReadyTimer ExamCountdown PomodoroTimer StudyTimetable SubjectTracker ProgressAnalytics FocusMode), then run ./ExamReadyTimer.
+
+          Keep all executables and CSV files together in the same folder.
+          Your study progress is stored in the CSV files in this folder. Back them up before replacing the folder with a newer release.
+          EOF
+
+      - name: Create ZIP archive
+        shell: bash
+        run: |
+          cd release
+          if [ "${{ runner.os }}" = "Windows" ]; then
+            7z a "../${{ matrix.artifact }}.zip" .
+          else
+            zip -r "../${{ matrix.artifact }}.zip" .
+          fi
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.artifact }}.zip
+          if-no-files-found: error
+
+      - name: Attach ZIP to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ matrix.artifact }}.zip
+          generate_release_notes: true
