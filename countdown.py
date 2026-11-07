@@ -1,6 +1,6 @@
 """Graphical exam countdown manager for ExamReadyTimer."""
 import csv
-from datetime import date
+from datetime import date, datetime
 import sys\nfrom pathlib import Path\nimport tkinter as tk
 from tkinter import ttk, messagebox
 from storage import initialize_user_data
