@@ -4,8 +4,11 @@ from pathlib import Path
 import tkinter as tk
 from tkinter import ttk, messagebox, simpledialog
 
+from storage import initialize_user_data
+
 PLACEHOLDER = "Full subject syllabus"
-DATA_DIR = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent
+APP_DIR = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent
+DATA_DIR = initialize_user_data(app_dir=APP_DIR)
 DATA_FILE = DATA_DIR / "dataorsubjects.csv"
 
 
