@@ -1,0 +1,2 @@
+# ExamReadyTimer uses the Python standard library only.
+# Tkinter must be available in the Python installation.
