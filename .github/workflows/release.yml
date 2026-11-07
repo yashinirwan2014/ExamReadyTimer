@@ -34,10 +34,10 @@ jobs:
       - name: Install packaging dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install pyinstaller pandas matplotlib
+          python -m pip install pyinstaller
 
       - name: Verify release source compilation
-        run: python -m py_compile main.py GUI.py countdown.py pomodoro.py timetable.py tracker.py progress.py focus.py storage.py
+        run: python -m py_compile main.py GUI.py countdown.py pomodoro.py timetable.py tracker.py progress.py focus.py settings.py backup.py storage.py
 
       - name: Build dashboard and feature executables
         shell: bash
@@ -57,15 +57,15 @@ jobs:
             "StudyTimetable:timetable.py" \
             "SubjectTracker:tracker.py" \
             "ProgressAnalytics:progress.py" \
-            "FocusMode:focus.py"
+            "FocusMode:focus.py" \\\n            "ExamReadySettings:settings.py"
           do
             name="${spec%%:*}"
             script="${spec#*:}"
-            pyinstaller --noconfirm --clean --onefile --name "$name" "$script"
+            pyinstaller --noconfirm --clean --onefile --windowed --name "$name" "$script"
           done
 
           cp "dist/ExamReadyTimer$EXT" release/
-          for name in ExamCountdown PomodoroTimer StudyTimetable SubjectTracker ProgressAnalytics FocusMode; do
+          for name in ExamCountdown PomodoroTimer StudyTimetable SubjectTracker ProgressAnalytics FocusMode ExamReadySettings; do
             cp "dist/$name$EXT" release/
           done
           cp dataorsubjects.csv dataexams.csv datatimetable.csv release/
@@ -74,7 +74,7 @@ jobs:
           ExamReadyTimer desktop release
 
           Windows: double-click ExamReadyTimer.exe
-          Linux: make the files executable if needed (chmod +x ExamReadyTimer ExamCountdown PomodoroTimer StudyTimetable SubjectTracker ProgressAnalytics FocusMode), then run ./ExamReadyTimer.
+          Linux: make the files executable if needed (chmod +x ExamReadyTimer ExamCountdown PomodoroTimer StudyTimetable SubjectTracker ProgressAnalytics FocusMode ExamReadySettings), then run ./ExamReadyTimer.
 
           Keep all executables and CSV files together in the same folder.
           Your study data is stored in your operating system's per-user ExamReadyTimer data folder, not in the installation folder. Existing data is preserved when you upgrade. Back up that data folder before reinstalling or moving to another computer.
