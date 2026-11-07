@@ -1,5 +1,6 @@
 """Graphical Pomodoro timer for ExamReadyTimer."""
-import sys\nfrom pathlib import Path\nimport tkinter as tk
+import sys
+from pathlib import Path\nimport tkinter as tk
 from tkinter import ttk, messagebox
 
 BG, NAVY, MUTED = "#F3F5FB", "#25316D", "#68708A"
