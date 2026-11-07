@@ -3,6 +3,11 @@ import subprocess
 import sys
 from pathlib import Path
 
+from storage import initialize_user_data
+
+APP_DIR = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent
+USER_DATA_DIR = initialize_user_data(app_dir=APP_DIR)
+
 window = tk.Tk()
 
 window.title("ExamReadyTimer | Study Dashboard")
@@ -26,7 +31,7 @@ def open_feature(filename):
     else:
         command = [sys.executable, str(app_dir / filename)]
 
-    subprocess.Popen(command, cwd=str(app_dir))
+    subprocess.Popen(command, cwd=str(USER_DATA_DIR))
 
 
 title = tk.Label(
