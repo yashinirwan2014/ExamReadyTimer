@@ -3,8 +3,8 @@ import csv
 from pathlib import Path
 
 SCHEMAS = {
-    "dataexams.csv": {"Exam", "Year", "Month", "Day"},
-    "datatimetable.csv": {"Day", "Subject"},
+    "dataexams.csv": {"Exam", "Year", "Month", "Day", "Subject", "ExamType", "Priority", "ReminderDays", "Notes"},
+    "datatimetable.csv": {"Day", "StartTime", "EndTime", "Subject", "TaskType", "Priority", "Status", "Notes"},
     "dataorsubjects.csv": {"Subject", "Chapter", "Status"},
 }
 
