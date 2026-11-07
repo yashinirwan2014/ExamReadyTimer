@@ -1,59 +1,102 @@
+
 name: ExamReadyTimer Cross-Platform Package Matrix
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   cross-platform-matrix:
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 15  # Strict timeout protection so you never hit a 6-hour hang again!
+    timeout-minutes: 15
+
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
         python-version: ["3.10", "3.11", "3.12"]
 
+    env:
+      PYTHONIOENCODING: utf-8
+      PYTHONUTF8: "1"
+      MPLBACKEND: Agg
+
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ matrix.python-version }}
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
 
-    # Linux needs the system level Tkinter binaries to keep matplotlib from breaking
-    - name: Install Linux GUI System Requirements
-      if: matrix.os == 'ubuntu-latest'
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y python3-tk
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas matplotlib
 
-    - name: Install Dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install pandas matplotlib
+      - name: Test Pandas Data Pipeline Loading
+        shell: bash
+        run: |
+          python - <<'PY'
+          import os
+          import sys
+          import pandas as pd
 
-    - name: Test Pandas Data Pipeline Loading
-      shell: bash
-      run: |
-        # Safe fallback: Creates a mock CSV file if it doesn't exist so your test passes
-        python -c "
-        import os, pandas as pd
-        filename = 'dataorsubjects.csv'
-        if not os.path.exists(filename):
-            print('⚠️ Datafile not found in repository root. Creating mock structure for pipeline check...')
-            df_mock = pd.DataFrame({'subject': ['Math', 'Science'], 'time': [25, 50]})
-            df_mock.to_csv(filename, index=False)
-        
-        try:
-            df = pd.read_csv(filename)
-            print('✅ Dataframe successfully mapped on matrix platform. Total rows:', len(df))
-        except Exception as e:
-            print(f'❌ Pipeline verification failed: {e}')
-            exit(1)
-        "
-        
+          # Force UTF-8 output
+          if hasattr(sys.stdout, "reconfigure"):
+              sys.stdout.reconfigure(
+                  encoding="utf-8",
+                  errors="replace"
+              )
+
+          filename = "dataorsubjects.csv"
+
+          # Create mock data only if the CSV is missing
+          if not os.path.exists(filename):
+              print("[WARNING] Datafile not found.")
+              print("[INFO] Creating mock CSV for pipeline check.")
+
+              df_mock = pd.DataFrame({
+                  "subject": ["Math", "Science"],
+                  "time": [25, 50]
+              })
+
+              df_mock.to_csv(
+                  filename,
+                  index=False,
+                  encoding="utf-8"
+              )
+
+          try:
+              # Load CSV
+              df = pd.read_csv(
+                  filename,
+                  encoding="utf-8-sig"
+              )
+
+              # Validate expected columns
+              required_columns = {"subject", "time"}
+
+              missing_columns = (
+                  required_columns - set(df.columns)
+              )
+
+              if missing_columns:
+                  raise ValueError(
+                      f"Missing required columns: {missing_columns}"
+                  )
+
+              print("[PASS] Pandas DataFrame loaded successfully.")
+              print("[INFO] Total rows:", len(df))
+              print("[INFO] Columns:", list(df.columns))
+              print("[INFO] Python version:", sys.version)
+
+          except Exception as e:
+              print("[FAIL] Pipeline verification failed:", str(e))
+              sys.exit(1)
+
+          PY
+          
