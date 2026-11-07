@@ -1,9 +1,5 @@
 # ExamReadyTimer
 
-![Application Status](https://github.com)
-![Package Status](https://github.com)
-
-
 ExamReadyTimer is a modular, data-driven Python desktop productivity application designed to help high school students organize intensive exam preparation, manage focus intervals, and track curriculum analytics. 
 
 Developed originally as a practical execution of CBSE Class 12 Informatics Practices (IP) concepts, this project scales basic programming models into a unified student dashboard.
