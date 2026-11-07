@@ -1,8 +1,6 @@
 """Settings and data backup/restore window for ExamReadyTimer."""
 import os
 import subprocess
-import os
-import subprocess
 import sys
 from pathlib import Path
 import tkinter as tk
