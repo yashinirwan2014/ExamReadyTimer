@@ -2,11 +2,13 @@
 import csv
 from datetime import date, datetime
 import sys
-from pathlib import Path\nimport tkinter as tk
+from pathlib import Path
+import tkinter as tk
 from tkinter import ttk, messagebox
 from storage import initialize_user_data
 
-APP_DIR = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent\nDATA_DIR = initialize_user_data(app_dir=APP_DIR)
+APP_DIR = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent
+DATA_DIR = initialize_user_data(app_dir=APP_DIR)
 DATA_FILE = DATA_DIR / "dataexams.csv"
 BG, NAVY, MUTED = "#F3F5FB", "#25316D", "#68708A"
 
