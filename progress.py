@@ -1,6 +1,7 @@
 """Graphical syllabus progress analytics for ExamReadyTimer."""
 import csv
-import sys\nfrom pathlib import Path\nimport tkinter as tk
+import sys
+from pathlib import Path\nimport tkinter as tk
 from tkinter import ttk, messagebox
 from storage import initialize_user_data
 
