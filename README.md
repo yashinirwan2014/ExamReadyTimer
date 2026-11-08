@@ -42,8 +42,8 @@ System Features
 
 ∆ Testing & Release Preparation
 * Automated Checks: GitHub Actions workflows validate Python modules and run portable storage tests.
-* Cross-Platform Matrix: The package test workflow checks supported Python versions on Windows and Linux.
-* Desktop Packaging: A GitHub Actions release workflow is configured to build downloadable Windows and Linux desktop bundles when a version tag is published.
+* Cross-Platform Matrix: The package test workflow checks supported Python versions on Windows, Linux and macOS.
+* Desktop Packaging: A GitHub Actions release workflow is configured to build downloadable Windows, Linux and macOS desktop bundles.
 * Release Status: Builds and tests must pass before a public release is considered ready.
 
 ∆ Architecture & Project Structure
