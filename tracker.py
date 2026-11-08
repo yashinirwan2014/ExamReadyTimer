@@ -47,8 +47,8 @@ class SyllabusTracker:
         self.root.geometry("900x620")
         self.root.minsize(720, 500)
         self.root.configure(bg="#0B1020")
-        root.option_add("*Foreground", "#E8EEFF")
-        style = ttk.Style(root)
+        self.root.option_add("*Foreground", "#E8EEFF")
+        style = ttk.Style(self.root)
         try:
             style.theme_use("clam")
         except tk.TclError:
