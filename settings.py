@@ -34,7 +34,7 @@ class SettingsWindow:
         body.pack(fill="both", expand=True)
         tk.Label(body, text="STUDENT DATA", bg=BG, fg=NAVY,
                  font=("Arial", 11, "bold")).pack(anchor="w")
-        tk.Label(body, text="Exam dates, timetable entries and syllabus progress are stored here:",
+        tk.Label(body, text="Exam dates, timetable entries, syllabus progress, study sessions and spaced-revision schedules are stored here:",
                  bg=BG, fg=MUTED, wraplength=570, justify="left").pack(anchor="w", pady=(7, 5))
         path_box = tk.Frame(body, bg="white", padx=12, pady=12)
         path_box.pack(fill="x", pady=(0, 14))
@@ -85,7 +85,7 @@ class SettingsWindow:
             return
         if not messagebox.askyesno(
             "Replace existing data?",
-            "Restoring will replace matching exam, timetable, syllabus and reminder-history files. Continue?",
+            "Restoring will replace matching exam, timetable, syllabus, reminder-history, study-session and revision-schedule files. Continue?",
             parent=self.root
         ):
             return
