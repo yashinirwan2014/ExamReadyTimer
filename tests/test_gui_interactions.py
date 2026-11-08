@@ -5,6 +5,7 @@ Run on Linux with a display server, e.g.:
 """
 import csv
 import os
+import subprocess
 import sys
 import tkinter as tk
 from tkinter import ttk
@@ -148,20 +149,20 @@ def test_timetable_add_complete_and_delete_through_buttons(root, tmp_path, monke
     assert timetable.load_plans() == []
 
 
-def test_syllabus_tracker_add_complete_and_delete_chapter(root, tmp_path, monkeypatch):
+def test_syllabus_tracker_full_crud_through_buttons(root, tmp_path, monkeypatch):
     data = tmp_path / "data"
     data.mkdir()
     monkeypatch.setattr(tracker, "DATA_DIR", data)
     monkeypatch.setattr(tracker, "DATA_FILE", data / "dataorsubjects.csv")
     silence_dialogs(monkeypatch, tracker)
+    answers = iter(["Physics", "Ray Optics", "Ray Optics - Updated", "Physics II"])
     monkeypatch.setattr(tracker.simpledialog, "askstring",
-                        lambda *args, **kwargs: "Physics")
+                        lambda *args, **kwargs: next(answers))
     app = tracker.SyllabusTracker(root)
+
     click(root, "+ Add subject")
     assert "Physics" in tracker.load_subjects()
 
-    monkeypatch.setattr(tracker.simpledialog, "askstring",
-                        lambda *args, **kwargs: "Ray Optics")
     click(root, "+ Add chapter")
     assert any(x["chapter"] == "Ray Optics"
                for x in tracker.load_subjects()["Physics"])
@@ -169,15 +170,46 @@ def test_syllabus_tracker_add_complete_and_delete_chapter(root, tmp_path, monkey
     row = next(iid for iid in app.chapter_table.get_children()
                if app.chapter_table.item(iid, "values")[1] == "Ray Optics")
     app.chapter_table.selection_set(row)
+    click(root, "Edit")
+    assert any(x["chapter"] == "Ray Optics - Updated"
+               for x in tracker.load_subjects()["Physics"])
+
+    row = next(iid for iid in app.chapter_table.get_children()
+               if app.chapter_table.item(iid, "values")[1] == "Ray Optics - Updated")
+    app.chapter_table.selection_set(row)
     click(root, "Mark complete / pending")
     assert next(x for x in tracker.load_subjects()["Physics"]
-                if x["chapter"] == "Ray Optics")["status"] == "Completed"
+                if x["chapter"] == "Ray Optics - Updated")["status"] == "Completed"
 
     row = app.chapter_table.get_children()[0]
     app.chapter_table.selection_set(row)
     click(root, "Delete")
-    assert all(x["chapter"] != "Ray Optics"
+    assert all(x["chapter"] != "Ray Optics - Updated"
                for x in tracker.load_subjects()["Physics"])
+
+    click(root, "Rename subject")
+    assert "Physics II" in tracker.load_subjects()
+    assert "Physics" not in tracker.load_subjects()
+
+    click(root, "Delete subject")
+    assert "Physics II" not in tracker.load_subjects()
+
+
+def test_dashboard_import_is_headless_and_has_no_storage_side_effects(tmp_path):
+    repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    data_home = tmp_path / "xdg-data"
+    env = os.environ.copy()
+    env.pop("DISPLAY", None)
+    env["HOME"] = str(tmp_path)
+    env["XDG_DATA_HOME"] = str(data_home)
+    env["PYTHONPATH"] = repo_root + os.pathsep + env.get("PYTHONPATH", "")
+    result = subprocess.run(
+        [sys.executable, "-c",
+         "import GUI; assert GUI.USER_DATA_DIR is None"],
+        cwd=repo_root, env=env, text=True, capture_output=True, timeout=15,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert not (data_home / "ExamReadyTimer").exists()
 
 
 @pytest.mark.parametrize("module,klass,minutes_attr,session_type", [
