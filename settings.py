@@ -21,12 +21,22 @@ class SettingsWindow:
         root.geometry("650x470")
         root.minsize(520, 400)
         root.configure(bg=BG)
+        root.option_add("*Foreground", "#E8EEFF")
+        style = ttk.Style(root)
+        try:
+            style.theme_use("clam")
+        except tk.TclError:
+            pass
+        style.configure("TFrame", background="#0B1020")
+        style.configure("TLabel", background="#0B1020", foreground="#E8EEFF")
+        style.configure("TButton", background="#263657", foreground="#E8EEFF", padding=7)
+        style.configure("TEntry", fieldbackground="#18243D", foreground="#E8EEFF")
         self.build()
 
     def build(self):
         header = tk.Frame(self.root, bg=NAVY, padx=24, pady=20)
         header.pack(fill="x")
-        tk.Label(header, text="Settings & Data Safety", bg=NAVY, fg="#18243D",
+        tk.Label(header, text="Settings & Data Safety", bg=NAVY, fg="#E8EEFF",
                  font=("Arial", 22, "bold")).pack(anchor="w")
         tk.Label(header, text="Your study data belongs to you. Keep it safe.",
                  bg=NAVY, fg="#C7D4F2", font=("Arial", 10)).pack(anchor="w", pady=(4, 0))
