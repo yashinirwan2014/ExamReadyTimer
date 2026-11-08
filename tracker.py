@@ -5,6 +5,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox, simpledialog
 
 from storage import initialize_user_data
+from theme import apply_dark_theme
 
 PLACEHOLDER = "Full subject syllabus"
 APP_DIR = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent
@@ -80,7 +81,7 @@ class SyllabusTracker:
         header = tk.Frame(self.root, bg="#172544", padx=22, pady=18)
         header.pack(fill="x")
         tk.Label(header, text="Your syllabus, your pace.", bg="#172544",
-                 fg="#18243D", font=("Arial", 21, "bold")).pack(anchor="w")
+                 fg="#E8EEFF", font=("Arial", 21, "bold")).pack(anchor="w")
         tk.Label(header, text="Add chapters, tick them off, and watch your progress grow.",
                  bg="#172544", fg="#C7D4F2", font=("Arial", 10)).pack(anchor="w", pady=(5, 0))
 
@@ -90,7 +91,7 @@ class SyllabusTracker:
         left = tk.Frame(body, bg="#0B1020", width=260)
         left.pack(side="left", fill="y", padx=(0, 16))
         left.pack_propagate(False)
-        tk.Label(left, text="SUBJECTS", bg="#0B1020", fg="#172544",
+        tk.Label(left, text="SUBJECTS", bg="#0B1020", fg="#E8EEFF",
                  font=("Arial", 11, "bold")).pack(anchor="w", pady=(0, 8))
         tk.Label(left, text="CURRICULUM", bg="#0B1020", fg="#9AA9C8",
                  font=("Arial", 8, "bold")).pack(anchor="w", pady=(0, 4))
@@ -109,7 +110,7 @@ class SyllabusTracker:
         self.subject_list = tk.Listbox(left, font=("Arial", 10), relief="flat",
                                        bg="#18243D", fg="#E8EEFF",
                                        selectbackground="#C7D4F2",
-                                       selectforeground="#172544",
+                                       selectforeground="#E8EEFF",
                                        activestyle="none", exportselection=False)
         self.subject_list.pack(fill="both", expand=True)
         self.subject_list.bind("<<ListboxSelect>>", self.on_subject_select)
@@ -120,7 +121,7 @@ class SyllabusTracker:
         right = tk.Frame(body, bg="#0B1020")
         right.pack(side="left", fill="both", expand=True)
         self.subject_heading = tk.Label(right, text="Choose a subject", bg="#0B1020",
-                                        fg="#172544", font=("Arial", 16, "bold"))
+                                        fg="#E8EEFF", font=("Arial", 16, "bold"))
         self.subject_heading.pack(anchor="w")
         self.progress_label = tk.Label(right, text="Select a subject to view its syllabus.",
                                         bg="#0B1020", fg="#9AA9C8", font=("Arial", 10))
