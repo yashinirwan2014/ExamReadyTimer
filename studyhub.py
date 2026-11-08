@@ -81,6 +81,7 @@ class StudyIntelligence:
         self.subjects = read_subjects()
         self.timer_after = None
         self.remaining_seconds = 0
+        self.timer_total_seconds = 0
         self.timer_running = False
         self.build()
         self.refresh_all()
@@ -252,6 +253,7 @@ class StudyIntelligence:
                 if not 1 <= minutes <= 240:
                     raise ValueError("Timer duration must be from 1 to 240 minutes.")
                 self.remaining_seconds = minutes * 60
+                self.timer_total_seconds = self.remaining_seconds
         except (ValueError, tk.TclError) as exc:
             messagebox.showwarning("Check session details", str(exc), parent=self.root)
             return
@@ -279,7 +281,7 @@ class StudyIntelligence:
         self.timer_status.config(text="Timer paused. Use Save elapsed time to keep the completed minutes.")
 
     def _save_timer_session(self):
-        elapsed = int(self.minutes_var.get()) * 60 - self.remaining_seconds
+        elapsed = self.timer_total_seconds - self.remaining_seconds
         minutes = elapsed // 60
         if minutes > 0:
             subject, chapter = self.selected_details()
@@ -287,10 +289,14 @@ class StudyIntelligence:
             if chapter:
                 schedule_revision(REVISION_FILE, subject, chapter)
         self.remaining_seconds = 0
+        self.timer_total_seconds = 0
         self.clock.config(text=f"{int(self.minutes_var.get()):02d}:00")
         self.refresh_all()
 
     def save_elapsed(self):
+        if self.timer_total_seconds <= 0 or self.remaining_seconds <= 0:
+            messagebox.showinfo("No elapsed session", "Start the focus timer first. There is no elapsed time to save yet.", parent=self.root)
+            return
         if self.timer_after:
             self.root.after_cancel(self.timer_after)
             self.timer_after = None
