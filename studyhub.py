@@ -9,6 +9,7 @@ from pathlib import Path
 from tkinter import messagebox, ttk
 
 from storage import initialize_user_data
+from theme import apply_dark_theme
 from study_engine import (
     build_adaptive_plan, build_recovery_plan, complete_revision,
     load_due_revisions, load_sessions, log_session, schedule_revision,
@@ -77,7 +78,7 @@ class StudyIntelligence:
         root.title("ExamReadyTimer | Study Intelligence Suite")
         root.geometry("980x760")
         root.minsize(760, 620)
-        root.configure(bg=BG)
+        apply_dark_theme(root)
         self.subjects = read_subjects()
         self.timer_after = None
         self.remaining_seconds = 0
@@ -89,7 +90,7 @@ class StudyIntelligence:
     def build(self):
         header = tk.Frame(self.root, bg=NAVY, padx=22, pady=17)
         header.pack(fill="x")
-        tk.Label(header, text="Study Intelligence Suite", bg=NAVY, fg="#18243D",
+        tk.Label(header, text="Study Intelligence Suite", bg=NAVY, fg="#E8EEFF",
                  font=("Arial", 22, "bold")).pack(anchor="w")
         tk.Label(header, text="Track real effort • Plan the next step • Revise at the right time",
                  bg=NAVY, fg="#C7D4F2", font=("Arial", 10)).pack(anchor="w", pady=(4, 0))
@@ -112,7 +113,7 @@ class StudyIntelligence:
 
     def build_session(self):
         tab = self.session_tab
-        tk.Label(tab, text="Log a focused study session", bg=BG, fg=NAVY,
+        tk.Label(tab, text="Log a focused study session", bg=BG, fg="#E8EEFF",
                  font=("Arial", 16, "bold")).pack(anchor="w", pady=(0, 12))
         form = tk.Frame(tab, bg=BG)
         form.pack(fill="x")
@@ -141,12 +142,12 @@ class StudyIntelligence:
         ttk.Button(controls, text="Start focus timer", command=self.start_timer).pack(side="left", padx=8)
         ttk.Button(controls, text="Pause", command=self.pause_timer).pack(side="left", padx=8)
         ttk.Button(controls, text="Save elapsed time", command=self.save_elapsed).pack(side="left", padx=8)
-        self.clock = tk.Label(tab, text="25:00", bg=BG, fg=NAVY, font=("Arial", 42, "bold"))
+        self.clock = tk.Label(tab, text="25:00", bg=BG, fg="#E8EEFF", font=("Arial", 42, "bold"))
         self.clock.pack(anchor="w", pady=(8, 2))
         self.timer_status = tk.Label(tab, text="Choose a subject and topic. Timer sessions are logged when completed or saved.",
                                      bg=BG, fg=MUTED, wraplength=820, justify="left")
         self.timer_status.pack(anchor="w", pady=(0, 12))
-        tk.Label(tab, text="RECENT STUDY SESSIONS", bg=BG, fg=NAVY,
+        tk.Label(tab, text="RECENT STUDY SESSIONS", bg=BG, fg="#E8EEFF",
                  font=("Arial", 10, "bold")).pack(anchor="w", pady=(8, 5))
         self.recent_table = ttk.Treeview(tab, columns=("date", "subject", "chapter", "minutes", "type"),
                                          show="headings", height=8)
@@ -159,7 +160,7 @@ class StudyIntelligence:
 
     def build_plan(self):
         tab = self.plan_tab
-        tk.Label(tab, text="Build a realistic plan for today", bg=BG, fg=NAVY,
+        tk.Label(tab, text="Build a realistic plan for today", bg=BG, fg="#E8EEFF",
                  font=("Arial", 16, "bold")).pack(anchor="w")
         controls = tk.Frame(tab, bg=BG)
         controls.pack(fill="x", pady=12)
@@ -185,7 +186,7 @@ class StudyIntelligence:
 
     def build_revision(self):
         tab = self.revision_tab
-        tk.Label(tab, text="Spaced revision queue", bg=BG, fg=NAVY,
+        tk.Label(tab, text="Spaced revision queue", bg=BG, fg="#E8EEFF",
                  font=("Arial", 16, "bold")).pack(anchor="w")
         tk.Label(tab, text="After a logged session, add a 1, 3, 7, 14 and 30-day review cycle for that topic.",
                  bg=BG, fg=MUTED).pack(anchor="w", pady=(5, 10))
@@ -205,12 +206,12 @@ class StudyIntelligence:
 
     def build_stats(self):
         tab = self.stats_tab
-        tk.Label(tab, text="Your real study-time analytics", bg=BG, fg=NAVY,
+        tk.Label(tab, text="Your real study-time analytics", bg=BG, fg="#E8EEFF",
                  font=("Arial", 16, "bold")).pack(anchor="w")
-        self.stats_summary = tk.Label(tab, text="", bg=BG, fg=NAVY, font=("Arial", 13, "bold"),
+        self.stats_summary = tk.Label(tab, text="", bg=BG, fg="#E8EEFF", font=("Arial", 13, "bold"),
                                       justify="left")
         self.stats_summary.pack(anchor="w", pady=14)
-        tk.Label(tab, text="SUBJECT BREAKDOWN", bg=BG, fg=NAVY,
+        tk.Label(tab, text="SUBJECT BREAKDOWN", bg=BG, fg="#E8EEFF",
                  font=("Arial", 10, "bold")).pack(anchor="w", pady=(8, 5))
         self.stats_table = ttk.Treeview(tab, columns=("subject", "hours", "minutes"), show="headings", height=12)
         for key, label, width in [("subject", "SUBJECT", 330), ("hours", "HOURS", 120), ("minutes", "MINUTES", 120)]:
