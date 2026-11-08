@@ -7,6 +7,7 @@ from pathlib import Path
 import tkinter as tk
 from tkinter import ttk, messagebox
 from storage import initialize_user_data
+from theme import apply_dark_theme
 
 APP_DIR = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent
 DATA_DIR = initialize_user_data(app_dir=APP_DIR)
@@ -62,21 +63,7 @@ class ExamCountdown:
         root.title("ExamReadyTimer | Exam Planner")
         root.geometry("940x680")
         root.minsize(760, 560)
-        root.configure(bg=BG)
-        root.option_add("*Foreground", "#E8EEFF")
-        style = ttk.Style(root)
-        try:
-            style.theme_use("clam")
-        except tk.TclError:
-            pass
-        style.configure("TFrame", background="#0B1020")
-        style.configure("TLabel", background="#0B1020", foreground="#E8EEFF")
-        style.configure("TButton", background="#263657", foreground="#E8EEFF", padding=7)
-        style.map("TButton", background=[("active", "#34496F")])
-        style.configure("TEntry", fieldbackground="#18243D", foreground="#E8EEFF")
-        style.configure("TCombobox", fieldbackground="#18243D", background="#263657", foreground="#E8EEFF")
-        style.configure("Treeview", background="#111B30", fieldbackground="#111B30", foreground="#E8EEFF")
-        style.configure("Treeview.Heading", background="#263657", foreground="#E8EEFF")
+        apply_dark_theme(root)
         self.exams = read_exams()
         self.build()
         self.refresh()
@@ -88,13 +75,13 @@ class ExamCountdown:
     def build(self):
         header = tk.Frame(self.root, bg=NAVY, padx=24, pady=18)
         header.pack(fill="x")
-        tk.Label(header, text="Exam Planner & Countdown", bg=NAVY, fg="#18243D",
+        tk.Label(header, text="Exam Planner & Countdown", bg=NAVY, fg="#E8EEFF",
                  font=("Arial", 22, "bold")).pack(anchor="w")
         tk.Label(header, text="Keep every paper, practical and mock exam on your radar.",
                  bg=NAVY, fg="#C7D4F2", font=("Arial", 10)).pack(anchor="w", pady=(4, 0))
         body = tk.Frame(self.root, bg=BG, padx=22, pady=16)
         body.pack(fill="both", expand=True)
-        form = tk.LabelFrame(body, text="Add an exam", bg=BG, fg=NAVY, padx=12, pady=10)
+        form = tk.LabelFrame(body, text="Add an exam", bg=BG, fg="#E8EEFF", padx=12, pady=10)
         form.pack(fill="x", pady=(0, 12))
         self.name_var = tk.StringVar()
         self.date_var = tk.StringVar(value=date.today().isoformat())
@@ -142,7 +129,7 @@ class ExamCountdown:
         controls = tk.Frame(body, bg=BG)
         controls.pack(fill="x", pady=(10, 0))
         ttk.Button(controls, text="Delete selected exam", command=self.delete).pack(side="right")
-        self.summary = tk.Label(controls, text="", bg=BG, fg=NAVY, font=("Arial", 10, "bold"))
+        self.summary = tk.Label(controls, text="", bg=BG, fg="#E8EEFF", font=("Arial", 10, "bold"))
         self.summary.pack(side="left")
         tk.Label(self.root, text="Reminders appear once when their window begins. Keep the Exam Planner open to receive them.",
                  bg=BG, fg=MUTED, font=("Arial", 9)).pack(anchor="w", padx=24, pady=(0, 10))
