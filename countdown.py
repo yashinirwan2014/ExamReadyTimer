@@ -130,7 +130,7 @@ class ExamCountdown:
         ttk.Button(controls, text="Delete selected exam", command=self.delete).pack(side="right")
         self.summary = tk.Label(controls, text="", bg=BG, fg=NAVY, font=("Arial", 10, "bold"))
         self.summary.pack(side="left")
-        tk.Label(self.root, text="Reminder lead is saved with each exam so you can plan revision in advance.",
+        tk.Label(self.root, text="Reminders appear once when their window begins. Keep the Exam Planner open to receive them.",
                  bg=BG, fg=MUTED, font=("Arial", 9)).pack(anchor="w", padx=24, pady=(0, 10))
 
     def refresh(self):
