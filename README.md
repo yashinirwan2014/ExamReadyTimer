@@ -12,13 +12,13 @@ Developed originally as a practical execution of CBSE Class 12 Informatics Pract
 
 Choose the ZIP for your computer:
 
-**Current desktop theme:** The v1.3.0 desktop packages use the shared midnight-navy dark palette across the dashboard and feature windows. The v1.3.0 release includes fresh Windows, macOS and Linux ZIPs.
+**Current desktop theme:** The v1.3.0 desktop packages use the shared midnight-navy dark palette across the dashboard and feature windows. Windows and Linux downloads remain available. The macOS download is temporarily unavailable while its launch and security behaviour are being verified.
 
 
 | Platform | Download |
 |---|---|
 | Windows 10/11 (64-bit) | [ExamReadyTimer-Windows.zip](https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.3.0/ExamReadyTimer-Windows.zip) |
-| macOS | [ExamReadyTimer-macOS.zip](https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.3.0/ExamReadyTimer-macOS.zip) |
+| macOS | Temporarily unavailable — being revalidated before redistribution. |
 | Linux | [ExamReadyTimer-Linux.zip](https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.3.0/ExamReadyTimer-Linux.zip) |
 
 ### Quick start
@@ -26,7 +26,7 @@ Choose the ZIP for your computer:
 1. Download the ZIP matching your operating system from the links above.
 2. Extract the ZIP into a folder you can keep. Keep the included application files and CSV files together; do not move individual files out of the folder.
 3. **Windows:** Open the extracted folder and double-click `ExamReadyTimer.exe`. If Windows displays a security warning, only continue if you downloaded the file from this official repository and are comfortable proceeding.
-4. **macOS:** Move `ExamReadyTimer.app` to Applications and open it. This build is not Apple-notarized; macOS may require Control-click → Open on first launch.
+4. **macOS:** A verified public download is not currently available. Please do not use the older v1.3.0 macOS ZIP while the replacement is being validated.
 5. **Linux:** Open a terminal in the extracted folder, run `chmod +x ExamReadyTimer`, then run `./ExamReadyTimer`. If the application does not start, check that your system has the required desktop/Tk libraries.
 
 These are portable ZIP downloads, not traditional click-through installers. The application stores study records in your user data folder, separately from the downloaded application files. Back up that folder before moving to another computer. Read `README-FIRST.txt` included in each ZIP for platform-specific notes.
