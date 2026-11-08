@@ -1,6 +1,7 @@
 """Graphical exam planner and countdown for ExamReadyTimer."""
 import csv
 from datetime import date
+from reminders import due_reminders, load_sent_reminders, reminder_key, save_sent_reminders
 import sys
 from pathlib import Path
 import tkinter as tk
@@ -65,6 +66,10 @@ class ExamCountdown:
         self.exams = read_exams()
         self.build()
         self.refresh()
+        self.reminder_state_file = DATA_DIR / ".reminders-sent.json"
+        self.sent_reminders = load_sent_reminders(self.reminder_state_file)
+        self.check_reminders()
+        self.reminder_after_id = self.root.after(60_000, self.check_reminders)
 
     def build(self):
         header = tk.Frame(self.root, bg=NAVY, padx=24, pady=18)
@@ -142,6 +147,30 @@ class ExamCountdown:
                                       item["exam_type"], item["priority"], countdown, reminder))
         upcoming = sum(item["date"] >= today for item in self.exams)
         self.summary.config(text=f"{upcoming} upcoming • {len(self.exams) - upcoming} past • {len(self.exams)} total")
+
+    def check_reminders(self):
+        """Show each exam reminder once while the planner is running."""
+        due = due_reminders(self.exams, date.today(), self.sent_reminders)
+        if due:
+            # Persist before showing the dialog so closing it cannot repeat alerts.
+            self.sent_reminders.update(reminder_key(item) for item in due)
+            try:
+                save_sent_reminders(self.reminder_state_file, self.sent_reminders)
+            except OSError as exc:
+                messagebox.showwarning("Reminder could not be saved",
+                                       f"The reminder will be shown again next time.\\n{exc}",
+                                       parent=self.root)
+                self.sent_reminders.difference_update(reminder_key(item) for item in due)
+            lines = []
+            for item in due:
+                days = (item["date"] - date.today()).days
+                when = "today" if days == 0 else f"in {days} day(s)"
+                subject = f" — {item['subject']}" if item.get("subject") else ""
+                lines.append(f"• {item['name']}{subject}: {when}")
+            self.root.bell()
+            messagebox.showinfo("Exam reminders", "Your exam reminder window has started:\\n\\n" +
+                                "\\n".join(lines), parent=self.root)
+        self.reminder_after_id = self.root.after(60_000, self.check_reminders)
 
     def add(self):
         name = self.name_var.get().strip()
