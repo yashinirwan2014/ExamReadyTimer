@@ -40,7 +40,7 @@ jobs:
           python -m pip install pyinstaller
 
       - name: Verify release source compilation
-        run: python -m py_compile main.py GUI.py countdown.py pomodoro.py timetable.py tracker.py progress.py focus.py settings.py backup.py storage.py schedule_utils.py reminders.py scripts/validate_study_data.py
+        run: python -m py_compile main.py GUI.py countdown.py pomodoro.py timetable.py tracker.py progress.py focus.py settings.py readiness.py backup.py storage.py schedule_utils.py reminders.py scripts/validate_study_data.py
 
       - name: Build dashboard and feature executables
         shell: bash
@@ -61,7 +61,8 @@ jobs:
             "SubjectTracker:tracker.py" \
             "ProgressAnalytics:progress.py" \
             "FocusMode:focus.py" \
-            "ExamReadySettings:settings.py"
+            "ExamReadySettings:settings.py" \
+            "ExamReadiness:readiness.py"
           do
             name="${spec%%:*}"
             script="${spec#*:}"
@@ -75,14 +76,14 @@ jobs:
           if [ "${{ runner.os }}" = "macOS" ]; then
             APP_DIR="dist/ExamReadyTimer.app/Contents/MacOS"
             mkdir -p "$APP_DIR"
-            for name in ExamCountdown PomodoroTimer StudyTimetable SubjectTracker ProgressAnalytics FocusMode ExamReadySettings; do
+            for name in ExamCountdown PomodoroTimer StudyTimetable SubjectTracker ProgressAnalytics FocusMode ExamReadySettings ExamReadiness; do
               cp "dist/$name" "$APP_DIR/"
             done
             cp dataorsubjects.csv dataexams.csv datatimetable.csv "$APP_DIR/"
             cp -R dist/ExamReadyTimer.app release/
           else
             cp "dist/ExamReadyTimer$EXT" release/
-            for name in ExamCountdown PomodoroTimer StudyTimetable SubjectTracker ProgressAnalytics FocusMode ExamReadySettings; do
+            for name in ExamCountdown PomodoroTimer StudyTimetable SubjectTracker ProgressAnalytics FocusMode ExamReadySettings ExamReadiness; do
               cp "dist/$name$EXT" release/
             done
             cp dataorsubjects.csv dataexams.csv datatimetable.csv release/
@@ -92,7 +93,7 @@ jobs:
           ExamReadyTimer desktop release
 
           Windows: double-click ExamReadyTimer.exe
-          Linux: make the files executable if needed (chmod +x ExamReadyTimer ExamCountdown PomodoroTimer StudyTimetable SubjectTracker ProgressAnalytics FocusMode ExamReadySettings), then run ./ExamReadyTimer.
+          Linux: make the files executable if needed (chmod +x ExamReadyTimer ExamCountdown PomodoroTimer StudyTimetable SubjectTracker ProgressAnalytics FocusMode ExamReadySettings ExamReadiness), then run ./ExamReadyTimer.
           macOS: move ExamReadyTimer.app to Applications, then open it. If macOS blocks the first launch because the app is not notarized, Control-click the app, choose Open, and confirm.
 
           Keep all executables and CSV files together in the same folder.
