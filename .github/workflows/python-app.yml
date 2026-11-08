@@ -46,17 +46,21 @@ jobs:
         shell: bash
         timeout-minutes: 5
         run: |
-          for script in countdown.py pomodoro.py timetable.py tracker.py progress.py focus.py settings.py readiness.py studyhub.py; do
-            echo "Smoke testing $script"
-            set +e
-            xvfb-run --auto-servernum timeout --signal=TERM --kill-after=3s 4s /usr/bin/python3 "$script"
-            exit_code=$?
-            set -e
-            if [ "$exit_code" -ne 124 ]; then
-              echo "::error::$script did not remain open under the virtual display (exit $exit_code)"
-              exit 1
-            fi
-          done
+          # Start one virtual display for the entire suite. Starting and tearing
+          # down Xvfb for every app can race with timeout cleanup on hosted runners.
+          xvfb-run --auto-servernum bash -euo pipefail -c '
+            for script in countdown.py pomodoro.py timetable.py tracker.py progress.py focus.py settings.py readiness.py studyhub.py; do
+              echo "Smoke testing $script"
+              set +e
+              timeout --signal=TERM --kill-after=3s 4s /usr/bin/python3 "$script"
+              exit_code=$?
+              set -e
+              if [ "$exit_code" -ne 124 ]; then
+                echo "::error::$script did not remain open under the virtual display (exit $exit_code)"
+                exit 1
+              fi
+            done
+          '
 
       - name: Verify System Python Has Tkinter
         run: |
