@@ -237,6 +237,8 @@ class StudyIntelligence:
             subject, chapter = self.selected_details()
             minutes = int(self.minutes_var.get())
             log_session(SESSION_FILE, subject, chapter, minutes, self.kind_var.get())
+            if chapter:
+                schedule_revision(REVISION_FILE, subject, chapter)
         except (ValueError, OSError) as exc:
             messagebox.showwarning("Could not save session", str(exc), parent=self.root)
             return
