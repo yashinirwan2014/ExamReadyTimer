@@ -20,6 +20,14 @@ System Features
 * Adjustable assumptions: Change daily study capacity and average chapter effort, then recalculate instantly.
 * Transparent estimates: Shows days remaining, pending chapters, hours needed, available capacity, required daily pace and estimated shortfall. These are planning estimates, not predictions of marks or mastery.
 
+∆ Study Intelligence Suite
+* Study-Time Ledger: Save real completed study sessions by subject, chapter, duration and session type; the built-in focus timer records completed or manually saved elapsed time.
+* Subject Analytics: Review today's minutes, the last 7 and 30 days, subject totals, session counts and consecutive study-day streaks.
+* Adaptive Daily Planner: Suggests pending chapters using upcoming exam dates, exam priority and recent subject activity, within the time budget you set.
+* Recovery Planner: Identifies today's timetable blocks whose start time has passed and which are not marked completed, so you can decide what to reschedule.
+* Spaced Revision: Schedule 1, 3, 7, 14 and 30-day review intervals for a topic; completing a due review advances it to a longer interval.
+* Local-First Records: Session history and revision schedules are stored on-device and included in ZIP backups.
+
 ∆ Event-Driven Pomodoro Timer
 * Custom Intervals: Configurable study blocks, break durations, and session counters.
 * Countdown Display: Provides a live timer for focused study sessions.
@@ -91,7 +99,7 @@ ExamReadyTimer→
 °datatimetable.csv
 ∆ Student timetable storage
 °tests/
-∆ Automated tests for storage, timetable rules and exam readiness calculations
+∆ Automated tests for storage, timetable rules, readiness, study sessions, adaptive plans and revision schedules
 °.github/workflows/
 ∆ Automated application checks, cross-platform tests, and desktop release builds
 
@@ -115,7 +123,7 @@ python main.py
 * Linux: ~/.local/share/ExamReadyTimer (or the location configured by XDG_DATA_HOME)
 * macOS: ~/Library/Application Support/ExamReadyTimer
 
-Existing user data is not overwritten by starter files during normal initialization. Back up the user data folder before moving to another computer or manually resetting the application. ZIP backups include exam, timetable, syllabus, and reminder-history files.
+Existing user data is not overwritten by starter files during normal initialization. Back up the user data folder before moving to another computer or manually resetting the application. ZIP backups include exam, timetable, syllabus, reminder history, study-session history and revision schedules.
 
 ∆ Academic Framework: Implementation of Informatics Practices
 
