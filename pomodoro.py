@@ -1,8 +1,19 @@
 """Graphical Pomodoro timer for ExamReadyTimer."""
+import csv
+import sys
+from pathlib import Path
 import tkinter as tk
 from tkinter import ttk, messagebox
 
+from storage import initialize_user_data
+from study_engine import log_session, schedule_revision
+
 BG, NAVY, MUTED = "#F3F5FB", "#25316D", "#68708A"
+APP_DIR = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent
+DATA_DIR = initialize_user_data(app_dir=APP_DIR)
+SESSION_FILE = DATA_DIR / "study_sessions.csv"
+REVISION_FILE = DATA_DIR / "revision_schedule.csv"
+SUBJECT_FILE = DATA_DIR / "dataorsubjects.csv"
 
 
 class PomodoroTimer:
@@ -21,6 +32,16 @@ class PomodoroTimer:
         self.running = False
         self.completed = False
         self.after_id = None
+        self.subjects = {}
+        if SUBJECT_FILE.exists():
+            with SUBJECT_FILE.open("r", newline="", encoding="utf-8-sig") as stream:
+                for row in csv.DictReader(stream):
+                    subject = (row.get("Subject") or "").strip()
+                    chapter = (row.get("Chapter") or "").strip()
+                    if subject and chapter and chapter.casefold() != "full subject syllabus":
+                        self.subjects.setdefault(subject, []).append(chapter)
+        self.subject_var = tk.StringVar()
+        self.chapter_var = tk.StringVar()
         self.build()
 
     def build(self):
@@ -40,6 +61,18 @@ class PomodoroTimer:
             tk.Label(settings, text=label, bg=BG, fg=MUTED).grid(row=0, column=col, padx=5)
             tk.Spinbox(settings, from_=1, to=180 if col < 2 else 20, width=7,
                        textvariable=var, justify="center").grid(row=1, column=col, padx=5, pady=6)
+        study_target = tk.Frame(body, bg=BG)
+        study_target.pack(fill="x", pady=(12, 0))
+        tk.Label(study_target, text="Subject (optional)", bg=BG, fg=MUTED).grid(row=0, column=0, sticky="w")
+        self.subject_combo = ttk.Combobox(study_target, textvariable=self.subject_var,
+                                          values=sorted(self.subjects), state="readonly", width=22)
+        self.subject_combo.grid(row=1, column=0, padx=(0, 8), sticky="ew")
+        self.subject_combo.bind("<<ComboboxSelected>>", self.update_chapters)
+        tk.Label(study_target, text="Chapter / topic", bg=BG, fg=MUTED).grid(row=0, column=1, sticky="w")
+        self.chapter_combo = ttk.Combobox(study_target, textvariable=self.chapter_var, state="normal", width=24)
+        self.chapter_combo.grid(row=1, column=1, sticky="ew")
+        study_target.columnconfigure(0, weight=1)
+        study_target.columnconfigure(1, weight=1)
         self.phase_label = tk.Label(body, text="Ready to focus?", bg=BG, fg=NAVY,
                                     font=("Arial", 16, "bold"))
         self.phase_label.pack(pady=(35, 5))
@@ -83,6 +116,7 @@ class PomodoroTimer:
         if self.remaining <= 0:
             self.root.bell()
             if self.phase == "Study":
+                self.record_study_block()
                 if self.session >= self.total_sessions.get():
                     self.running = False
                     self.completed = True
@@ -99,6 +133,24 @@ class PomodoroTimer:
             return
         self.remaining -= 1
         self.after_id = self.root.after(1000, self.tick)
+
+    def update_chapters(self, _event=None):
+        chapters = self.subjects.get(self.subject_var.get(), [])
+        self.chapter_combo["values"] = chapters
+        if chapters and self.chapter_var.get() not in chapters:
+            self.chapter_var.set(chapters[0])
+
+    def record_study_block(self):
+        subject = self.subject_var.get().strip()
+        chapter = self.chapter_var.get().strip()
+        if not subject:
+            return
+        try:
+            log_session(SESSION_FILE, subject, chapter, int(self.study_minutes.get()), "Pomodoro")
+            if chapter:
+                schedule_revision(REVISION_FILE, subject, chapter)
+        except (OSError, ValueError) as exc:
+            messagebox.showwarning("Study log not saved", str(exc), parent=self.root)
 
     def pause(self):
         self.running = False
