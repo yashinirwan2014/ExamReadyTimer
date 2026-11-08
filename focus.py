@@ -1,8 +1,19 @@
 """Distraction-free focus timer for ExamReadyTimer."""
+import csv
+import sys
+from pathlib import Path
 import tkinter as tk
 from tkinter import ttk, messagebox
 
+from storage import initialize_user_data
+from study_engine import log_session, schedule_revision
+
 BG, NAVY, MUTED = "#F3F5FB", "#25316D", "#68708A"
+APP_DIR = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent
+DATA_DIR = initialize_user_data(app_dir=APP_DIR)
+SESSION_FILE = DATA_DIR / "study_sessions.csv"
+REVISION_FILE = DATA_DIR / "revision_schedule.csv"
+SUBJECT_FILE = DATA_DIR / "dataorsubjects.csv"
 
 
 class FocusMode:
@@ -16,6 +27,16 @@ class FocusMode:
         self.remaining = 0
         self.running = False
         self.after_id = None
+        self.subjects = {}
+        if SUBJECT_FILE.exists():
+            with SUBJECT_FILE.open("r", newline="", encoding="utf-8-sig") as stream:
+                for row in csv.DictReader(stream):
+                    subject = (row.get("Subject") or "").strip()
+                    chapter = (row.get("Chapter") or "").strip()
+                    if subject and chapter and chapter.casefold() != "full subject syllabus":
+                        self.subjects.setdefault(subject, []).append(chapter)
+        self.subject_var = tk.StringVar()
+        self.chapter_var = tk.StringVar()
         self.build()
 
     def build(self):
@@ -27,6 +48,14 @@ class FocusMode:
                  bg=NAVY, fg="#DDE4FF", font=("Arial", 10)).pack(anchor="w", pady=(4, 0))
         body = tk.Frame(self.root, bg=BG, padx=26, pady=22)
         body.pack(fill="both", expand=True)
+        tk.Label(body, text="Subject (optional)", bg=BG, fg=MUTED).pack()
+        self.subject_combo = ttk.Combobox(body, textvariable=self.subject_var,
+                                          values=sorted(self.subjects), state="readonly", width=34)
+        self.subject_combo.pack(pady=(4, 8))
+        self.subject_combo.bind("<<ComboboxSelected>>", self.update_chapters)
+        tk.Label(body, text="Chapter / topic", bg=BG, fg=MUTED).pack()
+        self.chapter_combo = ttk.Combobox(body, textvariable=self.chapter_var, state="normal", width=34)
+        self.chapter_combo.pack(pady=(4, 8))
         tk.Label(body, text="Focus duration (minutes)", bg=BG, fg=MUTED).pack()
         tk.Spinbox(body, from_=1, to=240, width=8, textvariable=self.minutes,
                    justify="center").pack(pady=8)
@@ -65,11 +94,30 @@ class FocusMode:
         if self.remaining <= 0:
             self.running = False
             self.status.config(text="Focus session completed! 🎯")
+            self.record_completed_session()
             self.root.bell()
-            messagebox.showinfo("Session complete", "Great work! Take a short break.", parent=self.root)
+            messagebox.showinfo("Session complete", "Great work! Your completed session has been logged when a subject was selected.", parent=self.root)
             return
         self.remaining -= 1
         self.after_id = self.root.after(1000, self.tick)
+
+    def update_chapters(self, _event=None):
+        chapters = self.subjects.get(self.subject_var.get(), [])
+        self.chapter_combo["values"] = chapters
+        if chapters and self.chapter_var.get() not in chapters:
+            self.chapter_var.set(chapters[0])
+
+    def record_completed_session(self):
+        subject = self.subject_var.get().strip()
+        chapter = self.chapter_var.get().strip()
+        if not subject:
+            return
+        try:
+            log_session(SESSION_FILE, subject, chapter, int(self.minutes.get()), "Focus")
+            if chapter:
+                schedule_revision(REVISION_FILE, subject, chapter)
+        except (OSError, ValueError) as exc:
+            messagebox.showwarning("Study log not saved", str(exc), parent=self.root)
 
     def pause(self):
         self.running = False
