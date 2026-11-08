@@ -11,7 +11,8 @@ USER_DATA_DIR = initialize_user_data(app_dir=APP_DIR)
 window = tk.Tk()
 
 window.title("ExamReadyTimer | Study Dashboard")
-window.geometry("750x700")
+window.geometry("750x760")
+window.minsize(520, 600)
 window.configure(bg="#F3F5FB")
 
 
@@ -26,6 +27,7 @@ def open_feature(filename):
             "progress.py": "ProgressAnalytics",
             "focus.py": "FocusMode",
             "settings.py": "ExamReadySettings",
+            "readiness.py": "ExamReadiness",
         }
         executable_name = executable_names[filename] + (".exe" if sys.platform == "win32" else "")
         command = [str(app_dir / executable_name)]
@@ -42,7 +44,7 @@ title = tk.Label(
     bg="#F3F5FB",
     fg="#25316D"
 )
-title.pack(pady=(30, 5))
+title.pack(pady=(24, 5))
 
 subtitle = tk.Label(
     window,
@@ -60,9 +62,10 @@ description = tk.Label(
     bg="#F3F5FB",
     fg="#30364F"
 )
-description.pack(pady=(25, 20))
+description.pack(pady=(18, 14))
 
 features = [
+    ("Exam Readiness Gap Engine", "readiness.py"),
     ("Exam Countdown", "countdown.py"),
     ("Pomodoro Timer", "pomodoro.py"),
     ("Study Timetable", "timetable.py"),
@@ -76,8 +79,8 @@ for feature, filename in features:
     button = tk.Button(
         window,
         text=feature,
-        font=("Arial", 13, "bold"),
-        width=28,
+        font=("Arial", 12, "bold"),
+        width=32,
         height=2,
         bg="#FFFFFF",
         fg="#25316D",
@@ -86,7 +89,7 @@ for feature, filename in features:
         cursor="hand2",
         command=lambda f=filename: open_feature(f)
     )
-    button.pack(pady=5)
+    button.pack(pady=4)
 
 footer = tk.Label(
     window,
@@ -95,6 +98,6 @@ footer = tk.Label(
     bg="#F3F5FB",
     fg="#68708A"
 )
-footer.pack(pady=25)
+footer.pack(pady=16)
 
 window.mainloop()
