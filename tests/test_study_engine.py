@@ -89,3 +89,28 @@ def test_recovery_plan_only_returns_uncompleted_past_blocks_for_today():
     ]
     result = build_recovery_plan(timetable, today, "12:00")
     assert [item["subject"] for item in result] == ["Physics"]
+
+
+def test_recovery_plan_does_not_flag_a_block_while_it_is_still_running():
+    today = date(2026, 11, 8)  # Sunday
+    timetable = [
+        {"day": "Sunday", "start": "10:00", "end": "11:00", "subject": "Physics", "status": "Planned"},
+    ]
+    assert build_recovery_plan(timetable, today, "10:30") == []
+
+
+def test_recovery_plan_only_flags_fully_elapsed_blocks_and_ignores_bad_rows():
+    today = date(2026, 11, 8)  # Sunday
+    timetable = [
+        {"day": "Sunday", "start": "08:00", "end": "09:00", "subject": "Physics", "status": "Planned"},
+        {"day": "Sunday", "start": "09:30", "end": "10:30", "subject": "Maths", "status": "Planned"},
+        {"day": "Sunday", "start": "bad", "end": "11:00", "subject": "Broken", "status": "Planned"},
+        {"day": "Sunday", "start": "11:00", "end": "", "subject": "Incomplete", "status": "Planned"},
+    ]
+    result = build_recovery_plan(timetable, today, "10:00")
+    assert [item["subject"] for item in result] == ["Physics"]
+
+
+def test_recovery_plan_rejects_invalid_current_time():
+    with pytest.raises(ValueError, match="HH:MM"):
+        build_recovery_plan([], date(2026, 11, 8), "not-a-time")
