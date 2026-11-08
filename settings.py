@@ -9,7 +9,7 @@ from tkinter import filedialog, messagebox, ttk
 from storage import initialize_user_data
 from backup import backup_data, restore_data
 
-BG, NAVY, MUTED = "#F3F5FB", "#25316D", "#68708A"
+BG, NAVY, MUTED = "#0B1020", "#172544", "#9AA9C8"
 APP_DIR = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent
 DATA_DIR = initialize_user_data(app_dir=APP_DIR)
 
@@ -26,19 +26,19 @@ class SettingsWindow:
     def build(self):
         header = tk.Frame(self.root, bg=NAVY, padx=24, pady=20)
         header.pack(fill="x")
-        tk.Label(header, text="Settings & Data Safety", bg=NAVY, fg="white",
+        tk.Label(header, text="Settings & Data Safety", bg=NAVY, fg="#18243D",
                  font=("Arial", 22, "bold")).pack(anchor="w")
         tk.Label(header, text="Your study data belongs to you. Keep it safe.",
-                 bg=NAVY, fg="#DDE4FF", font=("Arial", 10)).pack(anchor="w", pady=(4, 0))
+                 bg=NAVY, fg="#C7D4F2", font=("Arial", 10)).pack(anchor="w", pady=(4, 0))
         body = tk.Frame(self.root, bg=BG, padx=24, pady=22)
         body.pack(fill="both", expand=True)
         tk.Label(body, text="STUDENT DATA", bg=BG, fg=NAVY,
                  font=("Arial", 11, "bold")).pack(anchor="w")
         tk.Label(body, text="Exam dates, timetable entries, syllabus progress, study sessions and spaced-revision schedules are stored here:",
                  bg=BG, fg=MUTED, wraplength=570, justify="left").pack(anchor="w", pady=(7, 5))
-        path_box = tk.Frame(body, bg="white", padx=12, pady=12)
+        path_box = tk.Frame(body, bg="#18243D", padx=12, pady=12)
         path_box.pack(fill="x", pady=(0, 14))
-        tk.Label(path_box, text=str(DATA_DIR), bg="white", fg=NAVY,
+        tk.Label(path_box, text=str(DATA_DIR), bg="#18243D", fg=NAVY,
                  wraplength=550, justify="left").pack(anchor="w")
         ttk.Button(body, text="Open data folder", command=self.open_folder).pack(anchor="w", pady=(0, 18))
         tk.Label(body, text="BACKUP & RESTORE", bg=BG, fg=NAVY,
