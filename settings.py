@@ -7,6 +7,7 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
 from storage import initialize_user_data
+from theme import apply_dark_theme
 from backup import backup_data, restore_data
 
 BG, NAVY, MUTED = "#0B1020", "#172544", "#9AA9C8"
@@ -20,7 +21,7 @@ class SettingsWindow:
         root.title("ExamReadyTimer | Settings & Backup")
         root.geometry("650x470")
         root.minsize(520, 400)
-        root.configure(bg=BG)
+        apply_dark_theme(root)
         root.option_add("*Foreground", "#E8EEFF")
         style = ttk.Style(root)
         try:
@@ -42,7 +43,7 @@ class SettingsWindow:
                  bg=NAVY, fg="#C7D4F2", font=("Arial", 10)).pack(anchor="w", pady=(4, 0))
         body = tk.Frame(self.root, bg=BG, padx=24, pady=22)
         body.pack(fill="both", expand=True)
-        tk.Label(body, text="STUDENT DATA", bg=BG, fg=NAVY,
+        tk.Label(body, text="STUDENT DATA", bg=BG, fg="#E8EEFF",
                  font=("Arial", 11, "bold")).pack(anchor="w")
         tk.Label(body, text="Exam dates, timetable entries, syllabus progress, study sessions and spaced-revision schedules are stored here:",
                  bg=BG, fg=MUTED, wraplength=570, justify="left").pack(anchor="w", pady=(7, 5))
