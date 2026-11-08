@@ -240,21 +240,36 @@ def build_adaptive_plan(subjects: dict[str, list[dict]], exams: list[dict],
 
 def build_recovery_plan(timetable: list[dict], today: date | None = None,
                         now_time: str | None = None) -> list[dict]:
-    """Identify today's planned timetable blocks whose start time has passed."""
+    """Identify today's uncompleted timetable blocks that have fully elapsed."""
     today = today or date.today()
     now_time = now_time or datetime.now().strftime("%H:%M")
+    try:
+        current_time = datetime.strptime(now_time, "%H:%M")
+    except (TypeError, ValueError) as exc:
+        raise ValueError("Current time must use HH:MM format.") from exc
+
     weekday = today.strftime("%A")
     missed = []
     for item in timetable:
-        if item.get("day") != weekday or item.get("status", "Planned").casefold() == "completed":
+        if item.get("day") != weekday or str(item.get("status", "Planned")).casefold() == "completed":
             continue
-        start = item.get("start", "00:00")
-        if start < now_time:
-            missed.append({
-                "subject": item.get("subject", ""),
-                "task": item.get("task_type", "Study"),
-                "start": start, "end": item.get("end", ""),
-                "notes": item.get("notes", ""),
-                "recovery": f'Reschedule {item.get("subject", "study")} ({start}–{item.get("end", "")})',
-            })
+        start, end = item.get("start", ""), item.get("end", "")
+        try:
+            start_time = datetime.strptime(start, "%H:%M")
+            end_time = datetime.strptime(end, "%H:%M")
+        except (TypeError, ValueError):
+            # Ignore malformed or incomplete timetable rows instead of crashing the planner.
+            continue
+        # A block is only "missed" after it has ended, not while it is still in progress.
+        # Overnight blocks are not inferred from the timetable's day-only format.
+        if end_time <= start_time or end_time > current_time:
+            continue
+        subject = item.get("subject", "")
+        missed.append({
+            "subject": subject,
+            "task": item.get("task_type", "Study"),
+            "start": start, "end": end,
+            "notes": item.get("notes", ""),
+            "recovery": f"Reschedule {subject or 'study'} ({start}–{end})",
+        })
     return sorted(missed, key=lambda x: x["start"])
