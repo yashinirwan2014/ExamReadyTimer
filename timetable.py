@@ -5,6 +5,7 @@ from pathlib import Path
 import tkinter as tk
 from tkinter import ttk, messagebox
 from storage import initialize_user_data
+from theme import apply_dark_theme
 from schedule_utils import duration_minutes, times_overlap
 
 APP_DIR = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent
@@ -58,21 +59,7 @@ class StudyTimetable:
         root.title("ExamReadyTimer | Smart Study Timetable")
         root.geometry("980x680")
         root.minsize(780, 560)
-        root.configure(bg=BG)
-        root.option_add("*Foreground", "#E8EEFF")
-        style = ttk.Style(root)
-        try:
-            style.theme_use("clam")
-        except tk.TclError:
-            pass
-        style.configure("TFrame", background="#0B1020")
-        style.configure("TLabel", background="#0B1020", foreground="#E8EEFF")
-        style.configure("TButton", background="#263657", foreground="#E8EEFF", padding=7)
-        style.map("TButton", background=[("active", "#34496F")])
-        style.configure("TEntry", fieldbackground="#18243D", foreground="#E8EEFF")
-        style.configure("TCombobox", fieldbackground="#18243D", background="#263657", foreground="#E8EEFF")
-        style.configure("Treeview", background="#111B30", fieldbackground="#111B30", foreground="#E8EEFF")
-        style.configure("Treeview.Heading", background="#263657", foreground="#E8EEFF")
+        apply_dark_theme(root)
         self.plans = load_plans()
         self.editing_index = None
         self.build()
@@ -81,13 +68,13 @@ class StudyTimetable:
     def build(self):
         header = tk.Frame(self.root, bg=NAVY, padx=24, pady=18)
         header.pack(fill="x")
-        tk.Label(header, text="Smart Study Timetable", bg=NAVY, fg="#18243D",
+        tk.Label(header, text="Smart Study Timetable", bg=NAVY, fg="#E8EEFF",
                  font=("Arial", 22, "bold")).pack(anchor="w")
         tk.Label(header, text="Time-block your week, catch clashes and track completed sessions.",
                  bg=NAVY, fg="#C7D4F2", font=("Arial", 10)).pack(anchor="w", pady=(4, 0))
         body = tk.Frame(self.root, bg=BG, padx=22, pady=16)
         body.pack(fill="both", expand=True)
-        form = tk.LabelFrame(body, text="Build a study block", bg=BG, fg=NAVY, padx=12, pady=10)
+        form = tk.LabelFrame(body, text="Build a study block", bg=BG, fg="#E8EEFF", padx=12, pady=10)
         form.pack(fill="x", pady=(0, 12))
         self.day_var = tk.StringVar(value=DAYS[0])
         self.start_var = tk.StringVar(value="09:00")
@@ -128,7 +115,7 @@ class StudyTimetable:
         ttk.Button(controls, text="Mark complete / planned", command=self.toggle_status).pack(side="left")
         ttk.Button(controls, text="Clear form", command=self.clear_form).pack(side="left", padx=8)
         ttk.Button(controls, text="Delete selected", command=self.delete).pack(side="right")
-        self.summary = tk.Label(controls, text="", bg=BG, fg=NAVY, font=("Arial", 10, "bold"))
+        self.summary = tk.Label(controls, text="", bg=BG, fg="#E8EEFF", font=("Arial", 10, "bold"))
         self.summary.pack(side="right", padx=12)
         tk.Label(self.root, text="Tip: overlapping blocks are flagged before saving. Duration and weekly totals are calculated automatically.",
                  bg=BG, fg=MUTED, font=("Arial", 9)).pack(anchor="w", padx=24, pady=(0, 10))
