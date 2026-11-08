@@ -125,7 +125,7 @@ jobs:
   publish-release:
     name: Publish permanent GitHub Release assets
     needs: build
-    if: startsWith(github.ref, 'refs/tags/') || (github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[publish-v1.1.0]')))
+    if: startsWith(github.ref, 'refs/tags/') || (github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[publish-v1.2.0]')))
     runs-on: ubuntu-24.04
     permissions:
       contents: write
@@ -151,11 +151,11 @@ jobs:
           token: ${{ secrets.RELEASE_TOKEN || github.token }}
           tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.1.0' }}
           target_commitish: ${{ github.sha }}
-          name: ExamReadyTimer v1.1.0
+          name: ExamReadyTimer v1.2.0
           body: |
-            ## ExamReadyTimer v1.1.0
+            ## ExamReadyTimer v1.2.0
 
-            Study Intelligence Suite release with the session ledger, adaptive planner, recovery suggestions and spaced revision scheduler.
+            Study Intelligence reliability update: recovery suggestions now wait until a timetable block has fully ended, and short elapsed focus sessions are preserved until a full minute can be logged. Includes the session ledger, adaptive planner and spaced revision scheduler.
 
             ### Downloads
             - **Windows:** ExamReadyTimer-Windows.zip
