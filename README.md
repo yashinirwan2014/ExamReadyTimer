@@ -30,6 +30,7 @@ System Features
 
 ∆ Event-Driven Pomodoro Timer
 * Custom Intervals: Configurable study blocks, break durations, and session counters.
+* Study Logging: Completed study blocks can be recorded against a selected subject and chapter in the Study-Time Ledger.
 * Countdown Display: Provides a live timer for focused study sessions.
 
 ∆ Relational Study Timetable Planner
@@ -49,6 +50,7 @@ System Features
 ∆ Distraction-Free Focus Mode
 * Minimalist Interface: Provides a focused environment for dedicated study sessions.
 * Focus Sessions: Supports targeted focus periods and completion notifications.
+* Study Logging: Completed Focus Mode sessions can be recorded against a selected subject and chapter; this is a timer, not an operating-system-wide website blocker.
 
 ∆ Safer Student Data Storage
 * Per-User Data Directory: Editable app data is stored in the operating system's user data folder instead of relying on a writable installation folder.
