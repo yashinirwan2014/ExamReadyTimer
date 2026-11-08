@@ -47,21 +47,7 @@ class SyllabusTracker:
         self.root.title("ExamReadyTimer | Syllabus Tracker")
         self.root.geometry("900x620")
         self.root.minsize(720, 500)
-        self.root.configure(bg="#0B1020")
-        self.root.option_add("*Foreground", "#E8EEFF")
-        style = ttk.Style(self.root)
-        try:
-            style.theme_use("clam")
-        except tk.TclError:
-            pass
-        style.configure("TFrame", background="#0B1020")
-        style.configure("TLabel", background="#0B1020", foreground="#E8EEFF")
-        style.configure("TButton", background="#263657", foreground="#E8EEFF", padding=7)
-        style.map("TButton", background=[("active", "#34496F")])
-        style.configure("TEntry", fieldbackground="#18243D", foreground="#E8EEFF")
-        style.configure("TCombobox", fieldbackground="#18243D", background="#263657", foreground="#E8EEFF")
-        style.configure("Treeview", background="#111B30", fieldbackground="#111B30", foreground="#E8EEFF")
-        style.configure("Treeview.Heading", background="#263657", foreground="#E8EEFF")
+        apply_dark_theme(self.root)
         self.subjects = load_subjects()
         self.selected_subject = None
         self._build_ui()
