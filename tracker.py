@@ -46,7 +46,21 @@ class SyllabusTracker:
         self.root.title("ExamReadyTimer | Syllabus Tracker")
         self.root.geometry("900x620")
         self.root.minsize(720, 500)
-        self.root.configure(bg="#F3F5FB")
+        self.root.configure(bg="#0B1020")
+        root.option_add("*Foreground", "#E8EEFF")
+        style = ttk.Style(root)
+        try:
+            style.theme_use("clam")
+        except tk.TclError:
+            pass
+        style.configure("TFrame", background="#0B1020")
+        style.configure("TLabel", background="#0B1020", foreground="#E8EEFF")
+        style.configure("TButton", background="#263657", foreground="#E8EEFF", padding=7)
+        style.map("TButton", background=[("active", "#34496F")])
+        style.configure("TEntry", fieldbackground="#18243D", foreground="#E8EEFF")
+        style.configure("TCombobox", fieldbackground="#18243D", background="#263657", foreground="#E8EEFF")
+        style.configure("Treeview", background="#111B30", fieldbackground="#111B30", foreground="#E8EEFF")
+        style.configure("Treeview.Heading", background="#263657", foreground="#E8EEFF")
         self.subjects = load_subjects()
         self.selected_subject = None
         self._build_ui()
@@ -63,22 +77,22 @@ class SyllabusTracker:
         style.configure("TButton", font=("Arial", 10), padding=7)
         style.configure("Accent.TButton", font=("Arial", 10, "bold"), padding=8)
 
-        header = tk.Frame(self.root, bg="#25316D", padx=22, pady=18)
+        header = tk.Frame(self.root, bg="#172544", padx=22, pady=18)
         header.pack(fill="x")
-        tk.Label(header, text="Your syllabus, your pace.", bg="#25316D",
-                 fg="white", font=("Arial", 21, "bold")).pack(anchor="w")
+        tk.Label(header, text="Your syllabus, your pace.", bg="#172544",
+                 fg="#18243D", font=("Arial", 21, "bold")).pack(anchor="w")
         tk.Label(header, text="Add chapters, tick them off, and watch your progress grow.",
-                 bg="#25316D", fg="#DDE4FF", font=("Arial", 10)).pack(anchor="w", pady=(5, 0))
+                 bg="#172544", fg="#C7D4F2", font=("Arial", 10)).pack(anchor="w", pady=(5, 0))
 
-        body = tk.Frame(self.root, bg="#F3F5FB", padx=18, pady=16)
+        body = tk.Frame(self.root, bg="#0B1020", padx=18, pady=16)
         body.pack(fill="both", expand=True)
 
-        left = tk.Frame(body, bg="#F3F5FB", width=260)
+        left = tk.Frame(body, bg="#0B1020", width=260)
         left.pack(side="left", fill="y", padx=(0, 16))
         left.pack_propagate(False)
-        tk.Label(left, text="SUBJECTS", bg="#F3F5FB", fg="#25316D",
+        tk.Label(left, text="SUBJECTS", bg="#0B1020", fg="#172544",
                  font=("Arial", 11, "bold")).pack(anchor="w", pady=(0, 8))
-        tk.Label(left, text="CURRICULUM", bg="#F3F5FB", fg="#68708A",
+        tk.Label(left, text="CURRICULUM", bg="#0B1020", fg="#9AA9C8",
                  font=("Arial", 8, "bold")).pack(anchor="w", pady=(0, 4))
         self.curriculum_var = tk.StringVar(value="All curricula")
         self.curriculum_combo = ttk.Combobox(left, textvariable=self.curriculum_var,
@@ -86,16 +100,16 @@ class SyllabusTracker:
         self.curriculum_combo.pack(fill="x", pady=(0, 9))
         self.curriculum_combo.bind("<<ComboboxSelected>>",
                                    lambda _event: self.refresh_subjects(keep=self.selected_subject))
-        tk.Label(left, text="FIND SUBJECT", bg="#F3F5FB", fg="#68708A",
+        tk.Label(left, text="FIND SUBJECT", bg="#0B1020", fg="#9AA9C8",
                  font=("Arial", 8, "bold")).pack(anchor="w", pady=(0, 4))
         self.search_var = tk.StringVar()
         search_entry = ttk.Entry(left, textvariable=self.search_var)
         search_entry.pack(fill="x", pady=(0, 8))
         self.search_var.trace_add("write", lambda *_args: self.refresh_subjects(keep=self.selected_subject))
         self.subject_list = tk.Listbox(left, font=("Arial", 10), relief="flat",
-                                       bg="white", fg="#30364F",
-                                       selectbackground="#DDE4FF",
-                                       selectforeground="#25316D",
+                                       bg="#18243D", fg="#E8EEFF",
+                                       selectbackground="#C7D4F2",
+                                       selectforeground="#172544",
                                        activestyle="none", exportselection=False)
         self.subject_list.pack(fill="both", expand=True)
         self.subject_list.bind("<<ListboxSelect>>", self.on_subject_select)
@@ -103,13 +117,13 @@ class SyllabusTracker:
         ttk.Button(left, text="Rename subject", command=self.rename_subject).pack(fill="x", pady=4)
         ttk.Button(left, text="Delete subject", command=self.delete_subject).pack(fill="x", pady=4)
 
-        right = tk.Frame(body, bg="#F3F5FB")
+        right = tk.Frame(body, bg="#0B1020")
         right.pack(side="left", fill="both", expand=True)
-        self.subject_heading = tk.Label(right, text="Choose a subject", bg="#F3F5FB",
-                                        fg="#25316D", font=("Arial", 16, "bold"))
+        self.subject_heading = tk.Label(right, text="Choose a subject", bg="#0B1020",
+                                        fg="#172544", font=("Arial", 16, "bold"))
         self.subject_heading.pack(anchor="w")
         self.progress_label = tk.Label(right, text="Select a subject to view its syllabus.",
-                                        bg="#F3F5FB", fg="#68708A", font=("Arial", 10))
+                                        bg="#0B1020", fg="#9AA9C8", font=("Arial", 10))
         self.progress_label.pack(anchor="w", pady=(4, 8))
         self.progress = ttk.Progressbar(right, mode="determinate", maximum=100)
         self.progress.pack(fill="x", pady=(0, 12))
@@ -123,7 +137,7 @@ class SyllabusTracker:
         self.chapter_table.pack(fill="both", expand=True)
         self.chapter_table.bind("<Double-1>", lambda _event: self.toggle_status())
 
-        controls = tk.Frame(right, bg="#F3F5FB")
+        controls = tk.Frame(right, bg="#0B1020")
         controls.pack(fill="x", pady=(12, 0))
         ttk.Button(controls, text="+ Add chapter", command=self.add_chapter).pack(side="left", padx=(0, 6))
         ttk.Button(controls, text="Edit", command=self.edit_chapter).pack(side="left", padx=6)
@@ -132,7 +146,7 @@ class SyllabusTracker:
                    style="Accent.TButton").pack(side="right")
 
         tk.Label(self.root, text="Changes are saved automatically on this device.",
-                 bg="#F3F5FB", fg="#68708A", font=("Arial", 9)).pack(anchor="w", padx=22, pady=(0, 10))
+                 bg="#0B1020", fg="#9AA9C8", font=("Arial", 9)).pack(anchor="w", padx=22, pady=(0, 10))
 
     def persist(self):
         try:
