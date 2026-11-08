@@ -102,8 +102,6 @@ def build_dashboard(window):
     )
     footer.pack(pady=16)
     
-    window.mainloop()
-    
     return window
 
 
