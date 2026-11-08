@@ -6,6 +6,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 
 from storage import initialize_user_data
+from theme import apply_dark_theme
 from study_engine import log_session, schedule_revision
 
 BG, NAVY, MUTED = "#0B1020", "#172544", "#9AA9C8"
@@ -22,21 +23,7 @@ class FocusMode:
         root.title("ExamReadyTimer | Focus Mode")
         root.geometry("500x480")
         root.minsize(400, 400)
-        root.configure(bg=BG)
-        root.option_add("*Foreground", "#E8EEFF")
-        style = ttk.Style(root)
-        try:
-            style.theme_use("clam")
-        except tk.TclError:
-            pass
-        style.configure("TFrame", background="#0B1020")
-        style.configure("TLabel", background="#0B1020", foreground="#E8EEFF")
-        style.configure("TButton", background="#263657", foreground="#E8EEFF", padding=7)
-        style.map("TButton", background=[("active", "#34496F")])
-        style.configure("TEntry", fieldbackground="#18243D", foreground="#E8EEFF")
-        style.configure("TCombobox", fieldbackground="#18243D", background="#263657", foreground="#E8EEFF")
-        style.configure("Treeview", background="#111B30", fieldbackground="#111B30", foreground="#E8EEFF")
-        style.configure("Treeview.Heading", background="#263657", foreground="#E8EEFF")
+        apply_dark_theme(root)
         self.minutes = tk.IntVar(value=50)
         self.remaining = 0
         self.total_seconds = 0
@@ -57,7 +44,7 @@ class FocusMode:
     def build(self):
         header = tk.Frame(self.root, bg=NAVY, padx=24, pady=20)
         header.pack(fill="x")
-        tk.Label(header, text="Focus Mode", bg=NAVY, fg="#18243D",
+        tk.Label(header, text="Focus Mode", bg=NAVY, fg="#E8EEFF",
                  font=("Arial", 22, "bold")).pack(anchor="w")
         tk.Label(header, text="One task. One session. Stay on track.",
                  bg=NAVY, fg="#C7D4F2", font=("Arial", 10)).pack(anchor="w", pady=(4, 0))
@@ -74,7 +61,7 @@ class FocusMode:
         tk.Label(body, text="Focus duration (minutes)", bg=BG, fg=MUTED).pack()
         tk.Spinbox(body, from_=1, to=240, width=8, textvariable=self.minutes,
                    justify="center").pack(pady=8)
-        self.clock = tk.Label(body, text="50:00", bg=BG, fg=NAVY,
+        self.clock = tk.Label(body, text="50:00", bg=BG, fg="#E8EEFF",
                               font=("Arial", 54, "bold"))
         self.clock.pack(pady=18)
         self.status = tk.Label(body, text="Ready when you are.", bg=BG, fg=MUTED)
