@@ -6,18 +6,20 @@ Developed originally as a practical execution of CBSE Class 12 Informatics Pract
 
 ## Download ExamReadyTimer
 
-**Get the latest official desktop release:** [Download ExamReadyTimer](https://github.com/yashinirwan2014/ExamReadyTimer/releases/latest)
+**Current official desktop release: v1.3.0** — [Release notes and all downloads](https://github.com/yashinirwan2014/ExamReadyTimer/releases/tag/v1.3.0)
+
+**Project website:** [ExamReadyTimer website](https://yashinirwan2014.github.io/ExamReadyTimer/)
 
 Choose the ZIP for your computer:
 
-**Current desktop theme:** The latest source uses a shared midnight-navy dark palette across the dashboard and feature windows. Updated Windows, macOS and Linux ZIPs will be attached to the next official release after the cross-platform build completes.
+**Current desktop theme:** The v1.3.0 desktop packages use the shared midnight-navy dark palette across the dashboard and feature windows. The v1.3.0 release includes fresh Windows, macOS and Linux ZIPs.
 
 
 | Platform | Download |
 |---|---|
-| Windows 10/11 (64-bit) | [ExamReadyTimer-Windows.zip](https://github.com/yashinirwan2014/ExamReadyTimer/releases/latest/download/ExamReadyTimer-Windows.zip) |
-| macOS | [ExamReadyTimer-macOS.zip](https://github.com/yashinirwan2014/ExamReadyTimer/releases/latest/download/ExamReadyTimer-macOS.zip) |
-| Linux | [ExamReadyTimer-Linux.zip](https://github.com/yashinirwan2014/ExamReadyTimer/releases/latest/download/ExamReadyTimer-Linux.zip) |
+| Windows 10/11 (64-bit) | [ExamReadyTimer-Windows.zip](https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.3.0/ExamReadyTimer-Windows.zip) |
+| macOS | [ExamReadyTimer-macOS.zip](https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.3.0/ExamReadyTimer-macOS.zip) |
+| Linux | [ExamReadyTimer-Linux.zip](https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.3.0/ExamReadyTimer-Linux.zip) |
 
 ### Quick start
 
