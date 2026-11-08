@@ -18,7 +18,8 @@ def test_backup_and_restore_round_trip(tmp_path):
     (data / "dataexams.csv").write_text("Exam,Year,Month,Day\n", encoding="utf-8")
     restored = restore_data(archive, data)
 
-    assert set(restored) == {"dataexams.csv", "datatimetable.csv", "dataorsubjects.csv"}
+    assert set(restored) == {"dataexams.csv", "datatimetable.csv", "dataorsubjects.csv", ".reminders-sent.json"}
+    assert "physics|2027-02-03" in (data / ".reminders-sent.json").read_text(encoding="utf-8")
     assert "Mock" in (data / "dataexams.csv").read_text(encoding="utf-8")
 
 
