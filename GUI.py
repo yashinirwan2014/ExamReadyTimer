@@ -13,7 +13,7 @@ window = tk.Tk()
 window.title("ExamReadyTimer | Study Dashboard")
 window.geometry("750x760")
 window.minsize(520, 600)
-window.configure(bg="#F3F5FB")
+window.configure(bg="#0B1020")
 
 
 def open_feature(filename):
@@ -42,8 +42,8 @@ title = tk.Label(
     window,
     text="ExamReady",
     font=("Arial", 30, "bold"),
-    bg="#F3F5FB",
-    fg="#25316D"
+    bg="#0B1020",
+    fg="#172544"
 )
 title.pack(pady=(24, 5))
 
@@ -51,8 +51,8 @@ subtitle = tk.Label(
     window,
     text="STUDY  •  FOCUS  •  PREPARE",
     font=("Arial", 11),
-    bg="#F3F5FB",
-    fg="#68708A"
+    bg="#0B1020",
+    fg="#9AA9C8"
 )
 subtitle.pack()
 
@@ -60,8 +60,8 @@ description = tk.Label(
     window,
     text="Your personal exam preparation dashboard",
     font=("Arial", 14),
-    bg="#F3F5FB",
-    fg="#30364F"
+    bg="#0B1020",
+    fg="#E8EEFF"
 )
 description.pack(pady=(18, 14))
 
@@ -84,9 +84,9 @@ for feature, filename in features:
         font=("Arial", 12, "bold"),
         width=32,
         height=2,
-        bg="#FFFFFF",
-        fg="#25316D",
-        activebackground="#DDE4FF",
+        bg="#18243D",
+        fg="#172544",
+        activebackground="#C7D4F2",
         relief="flat",
         cursor="hand2",
         command=lambda f=filename: open_feature(f)
@@ -97,8 +97,8 @@ footer = tk.Label(
     window,
     text="One chapter at a time. One step closer.",
     font=("Arial", 10, "italic"),
-    bg="#F3F5FB",
-    fg="#68708A"
+    bg="#0B1020",
+    fg="#9AA9C8"
 )
 footer.pack(pady=16)
 
