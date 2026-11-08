@@ -158,7 +158,7 @@ class ExamCountdown:
                 save_sent_reminders(self.reminder_state_file, self.sent_reminders)
             except OSError as exc:
                 messagebox.showwarning("Reminder could not be saved",
-                                       f"The reminder will be shown again next time.\\n{exc}",
+                                       f"The reminder will be shown again next time.\n{exc}",
                                        parent=self.root)
                 self.sent_reminders.difference_update(reminder_key(item) for item in due)
             lines = []
@@ -168,8 +168,8 @@ class ExamCountdown:
                 subject = f" — {item['subject']}" if item.get("subject") else ""
                 lines.append(f"• {item['name']}{subject}: {when}")
             self.root.bell()
-            messagebox.showinfo("Exam reminders", "Your exam reminder window has started:\\n\\n" +
-                                "\\n".join(lines), parent=self.root)
+            messagebox.showinfo("Exam reminders", "Your exam reminder window has started:\n\n" +
+                                "\n".join(lines), parent=self.root)
         self.reminder_after_id = self.root.after(60_000, self.check_reminders)
 
     def add(self):
