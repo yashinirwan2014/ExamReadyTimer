@@ -376,7 +376,15 @@ class StudyIntelligence:
         self.recent_table.delete(*self.recent_table.get_children())
         sessions = load_sessions(SESSION_FILE)
         for item in reversed(sessions[-12:]):
-            self.recent_table.insert("", "end", values=(item["date"].isoformat(), item["subject"],
+            # load_sessions preserves the CSV date string and exposes the parsed
+            # datetime.date separately as "day".
+            session_day = item.get("day")
+            if not isinstance(session_day, date):
+                try:
+                    session_day = date.fromisoformat(str(item.get("date", "")))
+                except ValueError:
+                    continue
+            self.recent_table.insert("", "end", values=(session_day.isoformat(), item["subject"],
                                                         item.get("chapter", ""), item["minutes"],
                                                         item.get("session_type", "Focus")))
 
