@@ -22,6 +22,8 @@ jobs:
             artifact: ExamReadyTimer-Windows
           - os: ubuntu-24.04
             artifact: ExamReadyTimer-Linux
+          - os: macos-latest
+            artifact: ExamReadyTimer-macOS
 
     steps:
       - name: Check out source
@@ -63,20 +65,35 @@ jobs:
           do
             name="${spec%%:*}"
             script="${spec#*:}"
-            pyinstaller --noconfirm --clean --onefile --windowed --name "$name" "$script"
+            if [ "${{ runner.os }}" = "macOS" ]; then
+              pyinstaller --noconfirm --clean --onefile --name "$name" "$script"
+            else
+              pyinstaller --noconfirm --clean --onefile --windowed --name "$name" "$script"
+            fi
           done
 
-          cp "dist/ExamReadyTimer$EXT" release/
-          for name in ExamCountdown PomodoroTimer StudyTimetable SubjectTracker ProgressAnalytics FocusMode ExamReadySettings; do
-            cp "dist/$name$EXT" release/
-          done
-          cp dataorsubjects.csv dataexams.csv datatimetable.csv release/
+          if [ "${{ runner.os }}" = "macOS" ]; then
+            APP_DIR="dist/ExamReadyTimer.app/Contents/MacOS"
+            mkdir -p "$APP_DIR"
+            for name in ExamCountdown PomodoroTimer StudyTimetable SubjectTracker ProgressAnalytics FocusMode ExamReadySettings; do
+              cp "dist/$name" "$APP_DIR/"
+            done
+            cp dataorsubjects.csv dataexams.csv datatimetable.csv "$APP_DIR/"
+            cp -R dist/ExamReadyTimer.app release/
+          else
+            cp "dist/ExamReadyTimer$EXT" release/
+            for name in ExamCountdown PomodoroTimer StudyTimetable SubjectTracker ProgressAnalytics FocusMode ExamReadySettings; do
+              cp "dist/$name$EXT" release/
+            done
+            cp dataorsubjects.csv dataexams.csv datatimetable.csv release/
+          fi
 
           cat > release/README-FIRST.txt <<'EOF'
           ExamReadyTimer desktop release
 
           Windows: double-click ExamReadyTimer.exe
           Linux: make the files executable if needed (chmod +x ExamReadyTimer ExamCountdown PomodoroTimer StudyTimetable SubjectTracker ProgressAnalytics FocusMode ExamReadySettings), then run ./ExamReadyTimer.
+          macOS: move ExamReadyTimer.app to Applications, then open it. If macOS blocks the first launch because the app is not notarized, Control-click the app, choose Open, and confirm.
 
           Keep all executables and CSV files together in the same folder.
           Your study data is stored in your operating system's per-user ExamReadyTimer data folder, not in the installation folder. Existing data is preserved when you upgrade. Back up that data folder before reinstalling or moving to another computer.
@@ -88,6 +105,9 @@ jobs:
           cd release
           if [ "${{ runner.os }}" = "Windows" ]; then
             7z a "../${{ matrix.artifact }}.zip" .
+          elif [ "${{ runner.os }}" = "macOS" ]; then
+            cd ..
+            ditto -c -k --sequesterRsrc --keepParent release "${{ matrix.artifact }}.zip"
           else
             zip -r "../${{ matrix.artifact }}.zip" .
           fi
@@ -117,7 +137,12 @@ jobs:
         with:
           name: ExamReadyTimer-Linux
           path: release-assets
-      - name: Create formal release and upload both desktop downloads
+      - name: Download macOS desktop ZIP
+        uses: actions/download-artifact@v4
+        with:
+          name: ExamReadyTimer-macOS
+          path: release-assets
+      - name: Create formal release and upload desktop downloads
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.0.0' }}
@@ -131,10 +156,12 @@ jobs:
             ### Downloads
             - **Windows:** ExamReadyTimer-Windows.zip
             - **Linux:** ExamReadyTimer-Linux.zip
+            - **macOS:** ExamReadyTimer-macOS.zip
 
-            Extract the ZIP and keep the included executables and CSV files together. See README-FIRST.txt inside each archive for launch and data-preservation instructions.
+            Extract the ZIP. On macOS, move ExamReadyTimer.app to Applications and open it. See README-FIRST.txt inside each archive for launch and data-preservation instructions.
           files: |
             release-assets/ExamReadyTimer-Windows.zip
             release-assets/ExamReadyTimer-Linux.zip
+            release-assets/ExamReadyTimer-macOS.zip
           fail_on_unmatched_files: true
           make_latest: true
