@@ -4,6 +4,7 @@ import csv
 
 import focus
 import pomodoro
+import studyhub
 from study_engine import load_due_revisions, load_sessions
 
 
@@ -90,3 +91,51 @@ def test_timer_ledger_is_not_written_without_a_selected_subject(tmp_path, monkey
 
     assert not pomodoro_sessions.exists()
     assert not focus_sessions.exists()
+
+
+class Label:
+    def __init__(self):
+        self.text = None
+
+    def config(self, **kwargs):
+        self.text = kwargs.get("text", self.text)
+
+
+def test_studyhub_preserves_elapsed_timer_when_less_than_one_minute(tmp_path, monkeypatch):
+    monkeypatch.setattr(studyhub, "SESSION_FILE", tmp_path / "sessions.csv")
+    monkeypatch.setattr(studyhub, "REVISION_FILE", tmp_path / "revisions.csv")
+    timer = studyhub.StudyIntelligence.__new__(studyhub.StudyIntelligence)
+    timer.timer_total_seconds = 1500
+    timer.remaining_seconds = 1470  # 30 seconds elapsed
+    timer.clock = Label()
+    timer.selected_details = lambda: ("Physics", "Optics")
+    timer.refresh_all = lambda: None
+
+    saved = timer._save_timer_session()
+
+    assert saved == 0
+    assert timer.timer_total_seconds == 1500
+    assert timer.remaining_seconds == 1470
+    assert not (tmp_path / "sessions.csv").exists()
+
+
+def test_studyhub_saves_full_elapsed_minutes_and_resets_timer(tmp_path, monkeypatch):
+    sessions = tmp_path / "sessions.csv"
+    revisions = tmp_path / "revisions.csv"
+    monkeypatch.setattr(studyhub, "SESSION_FILE", sessions)
+    monkeypatch.setattr(studyhub, "REVISION_FILE", revisions)
+    timer = studyhub.StudyIntelligence.__new__(studyhub.StudyIntelligence)
+    timer.timer_total_seconds = 1500
+    timer.remaining_seconds = 1440  # 60 seconds elapsed
+    timer.clock = Label()
+    timer.selected_details = lambda: ("Physics", "Optics")
+    timer.refresh_all = lambda: None
+
+    saved = timer._save_timer_session()
+
+    assert saved == 1
+    assert len(load_sessions(sessions)) == 1
+    assert load_sessions(sessions)[0]["minutes"] == 1
+    assert len(load_due_revisions(revisions, date.max)) == 5
+    assert timer.timer_total_seconds == 0
+    assert timer.remaining_seconds == 0
