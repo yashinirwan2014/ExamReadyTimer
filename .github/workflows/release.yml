@@ -125,7 +125,7 @@ jobs:
   publish-release:
     name: Publish permanent GitHub Release assets
     needs: build
-    if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+    if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch' || (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, '[publish-v1.3.0]'))
     runs-on: ubuntu-24.04
     permissions:
       contents: write
@@ -155,7 +155,11 @@ jobs:
           body: |
             ## ExamReadyTimer ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.3.0' }}
 
-            Fresh cross-platform desktop build. Includes the latest application code and reliability fixes validated by the repository's automated test and packaging workflows.
+            Fresh cross-platform desktop build with the latest reliability fixes.
+
+            - Backup restore validates every archive entry and file before changing existing data, stages replacements first, and rolls back if installation fails.
+            - Exam readiness rejects invalid non-finite planning values instead of displaying misleading estimates.
+            - Includes the latest tested application source and updated Windows, macOS and Linux desktop packages.
 
             ### Downloads
             - **Windows:** ExamReadyTimer-Windows.zip
