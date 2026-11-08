@@ -6,13 +6,15 @@ import zipfile
 
 from storage import DATA_FILES, initialize_user_data
 
+BACKUP_FILES = DATA_FILES + (\".reminders-sent.json\",)
+
 
 def backup_data(destination: str | Path, data_dir: str | Path | None = None) -> Path:
     folder = initialize_user_data(data_dir=data_dir)
     destination = Path(destination)
     destination.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(destination, "w", compression=zipfile.ZIP_DEFLATED) as archive:
-        for filename in DATA_FILES:
+        for filename in BACKUP_FILES:
             source = folder / filename
             if source.is_file():
                 archive.write(source, arcname=filename)
@@ -27,7 +29,7 @@ def restore_data(archive_path: str | Path, data_dir: str | Path | None = None) -
         safe_members = {}
         for name in names:
             # Only the exact known CSV filenames are accepted; no directory paths.
-            if name in DATA_FILES:
+            if name in BACKUP_FILES:
                 if name in safe_members:
                     raise ValueError(f"Backup contains duplicate entry: {name}")
                 safe_members[name] = name
