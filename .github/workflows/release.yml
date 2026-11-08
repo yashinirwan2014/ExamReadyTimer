@@ -83,6 +83,13 @@ jobs:
             done
             cp dataorsubjects.csv dataexams.csv datatimetable.csv "$APP_DIR/"
             cp -R dist/ExamReadyTimer.app release/
+
+            # PyInstaller signs the initial bundle before we add the feature
+            # executables and CSV files. Re-sign the completed bundle so its
+            # resource seal matches the final contents.
+            codesign --force --deep --sign - --timestamp=none release/ExamReadyTimer.app
+            codesign --verify --deep --strict --verbose=2 release/ExamReadyTimer.app
+            spctl --assess --type execute --verbose=2 release/ExamReadyTimer.app || true
           else
             cp "dist/ExamReadyTimer$EXT" release/
             for name in ExamCountdown PomodoroTimer StudyTimetable SubjectTracker ProgressAnalytics FocusMode ExamReadySettings ExamReadiness StudyIntelligence; do
@@ -96,7 +103,9 @@ jobs:
 
           Windows: double-click ExamReadyTimer.exe
           Linux: make the files executable if needed (chmod +x ExamReadyTimer ExamCountdown PomodoroTimer StudyTimetable SubjectTracker ProgressAnalytics FocusMode ExamReadySettings ExamReadiness StudyIntelligence), then run ./ExamReadyTimer.
-          macOS: move ExamReadyTimer.app to Applications, then open it. If macOS blocks the first launch because the app is not notarized, Control-click the app, choose Open, and confirm.
+          macOS: move ExamReadyTimer.app to Applications. This community build is ad-hoc signed, not Developer ID signed or Apple-notarized. On first launch, macOS may block it because it is from an unidentified developer. To remove the download quarantine for this app only, open Terminal and run:
+          xattr -dr com.apple.quarantine "/Applications/ExamReadyTimer.app"
+          Then Control-click ExamReadyTimer.app, choose Open, and confirm. Only do this if you downloaded it from the official ExamReadyTimer GitHub release.
 
           Keep all executables and CSV files together in the same folder.
           Your study data is stored in your operating system's per-user ExamReadyTimer data folder, not in the installation folder. Existing data is preserved when you upgrade. Back up that data folder before reinstalling or moving to another computer.
