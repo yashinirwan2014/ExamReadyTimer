@@ -10,6 +10,9 @@ Developed originally as a practical execution of CBSE Class 12 Informatics Pract
 
 Choose the ZIP for your computer:
 
+**Current desktop theme:** The latest source uses a shared midnight-navy dark palette across the dashboard and feature windows. Updated Windows, macOS and Linux ZIPs will be attached to the next official release after the cross-platform build completes.
+
+
 | Platform | Download |
 |---|---|
 | Windows 10/11 (64-bit) | [ExamReadyTimer-Windows.zip](https://github.com/yashinirwan2014/ExamReadyTimer/releases/latest/download/ExamReadyTimer-Windows.zip) |
