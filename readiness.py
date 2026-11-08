@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import csv
+import math
 from datetime import date
 from pathlib import Path
 import tkinter as tk
@@ -77,8 +78,9 @@ def analyze_readiness(
     matching is exact (case-insensitive) to avoid silently assigning the wrong
     syllabus to an exam.
     """
-    if daily_hours <= 0 or chapter_hours <= 0:
-        raise ValueError("Study hours and chapter hours must be greater than zero.")
+    if (not math.isfinite(daily_hours) or not math.isfinite(chapter_hours)
+            or daily_hours <= 0 or chapter_hours <= 0):
+        raise ValueError("Study hours and chapter hours must be finite numbers greater than zero.")
     today = today or date.today()
     normalized = {name.casefold(): value for name, value in subjects.items()}
     results = []
