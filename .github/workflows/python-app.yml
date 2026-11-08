@@ -48,6 +48,11 @@ jobs:
       - name: Run Complete Unit Test Suite
         run: python -m pytest -q tests
 
+      - name: Run Real GUI Interaction Tests
+        shell: bash
+        timeout-minutes: 5
+        run: xvfb-run --auto-servernum python -m pytest -q tests/test_gui_interactions.py
+
       - name: Run All Feature Window Smoke Tests
         shell: bash
         timeout-minutes: 5
