@@ -37,4 +37,4 @@ jobs:
       - name: Validate all starter data CSV files
         run: python scripts/validate_study_data.py
       - name: Compile application modules
-        run: python -m py_compile main.py GUI.py countdown.py pomodoro.py timetable.py tracker.py progress.py focus.py settings.py readiness.py backup.py storage.py schedule_utils.py reminders.py scripts/validate_study_data.py
+        run: python -m py_compile main.py GUI.py countdown.py pomodoro.py timetable.py tracker.py progress.py focus.py settings.py readiness.py studyhub.py study_engine.py backup.py storage.py schedule_utils.py reminders.py scripts/validate_study_data.py
