@@ -143,6 +143,7 @@ def test_syllabus_tracker_add_complete_and_delete_chapter(root, tmp_path, monkey
     assert next(x for x in tracker.load_subjects()["Physics"]
                 if x["chapter"] == "Ray Optics")["status"] == "Completed"
 
+    row = app.chapter_table.get_children()[0]
     app.chapter_table.selection_set(row)
     click(root, "Delete")
     assert all(x["chapter"] != "Ray Optics"
