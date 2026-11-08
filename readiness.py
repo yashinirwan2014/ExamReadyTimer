@@ -13,7 +13,7 @@ APP_DIR = Path(__import__("sys").executable).resolve().parent if getattr(__impor
 DATA_DIR = initialize_user_data(app_dir=APP_DIR)
 EXAMS_FILE = DATA_DIR / "dataexams.csv"
 SYLLABUS_FILE = DATA_DIR / "dataorsubjects.csv"
-BG, NAVY, MUTED = "#F3F5FB", "#25316D", "#68708A"
+BG, NAVY, MUTED = "#0B1020", "#172544", "#9AA9C8"
 DEFAULT_CHAPTER_HOURS = 1.5
 DEFAULT_DAILY_HOURS = 3.0
 
@@ -122,6 +122,20 @@ class ReadinessDashboard:
         root.geometry("1020x650")
         root.minsize(780, 500)
         root.configure(bg=BG)
+        root.option_add("*Foreground", "#E8EEFF")
+        style = ttk.Style(root)
+        try:
+            style.theme_use("clam")
+        except tk.TclError:
+            pass
+        style.configure("TFrame", background="#0B1020")
+        style.configure("TLabel", background="#0B1020", foreground="#E8EEFF")
+        style.configure("TButton", background="#263657", foreground="#E8EEFF", padding=7)
+        style.map("TButton", background=[("active", "#34496F")])
+        style.configure("TEntry", fieldbackground="#18243D", foreground="#E8EEFF")
+        style.configure("TCombobox", fieldbackground="#18243D", background="#263657", foreground="#E8EEFF")
+        style.configure("Treeview", background="#111B30", fieldbackground="#111B30", foreground="#E8EEFF")
+        style.configure("Treeview.Heading", background="#263657", foreground="#E8EEFF")
         self.daily_hours = tk.StringVar(value=str(DEFAULT_DAILY_HOURS))
         self.chapter_hours = tk.StringVar(value=str(DEFAULT_CHAPTER_HOURS))
         self.build()
@@ -130,10 +144,10 @@ class ReadinessDashboard:
     def build(self):
         header = tk.Frame(self.root, bg=NAVY, padx=24, pady=18)
         header.pack(fill="x")
-        tk.Label(header, text="Exam Readiness Gap Engine", bg=NAVY, fg="white",
+        tk.Label(header, text="Exam Readiness Gap Engine", bg=NAVY, fg="#18243D",
                  font=("Arial", 22, "bold")).pack(anchor="w")
         tk.Label(header, text="See whether your remaining syllabus fits the time left before each exam.",
-                 bg=NAVY, fg="#DDE4FF", font=("Arial", 10)).pack(anchor="w", pady=(4, 0))
+                 bg=NAVY, fg="#C7D4F2", font=("Arial", 10)).pack(anchor="w", pady=(4, 0))
         body = tk.Frame(self.root, bg=BG, padx=20, pady=16)
         body.pack(fill="both", expand=True)
         controls = tk.LabelFrame(body, text="Planning assumptions", bg=BG, fg=NAVY, padx=12, pady=10)
