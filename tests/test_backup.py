@@ -45,3 +45,39 @@ def test_restore_rejects_duplicate_data_entries(tmp_path):
         stream.writestr("dataexams.csv", "different")
     with pytest.raises(ValueError):
         restore_data(archive, tmp_path / "user-data")
+
+
+def test_restore_validates_entire_archive_before_changing_existing_data(tmp_path):
+    data = tmp_path / "user-data"
+    data.mkdir()
+    existing = data / "dataexams.csv"
+    existing.write_text("Exam,Year\\nExisting,2027\\n", encoding="utf-8")
+
+    archive = tmp_path / "mixed-unsafe.zip"
+    with zipfile.ZipFile(archive, "w") as stream:
+        stream.writestr("dataexams.csv", "Exam,Year\\nReplacement,2028\\n")
+        stream.writestr("../outside.txt", "unsafe")
+
+    with pytest.raises(ValueError, match="unsupported entry"):
+        restore_data(archive, data)
+    assert existing.read_text(encoding="utf-8") == "Exam,Year\\nExisting,2027\\n"
+    assert not (tmp_path / "outside.txt").exists()
+
+
+def test_restore_rejects_corrupt_archive_without_partial_changes(tmp_path):
+    data = tmp_path / "user-data"
+    data.mkdir()
+    existing = data / "dataexams.csv"
+    existing.write_text("Exam,Year\\nExisting,2027\\n", encoding="utf-8")
+
+    archive = tmp_path / "corrupt.zip"
+    with zipfile.ZipFile(archive, "w") as stream:
+        stream.writestr("dataexams.csv", "Exam,Year\\nReplacement,2028\\n")
+        stream.writestr("datatimetable.csv", "Day,Subject\\nMonday,Physics\\n")
+    raw = bytearray(archive.read_bytes())
+    raw[-12] ^= 0xFF
+    archive.write_bytes(raw)
+
+    with pytest.raises((zipfile.BadZipFile, ValueError)):
+        restore_data(archive, data)
+    assert existing.read_text(encoding="utf-8") == "Exam,Year\\nExisting,2027\\n"
