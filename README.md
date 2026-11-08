@@ -10,6 +10,7 @@ System Features
 * Dynamic Loading: Supports tracking across multiple exam targets.
 * Persistent Data Architecture: Stores and modifies milestone target dates using a local CSV layer.
 * Temporal Calculations: Computes the number of days remaining until upcoming exams.
+* Exam Reminders: Shows a once-per-exam reminder when the configured reminder window begins while the Exam Planner is open. Reminder history is saved locally and included in ZIP backups. The planner must be running for an alert to appear.
 
 ∆ Event-Driven Pomodoro Timer
 * Custom Intervals: Configurable study blocks, break durations, and session counters.
@@ -25,9 +26,9 @@ System Features
 * Progress Calculation: Displays subject-wise completion totals and progress percentage.
 * Automatic Saving: Saves syllabus changes to the local CSV data file.
 
-∆ Data Analytics Visualization Suite (Pandas & Matplotlib)
-* Data Integration: Uses Pandas to load and process study tracking data.
-* Statistical Rendering: Displays study progress through Matplotlib charts.
+∆ Progress Analytics
+* Progress Calculation: Reads saved syllabus rows and calculates overall and subject-wise completion percentages.
+* Visual Feedback: Displays completion totals and native Tkinter progress bars without third-party data or charting libraries.
 
 ∆ Distraction-Free Focus Mode
 * Minimalist Interface: Provides a focused environment for dedicated study sessions.
@@ -66,7 +67,9 @@ ExamReadyTimer→
 °tracker.py
 ∆ Graphical syllabus tracker and chapter management
 °progress.py
-∆ Pandas data processing and progress visualizations
+∆ Overall and subject-wise progress calculations and visual progress bars
+°reminders.py
+∆ Testable exam reminder scheduling and persistent reminder history
 °focus.py
 ∆ Focus mode logic and interface
 °storage.py
@@ -86,11 +89,7 @@ ExamReadyTimer→
 
 1. Clone or download the repository files to your local workspace.
 2. Install Python 3.10 or newer.
-3. Install the required Python libraries:
-
-```bash
-python -m pip install pandas matplotlib
-```
+3. Use Python 3.10 or newer with Tkinter available. The application uses the Python standard library; no pip packages are required for normal use. On some Linux distributions, install the system Tkinter package (for example, `python3-tk`).
 
 4. Run the application from the project folder:
 
@@ -106,14 +105,14 @@ python main.py
 * Linux: ~/.local/share/ExamReadyTimer (or the location configured by XDG_DATA_HOME)
 * macOS: ~/Library/Application Support/ExamReadyTimer
 
-Existing user data is not overwritten by starter files during normal initialization. Back up the user data folder before moving to another computer or manually resetting the application.
+Existing user data is not overwritten by starter files during normal initialization. Back up the user data folder before moving to another computer or manually resetting the application. ZIP backups include exam, timetable, syllabus, and reminder-history files.
 
 ∆ Academic Framework: Implementation of Informatics Practices
 
 This project functions as a practical framework applying technical concepts through a working application:
 
-* Data Pipelines: Pandas DataFrames, CSV parsing, filtering, and multi-file handling.
-* Mathematical Graphics: Matplotlib data visualization, bar charts, plot configurations, and dynamic scaling.
+* Data Pipelines: CSV parsing, filtering, and multi-file handling.
+* Progress Mathematics: Date calculations, completion ratios, and native Tkinter progress indicators.
 * Core Software Principles: Modular Python programming, Tkinter event-driven interfaces, dictionaries, file I/O, and automated testing.
 * Cross-Platform Development: GitHub Actions workflows for testing and preparing desktop builds on multiple operating systems.
 
