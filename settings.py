@@ -49,10 +49,10 @@ class SettingsWindow:
                  bg=BG, fg=MUTED, wraplength=570, justify="left").pack(anchor="w", pady=(7, 5))
         path_box = tk.Frame(body, bg="#18243D", padx=12, pady=12)
         path_box.pack(fill="x", pady=(0, 14))
-        tk.Label(path_box, text=str(DATA_DIR), bg="#18243D", fg=NAVY,
+        tk.Label(path_box, text=str(DATA_DIR), bg="#18243D", fg=TEXT,
                  wraplength=550, justify="left").pack(anchor="w")
         ttk.Button(body, text="Open data folder", command=self.open_folder).pack(anchor="w", pady=(0, 18))
-        tk.Label(body, text="BACKUP & RESTORE", bg=BG, fg=NAVY,
+        tk.Label(body, text="BACKUP & RESTORE", bg=BG, fg=ACCENT,
                  font=("Arial", 11, "bold")).pack(anchor="w")
         tk.Label(body, text="Create a ZIP backup before changing devices or reinstalling. Restoring replaces matching data files.",
                  bg=BG, fg=MUTED, wraplength=570, justify="left").pack(anchor="w", pady=(7, 12))
