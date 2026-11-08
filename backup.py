@@ -28,7 +28,7 @@ def restore_data(archive_path: str | Path, data_dir: str | Path | None = None) -
         names = archive.namelist()
         safe_members = {}
         for name in names:
-            # Only the exact known CSV filenames are accepted; no directory paths.
+            # Only exact known app data filenames are accepted; no directory paths.
             if name in BACKUP_FILES:
                 if name in safe_members:
                     raise ValueError(f"Backup contains duplicate entry: {name}")
