@@ -8,7 +8,7 @@ from tkinter import ttk, messagebox
 from storage import initialize_user_data
 from study_engine import log_session, schedule_revision
 
-BG, NAVY, MUTED = "#F3F5FB", "#25316D", "#68708A"
+BG, NAVY, MUTED = "#0B1020", "#172544", "#9AA9C8"
 APP_DIR = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent
 DATA_DIR = initialize_user_data(app_dir=APP_DIR)
 SESSION_FILE = DATA_DIR / "study_sessions.csv"
@@ -23,6 +23,20 @@ class PomodoroTimer:
         root.geometry("520x570")
         root.minsize(420, 480)
         root.configure(bg=BG)
+        root.option_add("*Foreground", "#E8EEFF")
+        style = ttk.Style(root)
+        try:
+            style.theme_use("clam")
+        except tk.TclError:
+            pass
+        style.configure("TFrame", background="#0B1020")
+        style.configure("TLabel", background="#0B1020", foreground="#E8EEFF")
+        style.configure("TButton", background="#263657", foreground="#E8EEFF", padding=7)
+        style.map("TButton", background=[("active", "#34496F")])
+        style.configure("TEntry", fieldbackground="#18243D", foreground="#E8EEFF")
+        style.configure("TCombobox", fieldbackground="#18243D", background="#263657", foreground="#E8EEFF")
+        style.configure("Treeview", background="#111B30", fieldbackground="#111B30", foreground="#E8EEFF")
+        style.configure("Treeview.Heading", background="#263657", foreground="#E8EEFF")
         self.study_minutes = tk.IntVar(value=25)
         self.break_minutes = tk.IntVar(value=5)
         self.total_sessions = tk.IntVar(value=4)
@@ -48,10 +62,10 @@ class PomodoroTimer:
     def build(self):
         header = tk.Frame(self.root, bg=NAVY, padx=24, pady=20)
         header.pack(fill="x")
-        tk.Label(header, text="Pomodoro Timer", bg=NAVY, fg="white",
+        tk.Label(header, text="Pomodoro Timer", bg=NAVY, fg="#18243D",
                  font=("Arial", 22, "bold")).pack(anchor="w")
         tk.Label(header, text="Focus deeply. Rest properly. Repeat.",
-                 bg=NAVY, fg="#DDE4FF", font=("Arial", 10)).pack(anchor="w", pady=(4, 0))
+                 bg=NAVY, fg="#C7D4F2", font=("Arial", 10)).pack(anchor="w", pady=(4, 0))
         body = tk.Frame(self.root, bg=BG, padx=24, pady=22)
         body.pack(fill="both", expand=True)
         settings = tk.Frame(body, bg=BG)
