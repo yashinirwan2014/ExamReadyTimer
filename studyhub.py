@@ -268,7 +268,11 @@ class StudyIntelligence:
         if self.remaining_seconds <= 0:
             self.timer_running = False
             self.root.bell()
-            self._save_timer_session()
+            try:
+                self._save_timer_session()
+            except (ValueError, OSError, tk.TclError) as exc:
+                self.timer_status.config(text=f"Session finished, but the log could not be saved: {exc}. Use Save elapsed time to retry.")
+                return
             self.timer_status.config(text="Focus session completed and added to your study ledger.")
             messagebox.showinfo("Session complete", "Your completed focus session has been saved.", parent=self.root)
             return
@@ -292,11 +296,11 @@ class StudyIntelligence:
                 schedule_revision(REVISION_FILE, subject, chapter)
         self.remaining_seconds = 0
         self.timer_total_seconds = 0
-        self.clock.config(text=f"{int(self.minutes_var.get()):02d}:00")
+        self.clock.config(text=f"{max(1, self.timer_total_seconds // 60):02d}:00")
         self.refresh_all()
 
     def save_elapsed(self):
-        if self.timer_total_seconds <= 0 or self.remaining_seconds <= 0:
+        if self.timer_total_seconds <= 0:
             messagebox.showinfo("No elapsed session", "Start the focus timer first. There is no elapsed time to save yet.", parent=self.root)
             return
         if self.timer_after:
