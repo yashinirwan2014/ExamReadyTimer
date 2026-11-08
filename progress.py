@@ -9,7 +9,7 @@ from storage import initialize_user_data
 APP_DIR = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent
 DATA_DIR = initialize_user_data(app_dir=APP_DIR)
 DATA_FILE = DATA_DIR / "dataorsubjects.csv"
-BG, NAVY, MUTED = "#F3F5FB", "#25316D", "#68708A"
+BG, NAVY, MUTED = "#0B1020", "#172544", "#9AA9C8"
 
 
 def calculate_progress(path=DATA_FILE):
@@ -38,16 +38,30 @@ class ProgressAnalytics:
         root.geometry("760x600")
         root.minsize(600, 450)
         root.configure(bg=BG)
+        root.option_add("*Foreground", "#E8EEFF")
+        style = ttk.Style(root)
+        try:
+            style.theme_use("clam")
+        except tk.TclError:
+            pass
+        style.configure("TFrame", background="#0B1020")
+        style.configure("TLabel", background="#0B1020", foreground="#E8EEFF")
+        style.configure("TButton", background="#263657", foreground="#E8EEFF", padding=7)
+        style.map("TButton", background=[("active", "#34496F")])
+        style.configure("TEntry", fieldbackground="#18243D", foreground="#E8EEFF")
+        style.configure("TCombobox", fieldbackground="#18243D", background="#263657", foreground="#E8EEFF")
+        style.configure("Treeview", background="#111B30", fieldbackground="#111B30", foreground="#E8EEFF")
+        style.configure("Treeview.Heading", background="#263657", foreground="#E8EEFF")
         self.build()
         self.refresh()
 
     def build(self):
         header = tk.Frame(self.root, bg=NAVY, padx=24, pady=20)
         header.pack(fill="x")
-        tk.Label(header, text="Progress Analytics", bg=NAVY, fg="white",
+        tk.Label(header, text="Progress Analytics", bg=NAVY, fg="#18243D",
                  font=("Arial", 22, "bold")).pack(anchor="w")
         tk.Label(header, text="Small steps add up. See how far you've come.",
-                 bg=NAVY, fg="#DDE4FF", font=("Arial", 10)).pack(anchor="w", pady=(4, 0))
+                 bg=NAVY, fg="#C7D4F2", font=("Arial", 10)).pack(anchor="w", pady=(4, 0))
         body = tk.Frame(self.root, bg=BG, padx=22, pady=18)
         body.pack(fill="both", expand=True)
         self.summary = tk.Label(body, text="", bg=BG, fg=NAVY, font=("Arial", 15, "bold"))
@@ -82,15 +96,15 @@ class ProgressAnalytics:
                      bg=BG, fg=MUTED, wraplength=560, justify="left").pack(anchor="w", pady=20)
             return
         for subject, item in sorted(results.items()):
-            card = tk.Frame(self.inner, bg="white", padx=14, pady=12, highlightthickness=1,
-                            highlightbackground="#E1E5F0")
+            card = tk.Frame(self.inner, bg="#18243D", padx=14, pady=12, highlightthickness=1,
+                            highlightbackground="#34415D")
             card.pack(fill="x", pady=5)
-            top = tk.Frame(card, bg="white")
+            top = tk.Frame(card, bg="#18243D")
             top.pack(fill="x")
-            tk.Label(top, text=subject, bg="white", fg=NAVY,
+            tk.Label(top, text=subject, bg="#18243D", fg=NAVY,
                      font=("Arial", 11, "bold")).pack(side="left")
             tk.Label(top, text=f'{item["completed"]}/{item["total"]}  •  {item["percentage"]:.0f}%',
-                     bg="white", fg=MUTED).pack(side="right")
+                     bg="#18243D", fg=MUTED).pack(side="right")
             bar = ttk.Progressbar(card, maximum=100, value=item["percentage"])
             bar.pack(fill="x", pady=(9, 0))
 
