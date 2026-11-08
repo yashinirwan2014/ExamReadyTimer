@@ -4,6 +4,30 @@ ExamReadyTimer is a modular, data-driven Python desktop productivity application
 
 Developed originally as a practical execution of CBSE Class 12 Informatics Practices (IP) concepts, this project scales basic programming models into a unified student dashboard.
 
+## Download ExamReadyTimer
+
+**Get the latest official desktop release:** [Download ExamReadyTimer](https://github.com/yashinirwan2014/ExamReadyTimer/releases/latest)
+
+Choose the ZIP for your computer:
+
+| Platform | Download |
+|---|---|
+| Windows 10/11 (64-bit) | [ExamReadyTimer-Windows.zip](https://github.com/yashinirwan2014/ExamReadyTimer/releases/latest/download/ExamReadyTimer-Windows.zip) |
+| macOS | [ExamReadyTimer-macOS.zip](https://github.com/yashinirwan2014/ExamReadyTimer/releases/latest/download/ExamReadyTimer-macOS.zip) |
+| Linux | [ExamReadyTimer-Linux.zip](https://github.com/yashinirwan2014/ExamReadyTimer/releases/latest/download/ExamReadyTimer-Linux.zip) |
+
+### Quick start
+
+1. Download the ZIP matching your operating system from the links above.
+2. Extract the ZIP into a folder you can keep. Keep the included application files and CSV files together; do not move individual files out of the folder.
+3. **Windows:** Open the extracted folder and double-click `ExamReadyTimer.exe`. If Windows displays a security warning, only continue if you downloaded the file from this official repository and are comfortable proceeding.
+4. **macOS:** Move `ExamReadyTimer.app` to Applications and open it. This build is not Apple-notarized; macOS may require Control-click → Open on first launch.
+5. **Linux:** Open a terminal in the extracted folder, run `chmod +x ExamReadyTimer`, then run `./ExamReadyTimer`. If the application does not start, check that your system has the required desktop/Tk libraries.
+
+These are portable ZIP downloads, not traditional click-through installers. The application stores study records in your user data folder, separately from the downloaded application files. Back up that folder before moving to another computer. Read `README-FIRST.txt` included in each ZIP for platform-specific notes.
+
+**Source code and project details:** [GitHub repository](https://github.com/yashinirwan2014/ExamReadyTimer) · **Release history:** [All releases](https://github.com/yashinirwan2014/ExamReadyTimer/releases)
+
 System Features
 
 ∆ Advanced Exam Countdown Engine
