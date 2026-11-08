@@ -13,13 +13,17 @@ def test_backup_and_restore_round_trip(tmp_path):
     (data / "datatimetable.csv").write_text("Day,Subject\nMonday,Physics\n", encoding="utf-8")
     (data / "dataorsubjects.csv").write_text("Subject,Chapter,Status\nPhysics,Optics,Completed\n", encoding="utf-8")
     (data / ".reminders-sent.json").write_text('["physics|2027-02-03"]', encoding="utf-8")
+    (data / "study_sessions.csv").write_text("date,minutes,subject\\n2026-11-08,45,Physics\\n", encoding="utf-8")
+    (data / "revision_schedule.csv").write_text("subject,chapter,due_date\\nPhysics,Optics,2026-11-09\\n", encoding="utf-8")
     archive = tmp_path / "backup.zip"
 
     backup_data(archive, data)
     (data / "dataexams.csv").write_text("Exam,Year,Month,Day\n", encoding="utf-8")
     restored = restore_data(archive, data)
 
-    assert set(restored) == {"dataexams.csv", "datatimetable.csv", "dataorsubjects.csv", ".reminders-sent.json"}
+    assert set(restored) == {"dataexams.csv", "datatimetable.csv", "dataorsubjects.csv", ".reminders-sent.json", "study_sessions.csv", "revision_schedule.csv"}
+    assert "Physics" in (data / "study_sessions.csv").read_text(encoding="utf-8")
+    assert "Optics" in (data / "revision_schedule.csv").read_text(encoding="utf-8")
     assert "physics|2027-02-03" in (data / ".reminders-sent.json").read_text(encoding="utf-8")
     assert "Mock" in (data / "dataexams.csv").read_text(encoding="utf-8")
 
