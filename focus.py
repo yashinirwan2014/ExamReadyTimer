@@ -44,7 +44,7 @@ class FocusMode:
         header.pack(fill="x")
         tk.Label(header, text="Focus Mode", bg=NAVY, fg="white",
                  font=("Arial", 22, "bold")).pack(anchor="w")
-        tk.Label(header, text="One task. One session. No distractions.",
+        tk.Label(header, text="One task. One session. Stay on track.",
                  bg=NAVY, fg="#DDE4FF", font=("Arial", 10)).pack(anchor="w", pady=(4, 0))
         body = tk.Frame(self.root, bg=BG, padx=26, pady=22)
         body.pack(fill="both", expand=True)
