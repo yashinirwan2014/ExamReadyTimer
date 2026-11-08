@@ -78,6 +78,10 @@ ExamReadyTimer→
 ∆ Exam date and countdown calculations
 °readiness.py
 ∆ Exam readiness gap analysis linking exam dates, pending chapters and available study capacity
+°studyhub.py
+∆ Study Intelligence Suite interface for sessions, planning, revision and analytics
+°study_engine.py
+∆ Testable session ledger, adaptive planning, recovery and spaced-revision logic
 °pomodoro.py
 ∆ Pomodoro timer logic
 °timetable.py
