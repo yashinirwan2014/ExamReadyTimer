@@ -64,3 +64,13 @@ def test_loaders_read_existing_csv_schemas(tmp_path):
                         encoding="utf-8")
     assert load_exam_data(exams)[0]["subject"] == "Physics"
     assert load_syllabus_data(syllabus)["Physics"] == {"total": 2, "completed": 1, "pending": 1}
+
+
+@pytest.mark.parametrize("daily,chapter", [
+    (float("nan"), 1.5),
+    (float("inf"), 1.5),
+    (2, float("-inf")),
+])
+def test_readiness_rejects_non_finite_planning_assumptions(daily, chapter):
+    with pytest.raises(ValueError, match="finite"):
+        analyze_readiness([], {}, daily_hours=daily, chapter_hours=chapter)
