@@ -49,7 +49,7 @@ def test_spaced_revision_creates_intervals_and_advances_after_completion(tmp_pat
     assert len(due) == 1
     assert due[0]["due"] == date(2026, 11, 9)
     complete_revision(path, "Physics", "Optics", date(2026, 11, 9))
-    next_due = load_due_revisions(path, date(2026, 11, 10))
+    next_due = load_due_revisions(path, date(2026, 11, 12))
     assert len(next_due) == 1
     assert next_due[0]["due"] == date(2026, 11, 12)
 
