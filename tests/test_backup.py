@@ -13,8 +13,8 @@ def test_backup_and_restore_round_trip(tmp_path):
     (data / "datatimetable.csv").write_text("Day,Subject\nMonday,Physics\n", encoding="utf-8")
     (data / "dataorsubjects.csv").write_text("Subject,Chapter,Status\nPhysics,Optics,Completed\n", encoding="utf-8")
     (data / ".reminders-sent.json").write_text('["physics|2027-02-03"]', encoding="utf-8")
-    (data / "study_sessions.csv").write_text("date,minutes,subject\\n2026-11-08,45,Physics\\n", encoding="utf-8")
-    (data / "revision_schedule.csv").write_text("subject,chapter,due_date\\nPhysics,Optics,2026-11-09\\n", encoding="utf-8")
+    (data / "study_sessions.csv").write_text("date,minutes,subject\n2026-11-08,45,Physics\n", encoding="utf-8")
+    (data / "revision_schedule.csv").write_text("subject,chapter,due_date\nPhysics,Optics,2026-11-09\n", encoding="utf-8")
     archive = tmp_path / "backup.zip"
 
     backup_data(archive, data)
