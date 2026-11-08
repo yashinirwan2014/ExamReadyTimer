@@ -294,9 +294,10 @@ class StudyIntelligence:
             log_session(SESSION_FILE, subject, chapter, minutes, "Focus")
             if chapter:
                 schedule_revision(REVISION_FILE, subject, chapter)
+        display_minutes = max(1, self.timer_total_seconds // 60)
         self.remaining_seconds = 0
         self.timer_total_seconds = 0
-        self.clock.config(text=f"{max(1, self.timer_total_seconds // 60):02d}:00")
+        self.clock.config(text=f"{display_minutes:02d}:00")
         self.refresh_all()
 
     def save_elapsed(self):
