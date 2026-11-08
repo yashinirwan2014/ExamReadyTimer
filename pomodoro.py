@@ -9,7 +9,7 @@ from storage import initialize_user_data
 from theme import apply_dark_theme
 from study_engine import log_session, schedule_revision
 
-BG, NAVY, MUTED = "#0B1020", "#172544", "#9AA9C8"
+BG, NAVY, MUTED = "#0B1020", "#172544", "#FFFFFF"
 APP_DIR = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent
 DATA_DIR = initialize_user_data(app_dir=APP_DIR)
 SESSION_FILE = DATA_DIR / "study_sessions.csv"
@@ -52,7 +52,7 @@ class PomodoroTimer:
         tk.Label(header, text="Pomodoro Timer", bg=NAVY, fg="#E8EEFF",
                  font=("Arial", 22, "bold")).pack(anchor="w")
         tk.Label(header, text="Focus deeply. Rest properly. Repeat.",
-                 bg=NAVY, fg="#C7D4F2", font=("Arial", 10)).pack(anchor="w", pady=(4, 0))
+                 bg=NAVY, fg="#FFFFFF", font=("Arial", 10)).pack(anchor="w", pady=(4, 0))
         body = tk.Frame(self.root, bg=BG, padx=24, pady=22)
         body.pack(fill="both", expand=True)
         settings = tk.Frame(body, bg=BG)

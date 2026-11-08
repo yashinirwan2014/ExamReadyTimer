@@ -11,7 +11,7 @@ from schedule_utils import duration_minutes, times_overlap
 APP_DIR = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent
 DATA_DIR = initialize_user_data(app_dir=APP_DIR)
 DATA_FILE = DATA_DIR / "datatimetable.csv"
-BG, NAVY, MUTED = "#0B1020", "#172544", "#9AA9C8"
+BG, NAVY, MUTED = "#0B1020", "#172544", "#FFFFFF"
 DAYS = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
 TASK_TYPES = ("Deep Work", "Revision", "Practice", "Reading", "Break", "Other")
 PRIORITIES = ("High", "Medium", "Low")
@@ -71,7 +71,7 @@ class StudyTimetable:
         tk.Label(header, text="Smart Study Timetable", bg=NAVY, fg="#E8EEFF",
                  font=("Arial", 22, "bold")).pack(anchor="w")
         tk.Label(header, text="Time-block your week, catch clashes and track completed sessions.",
-                 bg=NAVY, fg="#C7D4F2", font=("Arial", 10)).pack(anchor="w", pady=(4, 0))
+                 bg=NAVY, fg="#FFFFFF", font=("Arial", 10)).pack(anchor="w", pady=(4, 0))
         body = tk.Frame(self.root, bg=BG, padx=22, pady=16)
         body.pack(fill="both", expand=True)
         form = tk.LabelFrame(body, text="Build a study block", bg=BG, fg="#E8EEFF", padx=12, pady=10)

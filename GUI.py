@@ -53,7 +53,7 @@ subtitle = tk.Label(
     text="STUDY  •  FOCUS  •  PREPARE",
     font=("Arial", 11),
     bg="#0B1020",
-    fg="#9AA9C8"
+    fg="#FFFFFF"
 )
 subtitle.pack()
 
@@ -99,7 +99,7 @@ footer = tk.Label(
     text="One chapter at a time. One step closer.",
     font=("Arial", 10, "italic"),
     bg="#0B1020",
-    fg="#9AA9C8"
+    fg="#FFFFFF"
 )
 footer.pack(pady=16)
 

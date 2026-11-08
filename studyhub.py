@@ -23,7 +23,7 @@ REVISION_FILE = DATA_DIR / "revision_schedule.csv"
 SUBJECT_FILE = DATA_DIR / "dataorsubjects.csv"
 EXAM_FILE = DATA_DIR / "dataexams.csv"
 TIMETABLE_FILE = DATA_DIR / "datatimetable.csv"
-BG, NAVY, MUTED = "#0B1020", "#172544", "#9AA9C8"
+BG, NAVY, MUTED = "#0B1020", "#172544", "#FFFFFF"
 
 
 def read_subjects() -> dict[str, list[dict]]:
@@ -93,7 +93,7 @@ class StudyIntelligence:
         tk.Label(header, text="Study Intelligence Suite", bg=NAVY, fg="#E8EEFF",
                  font=("Arial", 22, "bold")).pack(anchor="w")
         tk.Label(header, text="Track real effort • Plan the next step • Revise at the right time",
-                 bg=NAVY, fg="#C7D4F2", font=("Arial", 10)).pack(anchor="w", pady=(4, 0))
+                 bg=NAVY, fg="#FFFFFF", font=("Arial", 10)).pack(anchor="w", pady=(4, 0))
         self.tabs = ttk.Notebook(self.root)
         self.tabs.pack(fill="both", expand=True, padx=16, pady=14)
         self.session_tab = tk.Frame(self.tabs, bg=BG, padx=18, pady=16)

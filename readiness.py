@@ -15,7 +15,7 @@ APP_DIR = Path(__import__("sys").executable).resolve().parent if getattr(__impor
 DATA_DIR = initialize_user_data(app_dir=APP_DIR)
 EXAMS_FILE = DATA_DIR / "dataexams.csv"
 SYLLABUS_FILE = DATA_DIR / "dataorsubjects.csv"
-BG, NAVY, MUTED = "#0B1020", "#172544", "#9AA9C8"
+BG, NAVY, MUTED = "#0B1020", "#172544", "#FFFFFF"
 DEFAULT_CHAPTER_HOURS = 1.5
 DEFAULT_DAILY_HOURS = 3.0
 
@@ -136,7 +136,7 @@ class ReadinessDashboard:
         tk.Label(header, text="Exam Readiness Gap Engine", bg=NAVY, fg="#E8EEFF",
                  font=("Arial", 22, "bold")).pack(anchor="w")
         tk.Label(header, text="See whether your remaining syllabus fits the time left before each exam.",
-                 bg=NAVY, fg="#C7D4F2", font=("Arial", 10)).pack(anchor="w", pady=(4, 0))
+                 bg=NAVY, fg="#FFFFFF", font=("Arial", 10)).pack(anchor="w", pady=(4, 0))
         body = tk.Frame(self.root, bg=BG, padx=20, pady=16)
         body.pack(fill="both", expand=True)
         controls = tk.LabelFrame(body, text="Planning assumptions", bg=BG, fg="#E8EEFF", padx=12, pady=10)
