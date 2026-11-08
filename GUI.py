@@ -7,7 +7,9 @@ from storage import initialize_user_data
 from theme import apply_dark_theme
 
 APP_DIR = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent
-USER_DATA_DIR = initialize_user_data(app_dir=APP_DIR)
+# Resolve/create writable user storage only when a feature is launched.
+# Importing this module must not touch the filesystem or create a Tk window.
+USER_DATA_DIR = None
 
 def build_dashboard(window):
     window.title("ExamReadyTimer | Study Dashboard")
@@ -35,7 +37,8 @@ def build_dashboard(window):
         else:
             command = [sys.executable, str(app_dir / filename)]
     
-        subprocess.Popen(command, cwd=str(USER_DATA_DIR))
+        user_data_dir = USER_DATA_DIR or initialize_user_data(app_dir=app_dir)
+        subprocess.Popen(command, cwd=str(user_data_dir))
     
     
     title = tk.Label(
