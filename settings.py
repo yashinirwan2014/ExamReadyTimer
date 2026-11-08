@@ -7,7 +7,7 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
 from storage import initialize_user_data
-from theme import apply_dark_theme
+from theme import apply_dark_theme, TEXT, ACCENT
 from backup import backup_data, restore_data
 
 BG, NAVY, MUTED = "#0B1020", "#172544", "#9AA9C8"
