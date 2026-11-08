@@ -177,7 +177,6 @@ def test_timer_start_pause_and_completed_session_button_paths(
     # Complete the same timer through its real completion handler without
     # waiting a full minute in CI.
     app.remaining = 0
-    app.phase_duration_seconds = 0 if module is pomodoro else app.total_seconds
     app.tick()
     with (data / "study_sessions.csv").open(newline="", encoding="utf-8-sig") as stream:
         rows = list(csv.DictReader(stream))
