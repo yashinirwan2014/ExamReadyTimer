@@ -12,7 +12,7 @@ import sys
 from pathlib import Path
 
 APP_NAME = "ExamReadyTimer"
-DATA_FILES = ("dataorsubjects.csv", "dataexams.csv", "datatimetable.csv")
+DATA_FILES = ("dataorsubjects.csv", "dataexams.csv", "datatimetable.csv", "study_sessions.csv", "revision_schedule.csv")
 
 
 def get_user_data_dir(app_name: str = APP_NAME) -> Path:
