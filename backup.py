@@ -6,7 +6,7 @@ import zipfile
 
 from storage import DATA_FILES, initialize_user_data
 
-BACKUP_FILES = DATA_FILES + (\".reminders-sent.json\",)
+BACKUP_FILES = DATA_FILES + (".reminders-sent.json",)
 
 
 def backup_data(destination: str | Path, data_dir: str | Path | None = None) -> Path:
