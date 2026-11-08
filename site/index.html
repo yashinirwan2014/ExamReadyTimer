@@ -8,15 +8,15 @@
   <title>ExamReadyTimer — Study with a plan</title>
   <style>
     :root {
-      color-scheme: light;
-      --navy: #25316d;
-      --ink: #202746;
-      --muted: #68708a;
-      --paper: #f3f5fb;
-      --white: #fff;
-      --line: #e4e8f2;
-      --blue: #5369c8;
-      --pale: #e8edff;
+      color-scheme: dark;
+      --navy: #172544;
+      --ink: #e8eeff;
+      --muted: #9aa9c8;
+      --paper: #0b1020;
+      --white: #111b30;
+      --line: #293650;
+      --blue: #8ba4ff;
+      --pale: #263657;
     }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
@@ -32,7 +32,7 @@
     header { padding: 22px 0; }
     .nav { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
     .brand { display: flex; align-items: center; gap: 11px; color: var(--navy); font-weight: 800; letter-spacing: -.03em; text-decoration: none; }
-    .mark { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 12px; background: var(--navy); color: white; font-size: 19px; }
+    .mark { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 12px; background: var(--navy); color: #f4f7ff; font-size: 19px; }
     .links { display: flex; flex-wrap: wrap; gap: 22px; color: var(--muted); font-size: 14px; }
     .links a { text-decoration: none; }
     .links a:hover { color: var(--navy); }
@@ -42,10 +42,10 @@
     h1 { margin: 14px 0 18px; color: var(--navy); font-size: clamp(42px, 6vw, 68px); line-height: 1.04; letter-spacing: -.055em; }
     .lead { max-width: 600px; color: var(--muted); font-size: 18px; }
     .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
-    .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 46px; padding: 0 19px; border: 1px solid var(--navy); border-radius: 12px; background: var(--navy); color: white; font-weight: 700; text-decoration: none; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 46px; padding: 0 19px; border: 1px solid var(--navy); border-radius: 12px; background: var(--navy); color: #f4f7ff; font-weight: 700; text-decoration: none; }
     .btn.secondary { background: transparent; color: var(--navy); }
     .btn:hover { transform: translateY(-1px); }
-    .preview { padding: 22px; border: 1px solid var(--line); border-radius: 24px; background: white; box-shadow: 0 22px 60px rgba(37,49,109,.10); }
+    .preview { padding: 22px; border: 1px solid var(--line); border-radius: 24px; background: #111b30; box-shadow: 0 22px 60px rgba(0,0,0,.32); }
     .preview-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; color: var(--muted); font-size: 12px; }
     .dots { display: flex; gap: 5px; }
     .dots i { width: 7px; height: 7px; border-radius: 50%; background: #d8deef; }
@@ -63,18 +63,18 @@
     h2 { margin: 0 0 10px; color: var(--navy); font-size: clamp(28px, 4vw, 40px); line-height: 1.15; letter-spacing: -.04em; }
     .section-head p { margin: 0; color: var(--muted); }
     .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-    .card { padding: 22px; border: 1px solid var(--line); border-radius: 17px; background: white; }
+    .card { padding: 22px; border: 1px solid var(--line); border-radius: 17px; background: #111b30; }
     .icon { display: grid; place-items: center; width: 42px; height: 42px; margin-bottom: 14px; border-radius: 13px; background: var(--pale); font-size: 20px; }
     .card h3 { margin: 0 0 7px; color: var(--navy); font-size: 17px; }
     .card p { margin: 0; color: var(--muted); font-size: 14px; }
     .split { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: center; }
-    .panel { padding: 26px; border-radius: 20px; background: var(--navy); color: white; }
+    .panel { padding: 26px; border-radius: 20px; background: var(--navy); color: #f4f7ff; }
     .panel h2 { color: white; }
     .panel p { color: #dbe1ff; }
     .checks { display: grid; gap: 11px; margin: 18px 0 0; padding: 0; list-style: none; }
     .checks li::before { content: "✓"; margin-right: 10px; color: #b9c6ff; font-weight: 800; }
     .note { color: var(--muted); font-size: 13px; }
-    .download { padding: 34px; border: 1px solid var(--line); border-radius: 22px; background: white; text-align: center; }
+    .download { padding: 34px; border: 1px solid var(--line); border-radius: 22px; background: #111b30; text-align: center; }
     .download p { color: var(--muted); }
     footer { padding: 28px 0 40px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
     .foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
