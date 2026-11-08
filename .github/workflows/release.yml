@@ -99,9 +99,42 @@ jobs:
           path: ${{ matrix.artifact }}.zip
           if-no-files-found: error
 
-      - name: Attach ZIP to GitHub Release
-        if: startsWith(github.ref, 'refs/tags/')
+  publish-release:
+    name: Publish permanent GitHub Release assets
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/') || (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, '[publish-v1.0.0]'))
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: Download Windows desktop ZIP
+        uses: actions/download-artifact@v4
+        with:
+          name: ExamReadyTimer-Windows
+          path: release-assets
+      - name: Download Linux desktop ZIP
+        uses: actions/download-artifact@v4
+        with:
+          name: ExamReadyTimer-Linux
+          path: release-assets
+      - name: Create formal release and upload both desktop downloads
         uses: softprops/action-gh-release@v2
         with:
-          files: ${{ matrix.artifact }}.zip
-          generate_release_notes: true
+          tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.0.0' }}
+          target_commitish: ${{ github.sha }}
+          name: ExamReadyTimer v1.0.0
+          body: |
+            ## ExamReadyTimer v1.0.0
+
+            First public desktop release of ExamReadyTimer.
+
+            ### Downloads
+            - **Windows:** ExamReadyTimer-Windows.zip
+            - **Linux:** ExamReadyTimer-Linux.zip
+
+            Extract the ZIP and keep the included executables and CSV files together. See README-FIRST.txt inside each archive for launch and data-preservation instructions.
+          files: |
+            release-assets/ExamReadyTimer-Windows.zip
+            release-assets/ExamReadyTimer-Linux.zip
+          fail_on_unmatched_files: true
+          make_latest: true
