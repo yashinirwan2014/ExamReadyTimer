@@ -37,7 +37,7 @@ jobs:
 
       - name: Verify Module Compilation (Syntax Check)
         run: |
-          python -m py_compile main.py GUI.py countdown.py pomodoro.py timetable.py tracker.py progress.py focus.py settings.py readiness.py backup.py storage.py schedule_utils.py reminders.py scripts/validate_study_data.py
+          python -m py_compile main.py GUI.py countdown.py pomodoro.py timetable.py tracker.py progress.py focus.py settings.py readiness.py studyhub.py study_engine.py backup.py storage.py schedule_utils.py reminders.py scripts/validate_study_data.py
 
       - name: Run Complete Unit Test Suite
         run: python -m pytest -q tests
@@ -46,7 +46,7 @@ jobs:
         shell: bash
         timeout-minutes: 5
         run: |
-          for script in countdown.py pomodoro.py timetable.py tracker.py progress.py focus.py settings.py readiness.py; do
+          for script in countdown.py pomodoro.py timetable.py tracker.py progress.py focus.py settings.py readiness.py studyhub.py; do
             echo "Smoke testing $script"
             set +e
             xvfb-run --auto-servernum timeout --signal=TERM --kill-after=3s 4s /usr/bin/python3 "$script"
