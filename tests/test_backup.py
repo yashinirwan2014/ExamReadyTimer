@@ -75,7 +75,12 @@ def test_restore_rejects_corrupt_archive_without_partial_changes(tmp_path):
         stream.writestr("dataexams.csv", "Exam,Year\\nReplacement,2028\\n")
         stream.writestr("datatimetable.csv", "Day,Subject\\nMonday,Physics\\n")
     raw = bytearray(archive.read_bytes())
-    raw[-12] ^= 0xFF
+    with zipfile.ZipFile(archive, "r") as stream:
+        info = stream.getinfo("dataexams.csv")
+    name_length = int.from_bytes(raw[info.header_offset + 26:info.header_offset + 28], "little")
+    extra_length = int.from_bytes(raw[info.header_offset + 28:info.header_offset + 30], "little")
+    data_offset = info.header_offset + 30 + name_length + extra_length
+    raw[data_offset] ^= 0xFF
     archive.write_bytes(raw)
 
     with pytest.raises((zipfile.BadZipFile, ValueError)):
