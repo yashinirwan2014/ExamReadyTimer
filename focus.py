@@ -25,6 +25,7 @@ class FocusMode:
         root.configure(bg=BG)
         self.minutes = tk.IntVar(value=50)
         self.remaining = 0
+        self.total_seconds = 0
         self.running = False
         self.after_id = None
         self.subjects = {}
@@ -82,19 +83,21 @@ class FocusMode:
             except (tk.TclError, ValueError):
                 messagebox.showwarning("Invalid duration", "Choose a whole number between 1 and 240.", parent=self.root)
                 return
-            self.remaining = self.minutes.get() * 60
+            self.total_seconds = self.minutes.get() * 60
+            self.remaining = self.total_seconds
         self.running = True
         self.status.config(text="Focus session in progress 📚")
         self.tick()
 
     def tick(self):
         self.clock.config(text=f"{self.remaining // 60:02d}:{self.remaining % 60:02d}")
-        total = max(self.minutes.get() * 60, 1)
+        total = max(self.total_seconds, 1)
         self.progress["value"] = 100 * (1 - self.remaining / total)
         if self.remaining <= 0:
             self.running = False
             self.status.config(text="Focus session completed! 🎯")
             self.record_completed_session()
+            self.total_seconds = 0
             self.root.bell()
             messagebox.showinfo("Session complete", "Great work! Your completed session has been logged when a subject was selected.", parent=self.root)
             return
@@ -113,7 +116,7 @@ class FocusMode:
         if not subject:
             return
         try:
-            log_session(SESSION_FILE, subject, chapter, int(self.minutes.get()), "Focus")
+            log_session(SESSION_FILE, subject, chapter, max(1, self.total_seconds // 60), "Focus")
             if chapter:
                 schedule_revision(REVISION_FILE, subject, chapter)
         except (OSError, ValueError) as exc:
@@ -130,6 +133,7 @@ class FocusMode:
     def reset(self):
         self.pause()
         self.remaining = 0
+        self.total_seconds = 0
         self.clock.config(text=f"{self.minutes.get():02d}:00")
         self.status.config(text="Ready when you are.")
         self.progress["value"] = 0
