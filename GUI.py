@@ -28,6 +28,7 @@ def open_feature(filename):
             "focus.py": "FocusMode",
             "settings.py": "ExamReadySettings",
             "readiness.py": "ExamReadiness",
+            "studyhub.py": "StudyIntelligence",
         }
         executable_name = executable_names[filename] + (".exe" if sys.platform == "win32" else "")
         command = [str(app_dir / executable_name)]
@@ -66,6 +67,7 @@ description.pack(pady=(18, 14))
 
 features = [
     ("Exam Readiness Gap Engine", "readiness.py"),
+    ("Study Intelligence Suite", "studyhub.py"),
     ("Exam Countdown", "countdown.py"),
     ("Pomodoro Timer", "pomodoro.py"),
     ("Study Timetable", "timetable.py"),
