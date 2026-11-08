@@ -87,9 +87,19 @@ jobs:
             # PyInstaller signs the initial bundle before we add the feature
             # executables and CSV files. Re-sign the completed bundle so its
             # resource seal matches the final contents.
+            # This is an ad-hoc signature for bundle integrity only. It is
+            # NOT a Developer ID signature and cannot be Apple-notarized.
             codesign --force --deep --sign - --timestamp=none release/ExamReadyTimer.app
             codesign --verify --deep --strict --verbose=2 release/ExamReadyTimer.app
-            spctl --assess --type execute --verbose=2 release/ExamReadyTimer.app || true
+            codesign --display --verbose=4 release/ExamReadyTimer.app
+
+            # Gatekeeper rejection is expected for an unnotarized community
+            # build. Record the result explicitly; never treat it as trusted.
+            if spctl --assess --type execute --verbose=2 release/ExamReadyTimer.app; then
+              echo "Gatekeeper accepted this app."
+            else
+              echo "::warning::Gatekeeper rejected this unnotarized build. Do not advertise it as a normally trusted macOS app."
+            fi
           else
             cp "dist/ExamReadyTimer$EXT" release/
             for name in ExamCountdown PomodoroTimer StudyTimetable SubjectTracker ProgressAnalytics FocusMode ExamReadySettings ExamReadiness StudyIntelligence; do
