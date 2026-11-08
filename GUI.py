@@ -4,6 +4,7 @@ import sys
 from pathlib import Path
 
 from storage import initialize_user_data
+from theme import apply_dark_theme
 
 APP_DIR = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent
 USER_DATA_DIR = initialize_user_data(app_dir=APP_DIR)
@@ -13,7 +14,7 @@ window = tk.Tk()
 window.title("ExamReadyTimer | Study Dashboard")
 window.geometry("750x760")
 window.minsize(520, 600)
-window.configure(bg="#0B1020")
+apply_dark_theme(window)
 
 
 def open_feature(filename):
@@ -43,7 +44,7 @@ title = tk.Label(
     text="ExamReady",
     font=("Arial", 30, "bold"),
     bg="#0B1020",
-    fg="#172544"
+    fg="#E8EEFF"
 )
 title.pack(pady=(24, 5))
 
@@ -85,8 +86,8 @@ for feature, filename in features:
         width=32,
         height=2,
         bg="#18243D",
-        fg="#172544",
-        activebackground="#C7D4F2",
+        fg="#E8EEFF",
+        activebackground="#34496F",
         relief="flat",
         cursor="hand2",
         command=lambda f=filename: open_feature(f)
