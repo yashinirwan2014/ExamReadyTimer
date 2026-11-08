@@ -21,7 +21,7 @@ System Features
 * Transparent estimates: Shows days remaining, pending chapters, hours needed, available capacity, required daily pace and estimated shortfall. These are planning estimates, not predictions of marks or mastery.
 
 ∆ Study Intelligence Suite
-* Study-Time Ledger: Save real completed study sessions by subject, chapter, duration and session type; the built-in focus timer records completed or manually saved elapsed time.
+* Study-Time Ledger: Save real completed study sessions by subject, chapter, duration and session type; the Study Intelligence timer records completed or manually saved elapsed time, while Pomodoro and Focus Mode can automatically log completed blocks when a subject is selected.
 * Subject Analytics: Review today's minutes, the last 7 and 30 days, subject totals, session counts and consecutive study-day streaks.
 * Adaptive Daily Planner: Suggests pending chapters using upcoming exam dates, exam priority and recent subject activity, within the time budget you set.
 * Recovery Planner: Identifies today's timetable blocks whose start time has passed and which are not marked completed, so you can decide what to reschedule.
