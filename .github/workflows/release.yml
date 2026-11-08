@@ -2,6 +2,7 @@ name: Build downloadable desktop apps
 
 on:
   push:
+    branches: ["main"]
     tags:
       - "v*"
   workflow_dispatch:
