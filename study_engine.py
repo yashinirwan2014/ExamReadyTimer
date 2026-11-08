@@ -166,7 +166,13 @@ def complete_revision(path: str | Path, subject: str, chapter: str,
     target["status"] = "Completed"
     target["last_reviewed"] = reviewed_on.isoformat()
     interval = int(target.get("interval_days") or 1)
-    next_interval = min(interval * 2, 60)
+    next_interval = {1: 3, 3: 7, 7: 14, 14: 30, 30: 60}.get(interval, min(interval * 2, 60))
+    for row in rows:
+        if (row is not target
+                and row.get("subject", "").casefold() == subject.casefold()
+                and row.get("chapter", "").casefold() == chapter.casefold()
+                and row.get("status", "Due").casefold() == "due"):
+            row["status"] = "Superseded"
     rows.append({
         "subject": subject, "chapter": chapter,
         "due_date": (reviewed_on + timedelta(days=next_interval)).isoformat(),
