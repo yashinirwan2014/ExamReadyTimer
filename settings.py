@@ -85,7 +85,7 @@ class SettingsWindow:
             return
         if not messagebox.askyesno(
             "Replace existing data?",
-            "Restoring will replace matching exam, timetable and syllabus files. Continue?",
+            "Restoring will replace matching exam, timetable, syllabus and reminder-history files. Continue?",
             parent=self.root
         ):
             return
