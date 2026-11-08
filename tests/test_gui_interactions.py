@@ -13,6 +13,7 @@ import zipfile
 
 import pytest
 
+import GUI
 import countdown
 import focus
 import pomodoro
@@ -73,6 +74,35 @@ def write_subjects(path):
         "Subject,Chapter,Status\nPhysics,Ray Optics,Pending\n",
         encoding="utf-8",
     )
+
+
+
+def test_dashboard_feature_buttons_launch_each_window(root, tmp_path, monkeypatch):
+    monkeypatch.setattr(GUI, "USER_DATA_DIR", tmp_path)
+    launched = []
+    monkeypatch.setattr(GUI.subprocess, "Popen",
+                        lambda command, cwd: launched.append((command, cwd)))
+    GUI.build_dashboard(root)
+
+    features = [
+        ("Exam Readiness Gap Engine", "readiness.py"),
+        ("Study Intelligence Suite", "studyhub.py"),
+        ("Exam Countdown", "countdown.py"),
+        ("Pomodoro Timer", "pomodoro.py"),
+        ("Study Timetable", "timetable.py"),
+        ("Subject Tracker", "tracker.py"),
+        ("Progress Analytics", "progress.py"),
+        ("Focus Mode", "focus.py"),
+        ("Settings & Backup", "settings.py"),
+    ]
+    for label, filename in features:
+        click(root, label)
+
+    assert len(launched) == len(features)
+    assert [item[0][-1] for item in launched] == [
+        str(GUI.APP_DIR / filename) for _, filename in features
+    ]
+    assert all(cwd == str(tmp_path) for _, cwd in launched)
 
 
 def test_exam_planner_add_and_delete_through_buttons(root, tmp_path, monkeypatch):
