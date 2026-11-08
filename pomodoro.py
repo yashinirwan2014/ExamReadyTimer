@@ -6,6 +6,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 
 from storage import initialize_user_data
+from theme import apply_dark_theme
 from study_engine import log_session, schedule_revision
 
 BG, NAVY, MUTED = "#0B1020", "#172544", "#9AA9C8"
@@ -22,21 +23,7 @@ class PomodoroTimer:
         root.title("ExamReadyTimer | Pomodoro")
         root.geometry("520x570")
         root.minsize(420, 480)
-        root.configure(bg=BG)
-        root.option_add("*Foreground", "#E8EEFF")
-        style = ttk.Style(root)
-        try:
-            style.theme_use("clam")
-        except tk.TclError:
-            pass
-        style.configure("TFrame", background="#0B1020")
-        style.configure("TLabel", background="#0B1020", foreground="#E8EEFF")
-        style.configure("TButton", background="#263657", foreground="#E8EEFF", padding=7)
-        style.map("TButton", background=[("active", "#34496F")])
-        style.configure("TEntry", fieldbackground="#18243D", foreground="#E8EEFF")
-        style.configure("TCombobox", fieldbackground="#18243D", background="#263657", foreground="#E8EEFF")
-        style.configure("Treeview", background="#111B30", fieldbackground="#111B30", foreground="#E8EEFF")
-        style.configure("Treeview.Heading", background="#263657", foreground="#E8EEFF")
+        apply_dark_theme(root)
         self.study_minutes = tk.IntVar(value=25)
         self.break_minutes = tk.IntVar(value=5)
         self.total_sessions = tk.IntVar(value=4)
@@ -62,7 +49,7 @@ class PomodoroTimer:
     def build(self):
         header = tk.Frame(self.root, bg=NAVY, padx=24, pady=20)
         header.pack(fill="x")
-        tk.Label(header, text="Pomodoro Timer", bg=NAVY, fg="#18243D",
+        tk.Label(header, text="Pomodoro Timer", bg=NAVY, fg="#E8EEFF",
                  font=("Arial", 22, "bold")).pack(anchor="w")
         tk.Label(header, text="Focus deeply. Rest properly. Repeat.",
                  bg=NAVY, fg="#C7D4F2", font=("Arial", 10)).pack(anchor="w", pady=(4, 0))
@@ -88,10 +75,10 @@ class PomodoroTimer:
         self.chapter_combo.grid(row=1, column=1, sticky="ew")
         study_target.columnconfigure(0, weight=1)
         study_target.columnconfigure(1, weight=1)
-        self.phase_label = tk.Label(body, text="Ready to focus?", bg=BG, fg=NAVY,
+        self.phase_label = tk.Label(body, text="Ready to focus?", bg=BG, fg="#E8EEFF",
                                     font=("Arial", 16, "bold"))
         self.phase_label.pack(pady=(35, 5))
-        self.clock = tk.Label(body, text="25:00", bg=BG, fg=NAVY, font=("Arial", 54, "bold"))
+        self.clock = tk.Label(body, text="25:00", bg=BG, fg="#E8EEFF", font=("Arial", 54, "bold"))
         self.clock.pack(pady=4)
         self.progress = ttk.Progressbar(body, maximum=100, mode="determinate")
         self.progress.pack(fill="x", pady=14)
