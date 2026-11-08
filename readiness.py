@@ -8,6 +8,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 
 from storage import initialize_user_data
+from theme import apply_dark_theme
 
 APP_DIR = Path(__import__("sys").executable).resolve().parent if getattr(__import__("sys"), "frozen", False) else Path(__file__).resolve().parent
 DATA_DIR = initialize_user_data(app_dir=APP_DIR)
@@ -121,21 +122,7 @@ class ReadinessDashboard:
         root.title("ExamReadyTimer | Exam Readiness")
         root.geometry("1020x650")
         root.minsize(780, 500)
-        root.configure(bg=BG)
-        root.option_add("*Foreground", "#E8EEFF")
-        style = ttk.Style(root)
-        try:
-            style.theme_use("clam")
-        except tk.TclError:
-            pass
-        style.configure("TFrame", background="#0B1020")
-        style.configure("TLabel", background="#0B1020", foreground="#E8EEFF")
-        style.configure("TButton", background="#263657", foreground="#E8EEFF", padding=7)
-        style.map("TButton", background=[("active", "#34496F")])
-        style.configure("TEntry", fieldbackground="#18243D", foreground="#E8EEFF")
-        style.configure("TCombobox", fieldbackground="#18243D", background="#263657", foreground="#E8EEFF")
-        style.configure("Treeview", background="#111B30", fieldbackground="#111B30", foreground="#E8EEFF")
-        style.configure("Treeview.Heading", background="#263657", foreground="#E8EEFF")
+        apply_dark_theme(root)
         self.daily_hours = tk.StringVar(value=str(DEFAULT_DAILY_HOURS))
         self.chapter_hours = tk.StringVar(value=str(DEFAULT_CHAPTER_HOURS))
         self.build()
@@ -144,20 +131,20 @@ class ReadinessDashboard:
     def build(self):
         header = tk.Frame(self.root, bg=NAVY, padx=24, pady=18)
         header.pack(fill="x")
-        tk.Label(header, text="Exam Readiness Gap Engine", bg=NAVY, fg="#18243D",
+        tk.Label(header, text="Exam Readiness Gap Engine", bg=NAVY, fg="#E8EEFF",
                  font=("Arial", 22, "bold")).pack(anchor="w")
         tk.Label(header, text="See whether your remaining syllabus fits the time left before each exam.",
                  bg=NAVY, fg="#C7D4F2", font=("Arial", 10)).pack(anchor="w", pady=(4, 0))
         body = tk.Frame(self.root, bg=BG, padx=20, pady=16)
         body.pack(fill="both", expand=True)
-        controls = tk.LabelFrame(body, text="Planning assumptions", bg=BG, fg=NAVY, padx=12, pady=10)
+        controls = tk.LabelFrame(body, text="Planning assumptions", bg=BG, fg="#E8EEFF", padx=12, pady=10)
         controls.pack(fill="x", pady=(0, 12))
         tk.Label(controls, text="Available study hours per day", bg=BG).grid(row=0, column=0, sticky="w")
         tk.Entry(controls, textvariable=self.daily_hours, width=9).grid(row=1, column=0, sticky="w", padx=(0, 18))
         tk.Label(controls, text="Estimated hours per pending chapter", bg=BG).grid(row=0, column=1, sticky="w")
         tk.Entry(controls, textvariable=self.chapter_hours, width=9).grid(row=1, column=1, sticky="w", padx=(0, 18))
         ttk.Button(controls, text="Recalculate", command=self.refresh).grid(row=1, column=2, sticky="w")
-        self.summary = tk.Label(body, text="", bg=BG, fg=NAVY, font=("Arial", 12, "bold"))
+        self.summary = tk.Label(body, text="", bg=BG, fg="#E8EEFF", font=("Arial", 12, "bold"))
         self.summary.pack(anchor="w", pady=(0, 10))
         columns = ("exam", "subject", "date", "days", "syllabus", "needed", "capacity", "pace", "gap", "status")
         self.table = ttk.Treeview(body, columns=columns, show="headings")
