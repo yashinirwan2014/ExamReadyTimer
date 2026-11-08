@@ -29,6 +29,7 @@ class PomodoroTimer:
         self.session = 1
         self.phase = "Study"
         self.remaining = 0
+        self.phase_duration_seconds = 0
         self.running = False
         self.completed = False
         self.after_id = None
@@ -103,7 +104,8 @@ class PomodoroTimer:
             except (tk.TclError, ValueError):
                 messagebox.showwarning("Check your settings", "Use positive whole numbers for all timer settings.", parent=self.root)
                 return
-            self.remaining = (self.study_minutes.get() if self.phase == "Study" else self.break_minutes.get()) * 60
+            self.phase_duration_seconds = (self.study_minutes.get() if self.phase == "Study" else self.break_minutes.get()) * 60
+            self.remaining = self.phase_duration_seconds
         self.running = True
         self.tick()
 
@@ -111,8 +113,8 @@ class PomodoroTimer:
         self.clock.config(text=f"{self.remaining // 60:02d}:{self.remaining % 60:02d}")
         self.phase_label.config(text=f"{self.phase} time")
         self.session_label.config(text=f"Session {self.session} of {self.total_sessions.get()}")
-        total = (self.study_minutes.get() if self.phase == "Study" else self.break_minutes.get()) * 60
-        self.progress["value"] = 100 * (1 - self.remaining / max(total, 1))
+        total = max(self.phase_duration_seconds, 1)
+        self.progress["value"] = 100 * (1 - self.remaining / total)
         if self.remaining <= 0:
             self.root.bell()
             if self.phase == "Study":
@@ -127,7 +129,8 @@ class PomodoroTimer:
             else:
                 self.phase = "Study"
                 self.session += 1
-            self.remaining = (self.study_minutes.get() if self.phase == "Study" else self.break_minutes.get()) * 60
+            self.phase_duration_seconds = (self.study_minutes.get() if self.phase == "Study" else self.break_minutes.get()) * 60
+            self.remaining = self.phase_duration_seconds
             messagebox.showinfo("Session complete", f"Time for {self.phase.lower()}!", parent=self.root)
             self.tick()
             return
@@ -146,7 +149,7 @@ class PomodoroTimer:
         if not subject:
             return
         try:
-            log_session(SESSION_FILE, subject, chapter, int(self.study_minutes.get()), "Pomodoro")
+            log_session(SESSION_FILE, subject, chapter, max(1, self.phase_duration_seconds // 60), "Pomodoro")
             if chapter:
                 schedule_revision(REVISION_FILE, subject, chapter)
         except (OSError, ValueError) as exc:
@@ -161,6 +164,7 @@ class PomodoroTimer:
     def reset(self):
         self.pause()
         self.session, self.phase, self.remaining = 1, "Study", 0
+        self.phase_duration_seconds = 0
         self.completed = False
         self.clock.config(text=f"{self.study_minutes.get():02d}:00")
         self.phase_label.config(text="Ready to focus?")
