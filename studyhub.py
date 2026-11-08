@@ -288,18 +288,22 @@ class StudyIntelligence:
         self.timer_status.config(text="Timer paused. Use Save elapsed time to keep the completed minutes.")
 
     def _save_timer_session(self):
-        elapsed = self.timer_total_seconds - self.remaining_seconds
+        elapsed = max(0, self.timer_total_seconds - self.remaining_seconds)
         minutes = elapsed // 60
-        if minutes > 0:
-            subject, chapter = self.selected_details()
-            log_session(SESSION_FILE, subject, chapter, minutes, "Focus")
-            if chapter:
-                schedule_revision(REVISION_FILE, subject, chapter)
+        # Keep a sub-minute session available so the user can resume it instead
+        # of silently discarding time that cannot yet be represented in the ledger.
+        if minutes < 1:
+            return 0
+        subject, chapter = self.selected_details()
+        log_session(SESSION_FILE, subject, chapter, minutes, "Focus")
+        if chapter:
+            schedule_revision(REVISION_FILE, subject, chapter)
         display_minutes = max(1, self.timer_total_seconds // 60)
         self.remaining_seconds = 0
         self.timer_total_seconds = 0
         self.clock.config(text=f"{display_minutes:02d}:00")
         self.refresh_all()
+        return minutes
 
     def save_elapsed(self):
         if self.timer_total_seconds <= 0:
@@ -310,11 +314,14 @@ class StudyIntelligence:
             self.timer_after = None
         self.timer_running = False
         try:
-            self._save_timer_session()
+            saved_minutes = self._save_timer_session()
         except (ValueError, OSError, tk.TclError) as exc:
             messagebox.showwarning("Could not save elapsed time", str(exc), parent=self.root)
             return
-        self.timer_status.config(text="Elapsed focus time saved to your study ledger.")
+        if saved_minutes < 1:
+            self.timer_status.config(text="Less than one full minute has elapsed. Your paused timer is preserved; resume it or wait before saving.")
+            return
+        self.timer_status.config(text=f"Saved {saved_minutes} elapsed minute(s) to your study ledger.")
 
     def generate_plan(self):
         try:
