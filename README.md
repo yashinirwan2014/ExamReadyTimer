@@ -12,6 +12,14 @@ System Features
 * Temporal Calculations: Computes the number of days remaining until upcoming exams.
 * Exam Reminders: Shows a once-per-exam reminder when the configured reminder window begins while the Exam Planner is open. Reminder history is saved locally and included in ZIP backups. The planner must be running for an alert to appear.
 
+∆ Exam Readiness Gap Engine
+* Exam-to-syllabus matching: Links an exam to the matching subject in Subject Tracker without guessing when names do not match.
+* Workload estimate: Calculates pending chapters multiplied by your chosen average hours per chapter.
+* Capacity forecast: Compares estimated preparation hours with the study hours you say are realistically available before the exam.
+* Risk signals: Flags exams as At risk, Tight, On track, Syllabus complete, or Link a subject.
+* Adjustable assumptions: Change daily study capacity and average chapter effort, then recalculate instantly.
+* Transparent estimates: Shows days remaining, pending chapters, hours needed, available capacity, required daily pace and estimated shortfall. These are planning estimates, not predictions of marks or mastery.
+
 ∆ Event-Driven Pomodoro Timer
 * Custom Intervals: Configurable study blocks, break durations, and session counters.
 * Countdown Display: Provides a live timer for focused study sessions.
@@ -60,6 +68,8 @@ ExamReadyTimer→
 ∆ Central Tkinter dashboard and feature launcher
 °countdown.py
 ∆ Exam date and countdown calculations
+°readiness.py
+∆ Exam readiness gap analysis linking exam dates, pending chapters and available study capacity
 °pomodoro.py
 ∆ Pomodoro timer logic
 °timetable.py
@@ -81,7 +91,7 @@ ExamReadyTimer→
 °datatimetable.csv
 ∆ Student timetable storage
 °tests/
-∆ Automated tests for application data storage
+∆ Automated tests for storage, timetable rules and exam readiness calculations
 °.github/workflows/
 ∆ Automated application checks, cross-platform tests, and desktop release builds
 
