@@ -1,4 +1,4 @@
-"""Real Tk widget interaction tests for the student-facing workflows.
+""""Real Tk widget interaction tests for the student-facing workflows.
 
 Run on Linux with a display server, e.g.:
     xvfb-run --auto-servernum python -m pytest -q tests/test_gui_interactions.py
@@ -72,10 +72,9 @@ def silence_dialogs(monkeypatch, module):
 
 def write_subjects(path):
     path.write_text(
-        "Subject,Chapter,Status\nPhysics,Ray Optics,Pending\n",
+        "Subject,Chapter,Status\\nPhysics,Ray Optics,Pending\\n",
         encoding="utf-8",
     )
-
 
 
 def test_dashboard_feature_buttons_launch_each_window(root, tmp_path, monkeypatch):
@@ -85,14 +84,15 @@ def test_dashboard_feature_buttons_launch_each_window(root, tmp_path, monkeypatc
                         lambda command, cwd: launched.append((command, cwd)))
     GUI.build_dashboard(root)
 
+    # Keep these labels in sync with the names actually shown on the dashboard.
     features = [
-        ("Exam Readiness Gap Engine", "readiness.py"),
-        ("Study Intelligence Suite", "studyhub.py"),
+        ("Exam Readiness Check", "readiness.py"),
+        ("Study Sessions & Revision", "studyhub.py"),
         ("Exam Countdown", "countdown.py"),
         ("Pomodoro Timer", "pomodoro.py"),
         ("Study Timetable", "timetable.py"),
         ("Subject Tracker", "tracker.py"),
-        ("Progress Analytics", "progress.py"),
+        ("Progress Overview", "progress.py"),
         ("Focus Mode", "focus.py"),
         ("Settings & Backup", "settings.py"),
     ]
@@ -255,7 +255,7 @@ def test_settings_backup_and_restore_buttons(root, tmp_path, monkeypatch):
     monkeypatch.setattr(settings, "DATA_DIR", data)
     silence_dialogs(monkeypatch, settings)
     original = data / "dataexams.csv"
-    original.write_text("Exam,Year\nOriginal,2027\n", encoding="utf-8")
+    original.write_text("Exam,Year\\nOriginal,2027\\n", encoding="utf-8")
     archive = tmp_path / "ExamReadyTimer-Backup.zip"
     monkeypatch.setattr(settings.filedialog, "asksaveasfilename",
                         lambda **kwargs: str(archive))
@@ -268,7 +268,7 @@ def test_settings_backup_and_restore_buttons(root, tmp_path, monkeypatch):
     with zipfile.ZipFile(archive) as saved:
         assert "dataexams.csv" in saved.namelist()
 
-    original.write_text("Exam,Year\nChanged,2028\n", encoding="utf-8")
+    original.write_text("Exam,Year\\nChanged,2028\\n", encoding="utf-8")
     click(root, "Restore backup")
     assert "Original" in original.read_text(encoding="utf-8")
 
@@ -279,7 +279,7 @@ def test_study_intelligence_save_session_and_generate_plan(root, tmp_path, monke
     subjects = data / "dataorsubjects.csv"
     write_subjects(subjects)
     exams = data / "dataexams.csv"
-    exams.write_text("Exam,Year,Month,Day,Subject,Priority\n",
+    exams.write_text("Exam,Year,Month,Day,Subject,Priority\\n",
                      encoding="utf-8")
     monkeypatch.setattr(studyhub, "DATA_DIR", data)
     monkeypatch.setattr(studyhub, "SESSION_FILE", data / "study_sessions.csv")
