@@ -61,7 +61,7 @@ def build_dashboard(window):
     
     description = tk.Label(
         window,
-        text="Your personal exam preparation dashboard",
+        text="A place for your exam dates, study plan and chapter progress",
         font=("Arial", 14),
         bg="#0B1020",
         fg="#E8EEFF"
@@ -69,13 +69,13 @@ def build_dashboard(window):
     description.pack(pady=(18, 14))
     
     features = [
-        ("Exam Readiness Gap Engine", "readiness.py"),
-        ("Study Intelligence Suite", "studyhub.py"),
+        ("Exam Readiness Check", "readiness.py"),
+        ("Study Sessions & Revision", "studyhub.py"),
         ("Exam Countdown", "countdown.py"),
         ("Pomodoro Timer", "pomodoro.py"),
         ("Study Timetable", "timetable.py"),
         ("Subject Tracker", "tracker.py"),
-        ("Progress Analytics", "progress.py"),
+        ("Progress Overview", "progress.py"),
         ("Focus Mode", "focus.py"),
         ("Settings & Backup", "settings.py")
     ]
@@ -98,7 +98,7 @@ def build_dashboard(window):
     
     footer = tk.Label(
         window,
-        text="One chapter at a time. One step closer.",
+        text="Plan a little. Get some work done.",
         font=("Arial", 10, "italic"),
         bg="#0B1020",
         fg="#FFFFFF"
