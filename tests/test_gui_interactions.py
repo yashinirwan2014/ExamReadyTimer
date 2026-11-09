@@ -1,4 +1,4 @@
-""""Real Tk widget interaction tests for the student-facing workflows.
+"""Real Tk widget interaction tests for the student-facing workflows.
 
 Run on Linux with a display server, e.g.:
     xvfb-run --auto-servernum python -m pytest -q tests/test_gui_interactions.py
