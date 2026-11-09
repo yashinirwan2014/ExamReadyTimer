@@ -42,7 +42,7 @@ Keep the starter CSV files with the project when running from source. On first l
 
 The published downloads and release notes are on the [GitHub Releases page](https://github.com/yashinirwan2014/ExamReadyTimer/releases).
 
-- [Windows ZIP](https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.3.0/ExamReadyTimer-Windows.zip)
+- [Windows ZIP](https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.3.0/ExamReadyTimer-Windows.zip) — this commit triggers a fresh Windows build; use the asset after the release workflow succeeds.
 - [Linux ZIP](https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.3.0/ExamReadyTimer-Linux.zip)
 - macOS: no verified public download is currently offered. The older package should not be used while its launch and security behaviour is being checked.
 
