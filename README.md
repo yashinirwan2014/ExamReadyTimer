@@ -42,9 +42,9 @@ Keep the starter CSV files with the project when running from source. On first l
 
 The published downloads and release notes are on the [GitHub Releases page](https://github.com/yashinirwan2014/ExamReadyTimer/releases).
 
-- [Windows ZIP](https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.0.0/ExamReadyTimer-Windows.zip)
-- [Linux ZIP](https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.0.0/ExamReadyTimer-Linux.zip)
-- [macOS experimental ZIP](https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.0.0/ExamReadyTimer-macOS.zip) — ad-hoc signed, not Apple-notarized; Gatekeeper may block it.
+- [Windows ZIP](https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.1.1/ExamReadyTimer-Windows.zip)
+- [Linux ZIP](https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.1.1/ExamReadyTimer-Linux.zip)
+- [macOS experimental ZIP](https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.1.1/ExamReadyTimer-macOS.zip) — ad-hoc signed, not Apple-notarized; Gatekeeper may block it.
 
 These are portable ZIP packages, not normal installers. Read the `README-FIRST.txt` file inside the ZIP before launching. Keep the files in the extracted folder together.
 
@@ -60,7 +60,7 @@ The Settings window shows the exact folder and has backup and restore options. M
 
 ## Tests and builds
 
-The repository includes automated tests and GitHub Actions workflows. They check selected Python functions, data handling and build steps. Passing tests are useful, but they do not prove that every feature works on every computer.
+The repository includes automated tests and GitHub Actions workflows. They check Python functions, GUI interactions, data handling, session persistence and build steps. Passing tests are useful, but they do not prove that every feature works on every computer.
 
 The release workflow uses PyInstaller to package the app. The macOS build is not Apple-notarized; a successful GitHub build does not mean Apple has approved it.
 
