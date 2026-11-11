@@ -96,6 +96,7 @@ class PomodoroTimer:
         controls.pack(pady=24)
         ttk.Button(controls, text="Start", command=self.start).pack(side="left", padx=5)
         ttk.Button(controls, text="Pause", command=self.pause).pack(side="left", padx=5)
+        ttk.Button(controls, text="Resume", command=self.resume).pack(side="left", padx=5)
         ttk.Button(controls, text="Reset", command=self.reset).pack(side="left", padx=5)
         tk.Label(body, text="You can pause or reset a session at any time.",
                  bg=BG, fg=MUTED, font=("Momo Trust Display", 9)).pack(pady=(8, 0))
@@ -128,6 +129,18 @@ class PomodoroTimer:
         self.running = True
         self.save_state()
         self.tick()
+
+    def resume(self):
+        """Resume a paused or restored session without resetting its remaining time."""
+        if self.running:
+            return
+        if self.remaining <= 0:
+            messagebox.showinfo("Nothing to resume", "Press Start to begin a new focus session.", parent=self.root)
+            return
+        if self.completed:
+            messagebox.showinfo("Sessions completed", "Reset the timer before starting another set.", parent=self.root)
+            return
+        self.start()
 
     def tick(self):
         self.after_id = None

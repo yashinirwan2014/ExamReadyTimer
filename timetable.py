@@ -110,13 +110,15 @@ class StudyTimetable:
         for key, width in (("day", 95), ("time", 125), ("task", 220), ("type", 115),
                            ("priority", 80), ("duration", 75), ("status", 95)):
             self.table.column(key, width=width, anchor="center" if key != "task" else "w")
-        self.table.pack(fill="both", expand=True)
         self.table.bind("<<TreeviewSelect>>", self.on_select)
         controls = tk.Frame(body, bg=BG)
         controls.pack(fill="x", pady=(10, 0))
         ttk.Button(controls, text="Mark complete / planned", command=self.toggle_status).pack(side="left")
         ttk.Button(controls, text="Clear form", command=self.clear_form).pack(side="left", padx=8)
         ttk.Button(controls, text="Delete selected", command=self.delete).pack(side="right")
+        tk.Label(body, text="Select a row in the timetable to load it into the form for editing.",
+                 bg=BG, fg=MUTED, font=("Arial", 9)).pack(anchor="w", pady=(0, 5))
+        self.table.pack(fill="both", expand=True)
         self.summary = tk.Label(controls, text="", bg=BG, fg="#E8EEFF", font=("Arial", 10, "bold"))
         self.summary.pack(side="right", padx=12)
         tk.Label(self.root, text="Tip: overlapping blocks are flagged before saving. Duration and weekly totals are calculated automatically.",

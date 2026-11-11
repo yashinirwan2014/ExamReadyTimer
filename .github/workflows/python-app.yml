@@ -32,9 +32,31 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install Linux GUI & Tkinter System Requirements
+        shell: bash
         run: |
-          sudo apt-get update
-          sudo apt-get install -y python3-tk xvfb xauth
+          set -euo pipefail
+          # Ubuntu-hosted runners occasionally have transient DNS failures
+          # while resolving the Azure Ubuntu package mirror. Retry the
+          # package-index refresh and installation instead of failing on
+          # the first temporary network error.
+          APT_OPTIONS=(
+            -o Acquire::Retries=5
+            -o Acquire::http::Timeout=30
+            -o Acquire::https::Timeout=30
+          )
+          for attempt in 1 2 3; do
+            echo "Ubuntu package setup attempt $attempt of 3"
+            if sudo apt-get "${APT_OPTIONS[@]}" update &&
+               sudo apt-get "${APT_OPTIONS[@]}" install -y python3-tk xvfb xauth; then
+              exit 0
+            fi
+            if [ "$attempt" -lt 3 ]; then
+              echo "Package mirror unavailable; retrying in 15 seconds."
+              sleep 15
+            fi
+          done
+          echo "::error::Could not install Tkinter/Xvfb after three attempts."
+          exit 1
 
       - name: Install Application Core Dependencies
         run: |
