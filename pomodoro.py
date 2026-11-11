@@ -9,12 +9,14 @@ from storage import initialize_user_data
 from theme import apply_dark_theme
 from study_engine import log_session, schedule_revision
 from completion_sound import play_completion_chime
+from session_state import clear_session, load_session, save_session
 
 BG, NAVY, MUTED = "#080808", "#101010", "#FFFFFF"
 APP_DIR = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent
 DATA_DIR = initialize_user_data(app_dir=APP_DIR)
 SESSION_FILE = DATA_DIR / "study_sessions.csv"
 REVISION_FILE = DATA_DIR / "revision_schedule.csv"
+SESSION_STATE_FILE = DATA_DIR / "pomodoro_state.json"
 SUBJECT_FILE = DATA_DIR / "dataorsubjects.csv"
 
 
@@ -46,6 +48,8 @@ class PomodoroTimer:
         self.subject_var = tk.StringVar()
         self.chapter_var = tk.StringVar()
         self.build()
+        self.restore_saved_session()
+        self.root.protocol("WM_DELETE_WINDOW", self.close)
 
     def build(self):
         header = tk.Frame(self.root, bg=NAVY, padx=24, pady=20)
@@ -109,6 +113,7 @@ class PomodoroTimer:
             self.phase_duration_seconds = (self.study_minutes.get() if self.phase == "Study" else self.break_minutes.get()) * 60
             self.remaining = self.phase_duration_seconds
         self.running = True
+        self.save_state()
         self.tick()
 
     def tick(self):
@@ -128,6 +133,7 @@ class PomodoroTimer:
                     self.phase_label.config(text="All sessions completed! 🎉")
                     self.clock.config(text="00:00")
                     self.progress["value"] = 100
+                    clear_session(SESSION_STATE_FILE)
                     return
                 self.phase = "Break"
             else:
@@ -141,10 +147,63 @@ class PomodoroTimer:
             self.clock.config(text=f"{self.remaining // 60:02d}:{self.remaining % 60:02d}")
             self.session_label.config(text=f"Session {self.session} of {self.total_sessions.get()}")
             self.progress["value"] = 0
+            self.save_state()
             self.after_id = self.root.after(1000, self.tick)
             return
         self.remaining -= 1
+        self.save_state()
         self.after_id = self.root.after(1000, self.tick)
+
+    def save_state(self):
+        if self.completed:
+            clear_session(SESSION_STATE_FILE)
+            return
+        save_session(SESSION_STATE_FILE, {
+            "study_minutes": self.study_minutes.get(),
+            "break_minutes": self.break_minutes.get(),
+            "total_sessions": self.total_sessions.get(),
+            "session": self.session,
+            "phase": self.phase,
+            "remaining": self.remaining,
+            "phase_duration_seconds": self.phase_duration_seconds,
+            "completed": self.completed,
+            "subject": self.subject_var.get(),
+            "chapter": self.chapter_var.get(),
+            "running": False,
+        })
+
+    def restore_saved_session(self):
+        state = load_session(SESSION_STATE_FILE)
+        if state is None:
+            return
+        if not messagebox.askyesno(
+            "Continue previous session",
+            "A previous Pomodoro session was saved. Would you like to continue where you left off?",
+            parent=self.root,
+        ):
+            clear_session(SESSION_STATE_FILE)
+            return
+        self.study_minutes.set(state["study_minutes"])
+        self.break_minutes.set(state["break_minutes"])
+        self.total_sessions.set(state["total_sessions"])
+        self.session = state["session"]
+        self.phase = state["phase"]
+        self.remaining = state["remaining"]
+        self.phase_duration_seconds = state["phase_duration_seconds"]
+        self.completed = state["completed"]
+        self.subject_var.set(state["subject"])
+        self.chapter_var.set(state["chapter"])
+        self.update_chapters()
+        self.clock.config(text=f"{self.remaining // 60:02d}:{self.remaining % 60:02d}")
+        self.phase_label.config(text=f"{self.phase} time — session restored")
+        self.session_label.config(text=f"Session {self.session} of {self.total_sessions.get()}")
+        total = max(self.phase_duration_seconds, 1)
+        self.progress["value"] = 100 * (1 - self.remaining / total)
+
+    def close(self):
+        self.pause()
+        self.save_state()
+        self.root.destroy()
 
     def update_chapters(self, _event=None):
         chapters = self.subjects.get(self.subject_var.get(), [])
@@ -169,12 +228,14 @@ class PomodoroTimer:
         if self.after_id:
             self.root.after_cancel(self.after_id)
             self.after_id = None
+        self.save_state()
 
     def reset(self):
         self.pause()
         self.session, self.phase, self.remaining = 1, "Study", 0
         self.phase_duration_seconds = 0
         self.completed = False
+        clear_session(SESSION_STATE_FILE)
         self.clock.config(text=f"{self.study_minutes.get():02d}:00")
         self.phase_label.config(text="Ready to focus?")
         self.session_label.config(text=f"Session 1 of {self.total_sessions.get()}")
