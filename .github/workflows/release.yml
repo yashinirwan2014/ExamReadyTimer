@@ -189,6 +189,15 @@ jobs:
         with:
           name: ExamReadyTimer-macOS
           path: release-assets
+
+      - name: Generate and verify SHA-256 checksums
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd release-assets
+          sha256sum ExamReadyTimer-Windows.zip ExamReadyTimer-Linux.zip ExamReadyTimer-macOS.zip > SHA256SUMS.txt
+          sha256sum --check SHA256SUMS.txt
+
       - name: Create formal release and upload desktop downloads
         uses: softprops/action-gh-release@v2
         with:
@@ -211,11 +220,17 @@ jobs:
             - **Windows:** ExamReadyTimer-Windows.zip
             - **Linux:** ExamReadyTimer-Linux.zip
             - **macOS (experimental, unnotarized):** ExamReadyTimer-macOS.zip
+            - **SHA-256 checksums:** SHA256SUMS.txt
+
+            Verify the downloaded ZIP against its entry in SHA256SUMS.txt before extracting. Checksums confirm file integrity only; they are not a malware scan, a digital signature, or a Microsoft safety certification.
+
+            **Windows security:** This build is not signed with a trusted code-signing certificate, so browser or SmartScreen reputation warnings may appear. Do not disable Defender to run it. If Microsoft Defender incorrectly detects the official build, submit it through Microsoft's [file submission portal](https://www.microsoft.com/en-us/wdsi/filesubmission). No Microsoft approval or malware-free guarantee is claimed.
 
             Extract the ZIP. On macOS, move ExamReadyTimer.app to Applications and open it. See README-FIRST.txt inside each archive for launch and data-preservation instructions.
           files: |
             release-assets/ExamReadyTimer-Windows.zip
             release-assets/ExamReadyTimer-Linux.zip
             release-assets/ExamReadyTimer-macOS.zip
+            release-assets/SHA256SUMS.txt
           fail_on_unmatched_files: true
           make_latest: true

@@ -45,8 +45,23 @@ The published downloads and release notes are on the [GitHub Releases page](http
 - [Windows ZIP](https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.1.1/ExamReadyTimer-Windows.zip)
 - [Linux ZIP](https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.1.1/ExamReadyTimer-Linux.zip)
 - [macOS experimental ZIP](https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.1.1/ExamReadyTimer-macOS.zip) — ad-hoc signed, not Apple-notarized; Gatekeeper may block it.
+- [SHA-256 checksums](https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.1.1/SHA256SUMS.txt)
 
 These are portable ZIP packages, not normal installers. Read the `README-FIRST.txt` file inside the ZIP before launching. Keep the files in the extracted folder together.
+
+### Verify a download on Windows
+
+Open PowerShell in the folder containing the downloaded ZIP and run:
+
+```powershell
+Get-FileHash .\\ExamReadyTimer-Windows.zip -Algorithm SHA256
+```
+
+Compare the displayed hash with the Windows ZIP entry in `SHA256SUMS.txt` on the release page. Use the matching filename for Linux or macOS. A matching hash confirms that the file matches the published release; it does not certify that Windows will consider the app safe or malware-free.
+
+### Windows security warnings
+
+A new, unsigned desktop app can receive a browser download warning or a Microsoft Defender SmartScreen reputation warning. These warnings are not proof that the app is malicious, and a clean scan is not a guarantee of safety. Download only from this repository's official Releases page, verify the checksum, and do not disable Microsoft Defender or bypass a warning if you are unsure. If Microsoft Defender identifies the official build as a false positive, use Microsoft's [file submission portal](https://www.microsoft.com/en-us/wdsi/filesubmission) to submit it for review. Free checksum verification does not replace a trusted code-signing certificate; we are not claiming the app is digitally signed or Microsoft-certified.
 
 ## Where the app saves data
 
@@ -76,3 +91,10 @@ See [LICENSE](LICENSE) and [COPYRIGHT](COPYRIGHT) for the project's terms. A pub
 ## Typeface
 
 MoMo Trust Display is bundled under the SIL Open Font License 1.1. Its copyright and licence notice are included in `assets/MOMO-FONT-LICENSE.txt` and each release archive.
+
+
+## Download integrity and Windows security
+
+Each desktop release includes a `SHA256SUMS.txt` file containing SHA-256 hashes for the three downloadable ZIP archives. Verify the archive you downloaded before extracting it. Checksums detect accidental corruption or changes in transit; they do not scan a file, prove that software is harmless, create SmartScreen reputation, or replace a trusted digital signature.
+
+ExamReadyTimer's Windows executable is currently unsigned. A browser warning or SmartScreen reputation prompt can therefore appear for some users, especially while the download has little reputation. Do not disable antivirus protection to run it. Download from the official repository, verify the checksum, and ask a trusted adult or knowledgeable technician if a security prompt is unclear. If Microsoft Defender incorrectly detects the official release, submit the file through [Microsoft's security intelligence file submission portal](https://www.microsoft.com/en-us/wdsi/filesubmission). The project does not claim Microsoft approval or a malware-free guarantee.

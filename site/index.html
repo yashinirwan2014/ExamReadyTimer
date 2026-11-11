@@ -107,6 +107,7 @@
         <a href="#features">Features</a>
         <a href="#privacy">Your data</a>
         <a href="#download">Downloads</a>
+        <a href="#security">Security</a>
         <a href="https://github.com/yashinirwan2014/ExamReadyTimer">GitHub</a>
       </div>
     </nav>
@@ -196,11 +197,27 @@
             <a class="btn secondary" href="https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.1.1/ExamReadyTimer-macOS.zip">macOS experimental download</a>
             <a class="btn" href="https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.1.1/ExamReadyTimer-Linux.zip">Linux download</a>
           </div>
-          <p class="note">Version details and release notes: <a href="https://github.com/yashinirwan2014/ExamReadyTimer/releases/tag/v1.1.1">ExamReadyTimer v1.1.1</a>. macOS warning: experimental, unnotarized build; Gatekeeper may block it. Only download if you understand the limitation.</p>
+          <p class="note">Version details and release notes: <a href="https://github.com/yashinirwan2014/ExamReadyTimer/releases/tag/v1.1.1">ExamReadyTimer v1.1.1</a>. <a href="https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.1.1/SHA256SUMS.txt">Download SHA-256 checksums</a> and verify your ZIP before extracting. macOS warning: experimental, unnotarized build; Gatekeeper may block it.</p>
           <div class="actions" style="justify-content:center">
             <a class="btn secondary" href="https://github.com/yashinirwan2014/ExamReadyTimer/blob/main/LICENSE">Read the licence</a>
           </div>
         </div>
+      </div>
+    </section>
+
+    <section id="security">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="eyebrow">Download safely</div>
+          <h2>Verify the file before opening it.</h2>
+          <p>Every v1.1.1 release includes SHA-256 checksums for the Windows, Linux and macOS ZIP files. Compare your downloaded file's hash with the matching entry in the release's SHA256SUMS.txt file.</p>
+        </div>
+        <div class="cards">
+          <article class="card"><div class="icon">🔐</div><h3>Check the download</h3><p>On Windows, open PowerShell in the download folder and run <code>Get-FileHash .\\ExamReadyTimer-Windows.zip -Algorithm SHA256</code>. Compare the result with the Windows entry in SHA256SUMS.txt.</p></article>
+          <article class="card"><div class="icon">🛡️</div><h3>Understand Windows warnings</h3><p>The Windows build is currently unsigned, so browser or SmartScreen reputation warnings may appear. Do not disable Microsoft Defender or bypass a warning if you are unsure.</p></article>
+          <article class="card"><div class="icon">📝</div><h3>Report a false positive</h3><p>If Microsoft Defender incorrectly flags the official download, submit the file to <a href="https://www.microsoft.com/en-us/wdsi/filesubmission">Microsoft's file submission portal</a> for review.</p></article>
+        </div>
+        <p class="note">A matching checksum verifies file integrity only. It is not a malware scan, digital signature, Microsoft certification or guarantee that a file is harmless. The macOS package remains experimental and is not Apple-notarized.</p>
       </div>
     </section>
   </main>
