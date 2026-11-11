@@ -54,6 +54,7 @@ class SyllabusTracker:
         self.selected_subject = None
         self.selected_chapter_text = tk.StringVar(value="No chapter selected")
         self.selected_status_text = tk.StringVar(value="Select a row to see its status")
+        self.chapter_search_var = tk.StringVar()
         self._build_ui()
         self.refresh_subjects()
 
@@ -118,6 +119,12 @@ class SyllabusTracker:
         self.progress_label.pack(anchor="w", pady=(4, 8))
         self.progress = ttk.Progressbar(right, mode="determinate", maximum=100)
         self.progress.pack(fill="x", pady=(0, 12))
+
+        tk.Label(right, text="FIND CHAPTER / UNIT / TOPIC", bg="#0B1020", fg="#FFFFFF",
+                 font=("Arial", 8, "bold")).pack(anchor="w", pady=(2, 4))
+        chapter_search = ttk.Entry(right, textvariable=self.chapter_search_var)
+        chapter_search.pack(fill="x", pady=(0, 8))
+        self.chapter_search_var.trace_add("write", lambda *_args: self.show_subject(self.selected_subject) if self.selected_subject else None)
 
         columns = ("status", "chapter")
         self.chapter_table = ttk.Treeview(right, columns=columns, show="headings", selectmode="browse")
@@ -207,15 +214,17 @@ class SyllabusTracker:
         self.selected_subject = subject
         self.subject_heading.config(text=subject)
         self.chapter_table.delete(*self.chapter_table.get_children())
+        query = self.chapter_search_var.get().strip().casefold()
         chapters = [item for item in self.subjects.get(subject, [])
-                    if item["chapter"].casefold() != PLACEHOLDER.casefold()]
+                    if item["chapter"].casefold() != PLACEHOLDER.casefold()
+                    and query in item["chapter"].casefold()]
         done = sum(item["status"] == "Completed" for item in chapters)
         total = len(chapters)
         percent = done / total * 100 if total else 0
         self.progress["value"] = percent
         self.progress_label.config(
-            text=f"{done} of {total} chapters completed  •  {percent:.0f}%"
-            if total else "No chapters entered yet — add your first chapter below."
+            text=f"{done} of {total} matching chapters completed  •  {percent:.0f}%"
+            if total else ("No chapters match this search." if query else "No chapters entered yet — add your first chapter below.")
         )
         if not chapters:
             self.chapter_table.insert("", "end", values=("—", "No chapters yet (add one below)"), tags=("empty",))
