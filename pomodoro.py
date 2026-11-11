@@ -7,6 +7,7 @@ from tkinter import ttk, messagebox
 
 from storage import initialize_user_data
 from theme import apply_dark_theme
+from navigation import add_home_button
 from study_engine import log_session, schedule_revision
 from completion_sound import play_completion_chime
 from session_state import clear_session, load_session, save_session
@@ -50,6 +51,7 @@ class PomodoroTimer:
         self.build()
         self.restore_saved_session()
         self.root.protocol("WM_DELETE_WINDOW", self.close)
+        add_home_button(self.root, self.close)
 
     def build(self):
         header = tk.Frame(self.root, bg=NAVY, padx=24, pady=20)
@@ -181,7 +183,7 @@ class PomodoroTimer:
             "A previous Pomodoro session was saved. Would you like to continue where you left off?",
             parent=self.root,
         ):
-            clear_session(SESSION_STATE_FILE)
+            # Keep the snapshot so the user can continue it later.
             return
         self.study_minutes.set(state["study_minutes"])
         self.break_minutes.set(state["break_minutes"])
