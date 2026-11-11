@@ -7,7 +7,8 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
 from storage import initialize_user_data
-from theme import apply_dark_theme, TEXT, ACCENT
+from theme import apply_dark_theme
+from navigation import add_home_button, TEXT, ACCENT
 from backup import backup_data, restore_data
 
 BG, NAVY, MUTED = "#0B1020", "#172544", "#FFFFFF"
@@ -22,6 +23,7 @@ class SettingsWindow:
         root.geometry("650x470")
         root.minsize(520, 400)
         apply_dark_theme(root)
+        add_home_button(self.root)
         root.option_add("*Foreground", "#E8EEFF")
         style = ttk.Style(root)
         try:
