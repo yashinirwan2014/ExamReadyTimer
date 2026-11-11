@@ -27,6 +27,6 @@ def add_home_button(root, before_home=None):
 def _go_home(root, before_home=None):
     if before_home is not None:
         before_home()
-    else:
+    if root.winfo_exists():
         root.destroy()
     subprocess.Popen(dashboard_command(), cwd=str(Path.home()))
