@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import csv
 import math
+import subprocess
+import sys
 from datetime import date
 from pathlib import Path
 import tkinter as tk
@@ -148,6 +150,7 @@ class ReadinessDashboard:
         tk.Label(controls, text="Estimated hours per pending chapter", bg=BG).grid(row=0, column=1, sticky="w")
         tk.Entry(controls, textvariable=self.chapter_hours, width=9).grid(row=1, column=1, sticky="w", padx=(0, 18))
         ttk.Button(controls, text="Recalculate", command=self.refresh).grid(row=1, column=2, sticky="w")
+        ttk.Button(controls, text="Manage exams", command=self.open_exam_planner).grid(row=1, column=3, sticky="w", padx=(12, 0))
         self.summary = tk.Label(body, text="", bg=BG, fg="#E8EEFF", font=("Arial", 12, "bold"))
         self.summary.pack(anchor="w", pady=(0, 10))
         columns = ("exam", "subject", "date", "days", "syllabus", "needed", "capacity", "pace", "gap", "status")
@@ -169,6 +172,18 @@ class ReadinessDashboard:
         tk.Label(self.root,
                  text="Estimates use your chosen hours per chapter. They do not measure chapter difficulty or guarantee exam readiness.",
                  bg=BG, fg=MUTED, font=("Arial", 9), wraplength=950).pack(anchor="w", padx=22, pady=(0, 10))
+
+    def open_exam_planner(self):
+        """Open the shared Exam Planner, which owns the exam records used here."""
+        if getattr(sys, "frozen", False):
+            executable = "ExamCountdown.exe" if sys.platform == "win32" else "ExamCountdown"
+            command = [str(APP_DIR / executable)]
+        else:
+            command = [sys.executable, str(APP_DIR / "countdown.py")]
+        try:
+            subprocess.Popen(command, cwd=str(DATA_DIR))
+        except OSError as exc:
+            messagebox.showerror("Could not open Exam Planner", str(exc), parent=self.root)
 
     def refresh(self):
         try:
@@ -198,7 +213,7 @@ class ReadinessDashboard:
         if not results:
             self.detail.config(text="No upcoming exams found. Add exam dates in Exam Planner to generate a readiness forecast.")
         elif linked < len(results):
-            self.detail.config(text="For exams showing 'Not linked', enter the exact subject name in Exam Planner and make sure that subject has chapters in Subject Tracker.")
+            self.detail.config(text="Data connection: exam name/date/subject come from Exam Planner; chapter totals and Pending/Completed status come from Subject Tracker. For exams showing 'Not linked', use Manage exams and enter a subject name that exactly matches a subject in Subject Tracker.")
         elif at_risk:
             self.detail.config(text="At-risk exams need more estimated study time than your daily capacity allows. Increase available study hours only if realistic, reduce the chapter-time estimate if appropriate, or prioritize the highest-risk syllabus.")
         else:
