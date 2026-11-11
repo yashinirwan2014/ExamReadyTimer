@@ -215,19 +215,20 @@ class SyllabusTracker:
         self.subject_heading.config(text=subject)
         self.chapter_table.delete(*self.chapter_table.get_children())
         query = self.chapter_search_var.get().strip().casefold()
-        chapters = [item for item in self.subjects.get(subject, [])
-                    if item["chapter"].casefold() != PLACEHOLDER.casefold()
-                    and query in item["chapter"].casefold()]
-        done = sum(item["status"] == "Completed" for item in chapters)
-        total = len(chapters)
+        all_chapters = [item for item in self.subjects.get(subject, [])
+                        if item["chapter"].casefold() != PLACEHOLDER.casefold()]
+        chapters = [item for item in all_chapters if query in item["chapter"].casefold()]
+        done = sum(item["status"] == "Completed" for item in all_chapters)
+        total = len(all_chapters)
         percent = done / total * 100 if total else 0
         self.progress["value"] = percent
         self.progress_label.config(
-            text=f"{done} of {total} matching chapters completed  •  {percent:.0f}%"
-            if total else ("No chapters match this search." if query else "No chapters entered yet — add your first chapter below.")
+            text=f"{done} of {total} chapters completed  •  {percent:.0f}%"
+            if total else "No chapters entered yet — add your first chapter below."
         )
         if not chapters:
-            self.chapter_table.insert("", "end", values=("—", "No chapters yet (add one below)"), tags=("empty",))
+            empty_message = "No chapters match this search." if query and total else "No chapters yet (add one below)"
+            self.chapter_table.insert("", "end", values=("—", empty_message), tags=("empty",))
         else:
             for item in chapters:
                 self.chapter_table.insert("", "end",
