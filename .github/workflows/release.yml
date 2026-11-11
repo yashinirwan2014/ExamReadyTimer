@@ -25,8 +25,29 @@ jobs:
           python-version: "3.11"
       - name: Install Tk and test requirements
         run: |
-          sudo apt-get update
-          sudo apt-get install -y python3-tk xvfb xauth
+          set -euo pipefail
+          APT_OPTIONS=(
+            -o Acquire::Retries=5
+            -o Acquire::http::Timeout=30
+            -o Acquire::https::Timeout=30
+          )
+          installed=false
+          for attempt in 1 2 3; do
+            echo "Ubuntu package setup attempt ${attempt}/3"
+            if sudo apt-get "${APT_OPTIONS[@]}" update &&
+               sudo apt-get "${APT_OPTIONS[@]}" install -y python3-tk xvfb xauth; then
+              installed=true
+              break
+            fi
+            if [ "${attempt}" -lt 3 ]; then
+              echo "Package mirror/network unavailable; retrying in 15 seconds."
+              sleep 15
+            fi
+          done
+          if [ "${installed}" != true ]; then
+            echo "::error::Unable to install Tkinter/Xvfb after three attempts. Check Ubuntu runner DNS/package mirror availability."
+            exit 1
+          fi
           python -m pip install --upgrade pip pytest
       - name: Compile all application modules
         run: python -m py_compile main.py GUI.py navigation.py countdown.py pomodoro.py completion_sound.py timetable.py tracker.py progress.py focus.py settings.py readiness.py studyhub.py study_engine.py backup.py storage.py schedule_utils.py reminders.py scripts/validate_study_data.py
