@@ -367,3 +367,61 @@ def test_pomodoro_automatically_switches_study_break_and_plays_chime(
     assert app.completed is True
     assert app.running is False
     assert chimes == ["ting-tong", "ting-tong", "ting-tong"]
+
+def test_pomodoro_back_home_saves_paused_session(root, tmp_path, monkeypatch):
+    import navigation
+
+    data = tmp_path / "home-navigation"
+    data.mkdir()
+    monkeypatch.setattr(pomodoro, "DATA_DIR", data)
+    monkeypatch.setattr(pomodoro, "SESSION_FILE", data / "study_sessions.csv")
+    monkeypatch.setattr(pomodoro, "REVISION_FILE", data / "revision_schedule.csv")
+    monkeypatch.setattr(pomodoro, "SUBJECT_FILE", data / "dataorsubjects.csv")
+    monkeypatch.setattr(pomodoro, "SESSION_STATE_FILE", data / "pomodoro_state.json")
+    launched = []
+    monkeypatch.setattr(navigation.subprocess, "Popen",
+                        lambda command, cwd: launched.append((command, cwd)))
+
+    app = pomodoro.PomodoroTimer(root)
+    app.remaining = 123
+    app.phase_duration_seconds = 300
+    app.running = True
+    click(root, "← Back to Home")
+
+    from session_state import load_session
+    saved = load_session(data / "pomodoro_state.json")
+    assert saved is not None
+    assert saved["remaining"] == 123
+    assert saved["running"] is False
+    assert len(launched) == 1
+
+
+def test_declining_restore_does_not_erase_or_silently_replace_session(
+        root, tmp_path, monkeypatch):
+    data = tmp_path / "preserve-session"
+    data.mkdir()
+    monkeypatch.setattr(pomodoro, "DATA_DIR", data)
+    monkeypatch.setattr(pomodoro, "SESSION_FILE", data / "study_sessions.csv")
+    monkeypatch.setattr(pomodoro, "REVISION_FILE", data / "revision_schedule.csv")
+    monkeypatch.setattr(pomodoro, "SUBJECT_FILE", data / "dataorsubjects.csv")
+    monkeypatch.setattr(pomodoro, "SESSION_STATE_FILE", data / "pomodoro_state.json")
+    from session_state import load_session, save_session
+    state = {
+        "study_minutes": 25, "break_minutes": 5, "total_sessions": 4,
+        "session": 2, "phase": "Study", "remaining": 777,
+        "phase_duration_seconds": 1500, "completed": False,
+        "subject": "Physics", "chapter": "Ray Optics", "running": False,
+    }
+    save_session(data / "pomodoro_state.json", state)
+    answers = iter([False, False])
+    monkeypatch.setattr(pomodoro.messagebox, "askyesno",
+                        lambda *args, **kwargs: next(answers))
+
+    app = pomodoro.PomodoroTimer(root)
+    assert app.saved_session_pending is True
+    app.start()
+    restored = load_session(data / "pomodoro_state.json")
+    assert restored is not None
+    assert restored["remaining"] == 777
+    assert restored["subject"] == "Physics"
+
