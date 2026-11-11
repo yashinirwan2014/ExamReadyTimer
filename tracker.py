@@ -6,6 +6,7 @@ from tkinter import ttk, messagebox, simpledialog
 
 from storage import initialize_user_data
 from theme import apply_dark_theme
+from navigation import add_home_button
 
 PLACEHOLDER = "Full subject syllabus"
 APP_DIR = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent
@@ -48,6 +49,7 @@ class SyllabusTracker:
         self.root.geometry("900x620")
         self.root.minsize(720, 500)
         apply_dark_theme(self.root)
+        add_home_button(self.root)
         self.subjects = load_subjects()
         self.selected_subject = None
         self._build_ui()
