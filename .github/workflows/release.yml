@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   validate:
-    name: Validate v1.0.0 source and GUI
+    name: Validate v1.1.1 source and GUI
     runs-on: ubuntu-24.04
     steps:
       - name: Check out source
@@ -27,7 +27,7 @@ jobs:
           sudo apt-get install -y python3-tk xvfb xauth
           python -m pip install --upgrade pip pytest
       - name: Compile all application modules
-        run: python -m py_compile main.py GUI.py countdown.py pomodoro.py completion_sound.py timetable.py tracker.py progress.py focus.py settings.py readiness.py studyhub.py study_engine.py backup.py storage.py schedule_utils.py reminders.py scripts/validate_study_data.py
+        run: python -m py_compile main.py GUI.py navigation.py countdown.py pomodoro.py completion_sound.py timetable.py tracker.py progress.py focus.py settings.py readiness.py studyhub.py study_engine.py backup.py storage.py schedule_utils.py reminders.py scripts/validate_study_data.py
       - name: Run complete tests with a virtual display
         run: xvfb-run --auto-servernum python -m pytest -q tests
 
@@ -169,7 +169,7 @@ jobs:
   publish-release:
     name: Publish permanent GitHub Release assets
     needs: [validate, build]
-    if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch' || (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, '[publish-v1.0.0]'))
+    if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch' || (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, '[publish-v1.1.1]'))
     runs-on: ubuntu-24.04
     permissions:
       contents: write
@@ -193,13 +193,13 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           token: ${{ github.token }}
-          tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.0.0' }}
+          tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.1.1' }}
           target_commitish: ${{ github.sha }}
-          name: ExamReadyTimer ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.0.0' }}
+          name: ExamReadyTimer ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.1.1' }}
           body: |
-            ## ExamReadyTimer ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.0.0' }}
+            ## ExamReadyTimer ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.1.1' }}
 
-            Clean ExamReadyTimer v1.0.0 release with a black-gradient interface, white bold MoMo Trust Display typography, restored study tools, and automatic Pomodoro focus/break cycles with an original two-tone completion chime.
+            Clean ExamReadyTimer v1.1.1 release with a black-gradient interface, white bold MoMo Trust Display typography, restored study tools, and automatic Pomodoro focus/break cycles with an original two-tone completion chime.
 
             **macOS notice:** The macOS ZIP is an experimental community build. It is ad-hoc signed only; it is NOT Developer ID signed or Apple-notarized. Gatekeeper may block it. Do not treat a successful GitHub build as Apple approval. Download only if you understand this limitation.
 
