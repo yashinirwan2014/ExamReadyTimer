@@ -121,21 +121,30 @@ class StudyIntelligence:
         form.pack(fill="x")
         self.subject_var = tk.StringVar()
         self.chapter_var = tk.StringVar()
+        self.curriculum_var = tk.StringVar(value="All curricula")
         self.minutes_var = tk.StringVar(value="25")
         self.kind_var = tk.StringVar(value="Focus")
-        tk.Label(form, text="Subject", bg=BG, fg=MUTED).grid(row=0, column=0, sticky="w")
+        tk.Label(form, text="Curriculum", bg=BG, fg=MUTED).grid(row=0, column=0, sticky="w")
+        prefixes = sorted({" | ".join(name.split(" | ")[:2]) for name in self.subjects if " | " in name})
+        has_general = any(" | " not in name for name in self.subjects)
+        curriculum_options = ["All curricula"] + prefixes + (["General / custom subjects"] if has_general else [])
+        self.curriculum_combo = ttk.Combobox(form, textvariable=self.curriculum_var,
+                                             values=curriculum_options, state="readonly", width=32)
+        self.curriculum_combo.grid(row=1, column=0, padx=(0, 10), pady=(4, 10), sticky="ew")
+        self.curriculum_combo.bind("<<ComboboxSelected>>", self.update_curriculum)
+        tk.Label(form, text="Subject", bg=BG, fg=MUTED).grid(row=0, column=1, sticky="w")
         self.subject_combo = ttk.Combobox(form, textvariable=self.subject_var,
                                          values=sorted(self.subjects), state="readonly", width=32)
-        self.subject_combo.grid(row=1, column=0, padx=(0, 10), pady=(4, 10), sticky="ew")
+        self.subject_combo.grid(row=1, column=1, padx=(0, 10), pady=(4, 10), sticky="ew")
         self.subject_combo.bind("<<ComboboxSelected>>", self.update_chapters)
-        tk.Label(form, text="Chapter / topic", bg=BG, fg=MUTED).grid(row=0, column=1, sticky="w")
-        self.chapter_combo = ttk.Combobox(form, textvariable=self.chapter_var, state="normal", width=32)
-        self.chapter_combo.grid(row=1, column=1, padx=(0, 10), pady=(4, 10), sticky="ew")
-        tk.Label(form, text="Minutes", bg=BG, fg=MUTED).grid(row=2, column=0, sticky="w")
-        ttk.Entry(form, textvariable=self.minutes_var, width=12).grid(row=3, column=0, sticky="w", pady=(4, 10))
-        tk.Label(form, text="Session type", bg=BG, fg=MUTED).grid(row=2, column=1, sticky="w")
+        tk.Label(form, text="Chapter / topic", bg=BG, fg=MUTED).grid(row=2, column=0, sticky="w")
+        self.chapter_combo = ttk.Combobox(form, textvariable=self.chapter_var, state="readonly", width=32)
+        self.chapter_combo.grid(row=3, column=0, padx=(0, 10), pady=(4, 10), sticky="ew")
+        tk.Label(form, text="Minutes", bg=BG, fg=MUTED).grid(row=2, column=1, sticky="w")
+        ttk.Entry(form, textvariable=self.minutes_var, width=12).grid(row=3, column=1, sticky="w", pady=(4, 10))
+        tk.Label(form, text="Session type", bg=BG, fg=MUTED).grid(row=4, column=0, sticky="w")
         ttk.Combobox(form, textvariable=self.kind_var, values=["Focus", "Pomodoro", "Revision", "Practice", "Reading", "Mock test"],
-                     state="readonly", width=20).grid(row=3, column=1, sticky="w", pady=(4, 10))
+                     state="readonly", width=20).grid(row=5, column=0, sticky="w", pady=(4, 10))
         form.columnconfigure(0, weight=1)
         form.columnconfigure(1, weight=1)
         controls = tk.Frame(tab, bg=BG)
@@ -222,8 +231,24 @@ class StudyIntelligence:
         self.stats_table.pack(fill="both", expand=True)
         ttk.Button(tab, text="Refresh analytics", command=self.refresh_stats).pack(anchor="e", pady=12)
 
+    def update_curriculum(self, _event=None):
+        selected = self.curriculum_var.get()
+        if selected == "All curricula":
+            names = sorted(self.subjects)
+        elif selected == "General / custom subjects":
+            names = sorted(name for name in self.subjects if " | " not in name)
+        else:
+            names = sorted(name for name in self.subjects if name.startswith(selected + " | "))
+        self.subject_combo["values"] = names
+        self.subject_var.set("")
+        self.chapter_var.set("")
+        self.chapter_combo["values"] = []
+        if names:
+            self.subject_var.set(names[0])
+            self.update_chapters()
+
     def update_chapters(self, _event=None):
-        chapters = [x["chapter"] for x in self.subjects.get(self.subject_var.get(), [])]
+        chapters = [x["chapter"] for x in self.subjects.get(self.subject_var.get(), []) if x.get("chapter") and x["chapter"].casefold() != "full subject syllabus"]
         self.chapter_combo["values"] = chapters
         if chapters and self.chapter_var.get() not in chapters:
             self.chapter_var.set(chapters[0])
