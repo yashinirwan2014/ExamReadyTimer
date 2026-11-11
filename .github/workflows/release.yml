@@ -61,7 +61,7 @@ jobs:
           python -m pip install pyinstaller
 
       - name: Verify release source compilation
-        run: python -m py_compile main.py GUI.py countdown.py pomodoro.py completion_sound.py timetable.py tracker.py progress.py focus.py settings.py readiness.py studyhub.py study_engine.py backup.py storage.py schedule_utils.py reminders.py scripts/validate_study_data.py
+        run: python -m py_compile main.py GUI.py navigation.py countdown.py pomodoro.py completion_sound.py timetable.py tracker.py progress.py focus.py settings.py readiness.py studyhub.py study_engine.py backup.py storage.py schedule_utils.py reminders.py scripts/validate_study_data.py
 
       - name: Build dashboard and feature executables
         shell: bash
@@ -199,7 +199,7 @@ jobs:
           body: |
             ## ExamReadyTimer ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.1.1' }}
 
-            Clean ExamReadyTimer v1.1.1 release with a black-gradient interface, white bold MoMo Trust Display typography, restored study tools, and automatic Pomodoro focus/break cycles with an original two-tone completion chime.
+            ExamReadyTimer v1.1.1 adds a consistent Back to Home control across feature windows, protects saved unfinished Pomodoro sessions from accidental replacement, and retains automatic focus/break cycles with the original two-tone completion chime. Existing study data remains in the separate per-user data folder.
 
             **macOS notice:** The macOS ZIP is an experimental community build. It is ad-hoc signed only; it is NOT Developer ID signed or Apple-notarized. Gatekeeper may block it. Do not treat a successful GitHub build as Apple approval. Download only if you understand this limitation.
 
