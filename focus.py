@@ -7,6 +7,7 @@ from tkinter import ttk, messagebox
 
 from storage import initialize_user_data
 from theme import apply_dark_theme
+from navigation import add_home_button
 from study_engine import log_session, schedule_revision
 
 BG, NAVY, MUTED = "#0B1020", "#172544", "#FFFFFF"
@@ -24,6 +25,7 @@ class FocusMode:
         root.geometry("500x480")
         root.minsize(400, 400)
         apply_dark_theme(root)
+        add_home_button(self.root)
         self.minutes = tk.IntVar(value=50)
         self.remaining = 0
         self.total_seconds = 0
