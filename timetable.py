@@ -6,6 +6,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from storage import initialize_user_data
 from theme import apply_dark_theme
+from navigation import add_home_button
 from schedule_utils import duration_minutes, times_overlap
 
 APP_DIR = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent
@@ -60,6 +61,7 @@ class StudyTimetable:
         root.geometry("980x680")
         root.minsize(780, 560)
         apply_dark_theme(root)
+        add_home_button(self.root)
         self.plans = load_plans()
         self.editing_index = None
         self.build()
