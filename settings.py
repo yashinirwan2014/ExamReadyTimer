@@ -7,8 +7,8 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
 from storage import initialize_user_data
-from theme import apply_dark_theme
-from navigation import add_home_button, TEXT, ACCENT
+from theme import apply_dark_theme, TEXT, ACCENT
+from navigation import add_home_button
 from backup import backup_data, restore_data
 
 BG, NAVY, MUTED = "#0B1020", "#172544", "#FFFFFF"
