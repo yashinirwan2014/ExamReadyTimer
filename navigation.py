@@ -27,6 +27,10 @@ def add_home_button(root, before_home=None):
 def _go_home(root, before_home=None):
     if before_home is not None:
         before_home()
-    if root.winfo_exists():
+    try:
+        still_open = bool(root.winfo_exists())
+    except tk.TclError:
+        still_open = False
+    if still_open:
         root.destroy()
     subprocess.Popen(dashboard_command(), cwd=str(Path.home()))
