@@ -52,6 +52,8 @@ class SyllabusTracker:
         add_home_button(self.root)
         self.subjects = load_subjects()
         self.selected_subject = None
+        self.selected_chapter_text = tk.StringVar(value="No chapter selected")
+        self.selected_status_text = tk.StringVar(value="Select a row to see its status")
         self._build_ui()
         self.refresh_subjects()
 
@@ -124,7 +126,16 @@ class SyllabusTracker:
         self.chapter_table.column("status", width=115, anchor="center", stretch=False)
         self.chapter_table.column("chapter", width=430, anchor="w")
         self.chapter_table.pack(fill="both", expand=True)
+        self.chapter_table.bind("<<TreeviewSelect>>", self.on_chapter_select)
         self.chapter_table.bind("<Double-1>", lambda _event: self.toggle_status())
+        selected_bar = tk.Frame(right, bg="#0B1020")
+        selected_bar.pack(fill="x", pady=(7, 0))
+        tk.Label(selected_bar, text="SELECTED CHAPTER / UNIT / TOPIC", bg="#0B1020",
+                 fg="#FFFFFF", font=("Arial", 8, "bold")).pack(anchor="w")
+        tk.Label(selected_bar, textvariable=self.selected_chapter_text, bg="#18243D",
+                 fg="#FFFFFF", anchor="w", padx=8, pady=5).pack(fill="x")
+        tk.Label(selected_bar, textvariable=self.selected_status_text, bg="#0B1020",
+                 fg="#FFFFFF", anchor="w").pack(anchor="w", pady=(3, 0))
 
         controls = tk.Frame(right, bg="#0B1020")
         controls.pack(fill="x", pady=(12, 0))
@@ -213,6 +224,20 @@ class SyllabusTracker:
                 self.chapter_table.insert("", "end",
                                           values=("✓ Completed" if item["status"] == "Completed" else "○ Pending",
                                                   item["chapter"]))
+
+    def on_chapter_select(self, _event=None):
+        selection = self.chapter_table.selection()
+        if not selection:
+            self.selected_chapter_text.set("No chapter selected")
+            self.selected_status_text.set("Select a row to see its status")
+            return
+        values = self.chapter_table.item(selection[0], "values")
+        if not values or str(values[1]).startswith("No chapters yet"):
+            self.selected_chapter_text.set("No chapter selected")
+            self.selected_status_text.set("Add a chapter to begin tracking progress")
+            return
+        self.selected_chapter_text.set(str(values[1]))
+        self.selected_status_text.set(f"Current status: {values[0]} — included in Progress Overview and Exam Readiness")
 
     def _real_chapters(self):
         if not self.selected_subject:
