@@ -37,6 +37,7 @@ class PomodoroTimer:
         self.phase_duration_seconds = 0
         self.running = False
         self.completed = False
+        self.saved_session_pending = False
         self.after_id = None
         self.subjects = {}
         if SUBJECT_FILE.exists():
@@ -103,6 +104,16 @@ class PomodoroTimer:
         if self.completed:
             messagebox.showinfo("Sessions completed", "Reset the timer to begin another set of sessions.", parent=self.root)
             return
+        if self.saved_session_pending:
+            replace_saved = messagebox.askyesno(
+                "Saved session available",
+                "Starting a new session will replace the saved unfinished session. Start a new session?",
+                parent=self.root,
+            )
+            if not replace_saved:
+                return
+            self.saved_session_pending = False
+            clear_session(SESSION_STATE_FILE)
         if self.running:
             return
         if self.remaining <= 0:
@@ -183,7 +194,8 @@ class PomodoroTimer:
             "A previous Pomodoro session was saved. Would you like to continue where you left off?",
             parent=self.root,
         ):
-            # Keep the snapshot so the user can continue it later.
+            # Keep the snapshot and prevent a new timer from silently overwriting it.
+            self.saved_session_pending = True
             return
         self.study_minutes.set(state["study_minutes"])
         self.break_minutes.set(state["break_minutes"])
