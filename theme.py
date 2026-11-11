@@ -107,10 +107,10 @@ def apply_dark_theme(root: tk.Misc) -> None:
     if not getattr(root, "_examready_gradient", None):
         canvas = tk.Canvas(root, highlightthickness=0, bd=0, bg=BG)
         canvas.place(x=0, y=0, relwidth=1, relheight=1)
-        canvas.lower()
+        canvas.tk.call('lower', canvas._w)
         def redraw(event):
             _draw_gradient(canvas, event.width, event.height)
-            canvas.lower()
+            canvas.tk.call('lower', canvas._w)
         root.bind("<Configure>", redraw, add="+")
         root._examready_gradient = canvas
         root._examready_fonts = []
