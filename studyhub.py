@@ -10,6 +10,7 @@ from tkinter import messagebox, ttk
 
 from storage import initialize_user_data
 from theme import apply_dark_theme
+from navigation import add_home_button
 from study_engine import (
     build_adaptive_plan, build_recovery_plan, complete_revision,
     load_due_revisions, load_sessions, log_session, schedule_revision,
@@ -79,6 +80,7 @@ class StudyIntelligence:
         root.geometry("980x760")
         root.minsize(760, 620)
         apply_dark_theme(root)
+        add_home_button(self.root)
         self.subjects = read_subjects()
         self.timer_after = None
         self.remaining_seconds = 0
