@@ -2,12 +2,12 @@
 
 ExamReadyTimer is a Python desktop app for keeping study plans and exam dates in one place. I wanted a single window where I could open a countdown, timetable, chapter tracker or study timer without keeping several separate notes.
 
-The app uses **Tkinter** for its windows and buttons, and **CSV files** for saving information on the computer. It is designed for students who want a simple offline organiser.
+The app uses **Tkinter** for its windows and buttons, **CSV files** for local study data, and the bundled MoMo Trust Display typeface under its SIL Open Font License. It is designed for students who want a simple offline organiser.
 
 ## What is included
 
 - **Exam planner:** add exam dates, subjects and reminder settings, then see how many days are left.
-- **Pomodoro timer:** set study and break intervals.
+- **Pomodoro timer:** automatic 25-minute focus and 5-minute break cycles with a two-tone completion chime.
 - **Timetable:** keep a weekly plan of study blocks.
 - **Subject tracker:** add chapters and mark them complete or pending.
 - **Progress view:** see completed chapters and subject-wise progress.
@@ -42,9 +42,9 @@ Keep the starter CSV files with the project when running from source. On first l
 
 The published downloads and release notes are on the [GitHub Releases page](https://github.com/yashinirwan2014/ExamReadyTimer/releases).
 
-- [Windows ZIP](https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.3.0/ExamReadyTimer-Windows.zip) — this commit triggers a fresh Windows build; use the asset after the release workflow succeeds.
-- [Linux ZIP](https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.3.0/ExamReadyTimer-Linux.zip)
-- macOS: no verified public download is currently offered. The older package should not be used while its launch and security behaviour is being checked.
+- [Windows ZIP](https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.0.0/ExamReadyTimer-Windows.zip)
+- [Linux ZIP](https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.0.0/ExamReadyTimer-Linux.zip)
+- [macOS experimental ZIP](https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.0.0/ExamReadyTimer-macOS.zip) — ad-hoc signed, not Apple-notarized; Gatekeeper may block it.
 
 These are portable ZIP packages, not normal installers. Read the `README-FIRST.txt` file inside the ZIP before launching. Keep the files in the extracted folder together.
 
@@ -71,3 +71,8 @@ The app uses Python topics such as variables, lists, dictionaries, conditions, l
 ## Licence and reuse
 
 See [LICENSE](LICENSE) and [COPYRIGHT](COPYRIGHT) for the project's terms. A public repository does not automatically mean that the code is open source.
+
+
+## Typeface
+
+MoMo Trust Display is bundled under the SIL Open Font License 1.1. Its copyright and licence notice are included in `assets/MOMO-FONT-LICENSE.txt` and each release archive.

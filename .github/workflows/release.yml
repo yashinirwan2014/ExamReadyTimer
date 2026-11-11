@@ -11,8 +11,29 @@ permissions:
   contents: write
 
 jobs:
+  validate:
+    name: Validate v1.0.0 source and GUI
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v5
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Install Tk and test requirements
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-tk xvfb xauth
+          python -m pip install --upgrade pip pytest
+      - name: Compile all application modules
+        run: python -m py_compile main.py GUI.py countdown.py pomodoro.py completion_sound.py timetable.py tracker.py progress.py focus.py settings.py readiness.py studyhub.py study_engine.py backup.py storage.py schedule_utils.py reminders.py scripts/validate_study_data.py
+      - name: Run complete tests with a virtual display
+        run: xvfb-run --auto-servernum python -m pytest -q tests
+
   build:
     name: Build for ${{ matrix.os }}
+    needs: validate
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -40,7 +61,7 @@ jobs:
           python -m pip install pyinstaller
 
       - name: Verify release source compilation
-        run: python -m py_compile main.py GUI.py countdown.py pomodoro.py timetable.py tracker.py progress.py focus.py settings.py readiness.py studyhub.py study_engine.py backup.py storage.py schedule_utils.py reminders.py scripts/validate_study_data.py
+        run: python -m py_compile main.py GUI.py countdown.py pomodoro.py completion_sound.py timetable.py tracker.py progress.py focus.py settings.py readiness.py studyhub.py study_engine.py backup.py storage.py schedule_utils.py reminders.py scripts/validate_study_data.py
 
       - name: Build dashboard and feature executables
         shell: bash
@@ -49,11 +70,13 @@ jobs:
           mkdir -p release
           if [ "${{ runner.os }}" = "Windows" ]; then
             EXT=".exe"
+            FONT_DATA="assets/MomoTrustDisplay-Regular.ttf;assets"
           else
             EXT=""
+            FONT_DATA="assets/MomoTrustDisplay-Regular.ttf:assets"
           fi
 
-          pyinstaller --noconfirm --clean --onefile --windowed --name ExamReadyTimer GUI.py
+          pyinstaller --noconfirm --clean --onefile --windowed --add-data "$FONT_DATA" --name ExamReadyTimer GUI.py
           specs=(
             "ExamCountdown:countdown.py"
             "PomodoroTimer:pomodoro.py"
@@ -69,9 +92,9 @@ jobs:
             name="${spec%%:*}"
             script="${spec#*:}"
             if [ "${{ runner.os }}" = "macOS" ]; then
-              pyinstaller --noconfirm --clean --onefile --name "$name" "$script"
+              pyinstaller --noconfirm --clean --onefile --add-data "$FONT_DATA" --name "$name" "$script"
             else
-              pyinstaller --noconfirm --clean --onefile --windowed --name "$name" "$script"
+              pyinstaller --noconfirm --clean --onefile --windowed --add-data "$FONT_DATA" --name "$name" "$script"
             fi
           done
 
@@ -108,6 +131,7 @@ jobs:
             cp dataorsubjects.csv dataexams.csv datatimetable.csv release/
           fi
 
+          cp assets/MomoTrustDisplay-Regular.ttf assets/MOMO-FONT-LICENSE.txt release/
           cat > release/README-FIRST.txt <<'EOF'
           ExamReadyTimer desktop release
 
@@ -117,6 +141,7 @@ jobs:
           xattr -dr com.apple.quarantine "/Applications/ExamReadyTimer.app"
           Then Control-click ExamReadyTimer.app, choose Open, and confirm. Only do this if you downloaded it from the official ExamReadyTimer GitHub release.
 
+          The bundled MoMo Trust Display font is loaded by the app; its SIL Open Font License is in MOMO-FONT-LICENSE.txt.
           Keep all executables and CSV files together in the same folder.
           Your study data is stored in your operating system's per-user ExamReadyTimer data folder, not in the installation folder. Existing data is preserved when you upgrade. Back up that data folder before reinstalling or moving to another computer.
           EOF
@@ -143,8 +168,8 @@ jobs:
 
   publish-release:
     name: Publish permanent GitHub Release assets
-    needs: build
-    if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch' || (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, '[publish-v1.3.0]'))
+    needs: [validate, build]
+    if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch' || (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, '[publish-v1.0.0]'))
     runs-on: ubuntu-24.04
     permissions:
       contents: write
@@ -168,19 +193,19 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           token: ${{ github.token }}
-          tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.3.0' }}
+          tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.0.0' }}
           target_commitish: ${{ github.sha }}
-          name: ExamReadyTimer ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.3.0' }}
+          name: ExamReadyTimer ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.0.0' }}
           body: |
-            ## ExamReadyTimer ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.3.0' }}
+            ## ExamReadyTimer ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.0.0' }}
 
-            Fresh cross-platform desktop build with the latest reliability fixes.
+            Clean ExamReadyTimer v1.0.0 release with a black-gradient interface, white bold MoMo Trust Display typography, restored study tools, and automatic Pomodoro focus/break cycles with an original two-tone completion chime.
 
             **macOS notice:** The macOS ZIP is an experimental community build. It is ad-hoc signed only; it is NOT Developer ID signed or Apple-notarized. Gatekeeper may block it. Do not treat a successful GitHub build as Apple approval. Download only if you understand this limitation.
 
             - Backup restore validates every archive entry and file before changing existing data, stages replacements first, and rolls back if installation fails.
             - Exam readiness rejects invalid non-finite planning values instead of displaying misleading estimates.
-            - Includes the latest tested application source and updated Windows, macOS and Linux desktop packages.
+            - Includes the complete desktop feature set, local data storage, study-session ledger, revision planning, backup and restore, and updated Windows, macOS and Linux packages.
 
             ### Downloads
             - **Windows:** ExamReadyTimer-Windows.zip

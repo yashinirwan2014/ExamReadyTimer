@@ -8,8 +8,9 @@ from tkinter import ttk, messagebox
 from storage import initialize_user_data
 from theme import apply_dark_theme
 from study_engine import log_session, schedule_revision
+from completion_sound import play_completion_chime
 
-BG, NAVY, MUTED = "#0B1020", "#172544", "#FFFFFF"
+BG, NAVY, MUTED = "#080808", "#101010", "#FFFFFF"
 APP_DIR = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent
 DATA_DIR = initialize_user_data(app_dir=APP_DIR)
 SESSION_FILE = DATA_DIR / "study_sessions.csv"
@@ -49,10 +50,10 @@ class PomodoroTimer:
     def build(self):
         header = tk.Frame(self.root, bg=NAVY, padx=24, pady=20)
         header.pack(fill="x")
-        tk.Label(header, text="Pomodoro Timer", bg=NAVY, fg="#E8EEFF",
-                 font=("Arial", 22, "bold")).pack(anchor="w")
+        tk.Label(header, text="Pomodoro Timer", bg=NAVY, fg="#FFFFFF",
+                 font=("Momo Trust Display", 22, "bold")).pack(anchor="w")
         tk.Label(header, text="Focus deeply. Rest properly. Repeat.",
-                 bg=NAVY, fg="#FFFFFF", font=("Arial", 10)).pack(anchor="w", pady=(4, 0))
+                 bg=NAVY, fg="#FFFFFF", font=("Momo Trust Display", 10)).pack(anchor="w", pady=(4, 0))
         body = tk.Frame(self.root, bg=BG, padx=24, pady=22)
         body.pack(fill="both", expand=True)
         settings = tk.Frame(body, bg=BG)
@@ -75,10 +76,10 @@ class PomodoroTimer:
         self.chapter_combo.grid(row=1, column=1, sticky="ew")
         study_target.columnconfigure(0, weight=1)
         study_target.columnconfigure(1, weight=1)
-        self.phase_label = tk.Label(body, text="Ready to focus?", bg=BG, fg="#E8EEFF",
-                                    font=("Arial", 16, "bold"))
+        self.phase_label = tk.Label(body, text="Ready to focus?", bg=BG, fg="#FFFFFF",
+                                    font=("Momo Trust Display", 16, "bold"))
         self.phase_label.pack(pady=(35, 5))
-        self.clock = tk.Label(body, text="25:00", bg=BG, fg="#E8EEFF", font=("Arial", 54, "bold"))
+        self.clock = tk.Label(body, text="25:00", bg=BG, fg="#FFFFFF", font=("Momo Trust Display", 54, "bold"))
         self.clock.pack(pady=4)
         self.progress = ttk.Progressbar(body, maximum=100, mode="determinate")
         self.progress.pack(fill="x", pady=14)
@@ -90,7 +91,7 @@ class PomodoroTimer:
         ttk.Button(controls, text="Pause", command=self.pause).pack(side="left", padx=5)
         ttk.Button(controls, text="Reset", command=self.reset).pack(side="left", padx=5)
         tk.Label(body, text="You can pause or reset a session at any time.",
-                 bg=BG, fg=MUTED, font=("Arial", 9)).pack(pady=(8, 0))
+                 bg=BG, fg=MUTED, font=("Momo Trust Display", 9)).pack(pady=(8, 0))
 
     def start(self):
         if self.completed:
@@ -111,29 +112,36 @@ class PomodoroTimer:
         self.tick()
 
     def tick(self):
+        self.after_id = None
         self.clock.config(text=f"{self.remaining // 60:02d}:{self.remaining % 60:02d}")
         self.phase_label.config(text=f"{self.phase} time")
         self.session_label.config(text=f"Session {self.session} of {self.total_sessions.get()}")
         total = max(self.phase_duration_seconds, 1)
         self.progress["value"] = 100 * (1 - self.remaining / total)
         if self.remaining <= 0:
-            self.root.bell()
+            play_completion_chime(self.root.bell)
             if self.phase == "Study":
                 self.record_study_block()
                 if self.session >= self.total_sessions.get():
                     self.running = False
                     self.completed = True
                     self.phase_label.config(text="All sessions completed! 🎉")
-                    messagebox.showinfo("Well done!", "You've completed all your Pomodoro sessions.", parent=self.root)
+                    self.clock.config(text="00:00")
+                    self.progress["value"] = 100
                     return
                 self.phase = "Break"
             else:
                 self.phase = "Study"
                 self.session += 1
-            self.phase_duration_seconds = (self.study_minutes.get() if self.phase == "Study" else self.break_minutes.get()) * 60
+            self.phase_duration_seconds = (
+                self.study_minutes.get() if self.phase == "Study" else self.break_minutes.get()
+            ) * 60
             self.remaining = self.phase_duration_seconds
-            messagebox.showinfo("Session complete", f"Time for {self.phase.lower()}!", parent=self.root)
-            self.tick()
+            self.phase_label.config(text=f"{self.phase} time — starting now")
+            self.clock.config(text=f"{self.remaining // 60:02d}:{self.remaining % 60:02d}")
+            self.session_label.config(text=f"Session {self.session} of {self.total_sessions.get()}")
+            self.progress["value"] = 0
+            self.after_id = self.root.after(1000, self.tick)
             return
         self.remaining -= 1
         self.after_id = self.root.after(1000, self.tick)

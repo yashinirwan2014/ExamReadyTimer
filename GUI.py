@@ -44,17 +44,17 @@ def build_dashboard(window):
     title = tk.Label(
         window,
         text="ExamReady",
-        font=("Arial", 30, "bold"),
-        bg="#0B1020",
-        fg="#E8EEFF"
+        font=("Momo Trust Display", 30, "bold"),
+        bg="#080808",
+        fg="#FFFFFF"
     )
     title.pack(pady=(24, 5))
     
     subtitle = tk.Label(
         window,
         text="STUDY  •  FOCUS  •  PREPARE",
-        font=("Arial", 11),
-        bg="#0B1020",
+        font=("Momo Trust Display", 11),
+        bg="#080808",
         fg="#FFFFFF"
     )
     subtitle.pack()
@@ -62,9 +62,9 @@ def build_dashboard(window):
     description = tk.Label(
         window,
         text="A place for your exam dates, study plan and chapter progress",
-        font=("Arial", 14),
-        bg="#0B1020",
-        fg="#E8EEFF"
+        font=("Momo Trust Display", 14),
+        bg="#080808",
+        fg="#FFFFFF"
     )
     description.pack(pady=(18, 14))
     
@@ -84,11 +84,11 @@ def build_dashboard(window):
         button = tk.Button(
             window,
             text=feature,
-            font=("Arial", 12, "bold"),
+            font=("Momo Trust Display", 12, "bold"),
             width=32,
             height=2,
-            bg="#18243D",
-            fg="#E8EEFF",
+            bg="#202020",
+            fg="#FFFFFF",
             activebackground="#34496F",
             relief="flat",
             cursor="hand2",
@@ -99,8 +99,8 @@ def build_dashboard(window):
     footer = tk.Label(
         window,
         text="Plan a little. Get some work done.",
-        font=("Arial", 10, "italic"),
-        bg="#0B1020",
+        font=("Momo Trust Display", 10, "italic"),
+        bg="#080808",
         fg="#FFFFFF"
     )
     footer.pack(pady=16)

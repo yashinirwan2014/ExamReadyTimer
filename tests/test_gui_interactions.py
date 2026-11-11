@@ -327,3 +327,43 @@ def test_readiness_and_progress_refresh_buttons_render_data(root, tmp_path, monk
     analytics = progress.ProgressAnalytics(root)
     click(root, "Refresh progress")
     assert "2 of 4 chapters completed" in analytics.summary.cget("text")
+
+
+def test_pomodoro_automatically_switches_study_break_and_plays_chime(
+        root, tmp_path, monkeypatch):
+    data = tmp_path / "pomodoro-cycle"
+    data.mkdir()
+    monkeypatch.setattr(pomodoro, "DATA_DIR", data)
+    monkeypatch.setattr(pomodoro, "SESSION_FILE", data / "study_sessions.csv")
+    monkeypatch.setattr(pomodoro, "REVISION_FILE", data / "revision_schedule.csv")
+    monkeypatch.setattr(pomodoro, "SUBJECT_FILE", data / "dataorsubjects.csv")
+    chimes = []
+    monkeypatch.setattr(pomodoro, "play_completion_chime",
+                        lambda fallback=None: chimes.append("ting-tong"))
+    app = pomodoro.PomodoroTimer(root)
+    app.study_minutes.set(1)
+    app.break_minutes.set(1)
+    app.total_sessions.set(2)
+    app.running = True
+    app.phase_duration_seconds = 60
+    app.remaining = 0
+
+    app.tick()
+    assert app.phase == "Break"
+    assert app.remaining == 60
+    assert app.running is True
+    assert chimes == ["ting-tong"]
+
+    app.remaining = 0
+    app.tick()
+    assert app.phase == "Study"
+    assert app.session == 2
+    assert app.remaining == 60
+    assert app.running is True
+    assert chimes == ["ting-tong", "ting-tong"]
+
+    app.remaining = 0
+    app.tick()
+    assert app.completed is True
+    assert app.running is False
+    assert chimes == ["ting-tong", "ting-tong", "ting-tong"]
