@@ -84,13 +84,33 @@ def _draw_gradient(canvas, width, height):
 
 
 def _apply_font_to_widget(widget, root):
+    """Restyle classic Tk widgets that carry explicit per-window colours/fonts."""
+    palette = {
+        "#0b1020": BG, "#111b30": SURFACE, "#18243d": PANEL,
+        "#172544": HEADER, "#263657": BUTTON, "#34496f": BUTTON_HOVER,
+    }
     try:
+        options = set(widget.keys())
+        if "bg" in options:
+            background = str(widget.cget("bg")).lower()
+            if background in palette:
+                widget.configure(bg=palette[background])
+        if "fg" in options:
+            widget.configure(fg=TEXT)
+        if "activebackground" in options:
+            widget.configure(activebackground=BUTTON_HOVER)
+        if "activeforeground" in options:
+            widget.configure(activeforeground=TEXT)
+        if "insertbackground" in options:
+            widget.configure(insertbackground=TEXT)
+        if "font" not in options:
+            return
         current = widget.cget("font")
         if not current:
             return
         font = tkfont.Font(root=root, font=current)
         actual = font.actual()
-        if actual.get("family") == FONT_FAMILY:
+        if actual.get("family") == FONT_FAMILY and actual.get("weight") == "bold":
             return
         replacement = tkfont.Font(root=root, family=FONT_FAMILY,
                                   size=actual.get("size", 10), weight="bold")
