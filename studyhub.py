@@ -80,7 +80,7 @@ class StudyIntelligence:
         root.geometry("980x760")
         root.minsize(760, 620)
         apply_dark_theme(root)
-        add_home_button(self.root)
+        add_home_button(self.root, self.pause_timer)
         self.subjects = read_subjects()
         self.timer_after = None
         self.remaining_seconds = 0
