@@ -8,6 +8,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from storage import initialize_user_data
 from theme import apply_dark_theme
+from navigation import add_home_button
 
 APP_DIR = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent
 DATA_DIR = initialize_user_data(app_dir=APP_DIR)
@@ -64,6 +65,7 @@ class ExamCountdown:
         root.geometry("940x680")
         root.minsize(760, 560)
         apply_dark_theme(root)
+        add_home_button(self.root)
         self.exams = read_exams()
         self.build()
         self.refresh()
