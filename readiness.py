@@ -10,6 +10,7 @@ from tkinter import ttk, messagebox
 
 from storage import initialize_user_data
 from theme import apply_dark_theme
+from navigation import add_home_button
 
 APP_DIR = Path(__import__("sys").executable).resolve().parent if getattr(__import__("sys"), "frozen", False) else Path(__file__).resolve().parent
 DATA_DIR = initialize_user_data(app_dir=APP_DIR)
@@ -125,6 +126,7 @@ class ReadinessDashboard:
         root.geometry("1020x650")
         root.minsize(780, 500)
         apply_dark_theme(root)
+        add_home_button(self.root)
         self.daily_hours = tk.StringVar(value=str(DEFAULT_DAILY_HOURS))
         self.chapter_hours = tk.StringVar(value=str(DEFAULT_CHAPTER_HOURS))
         self.build()
