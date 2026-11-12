@@ -300,6 +300,12 @@ def test_study_intelligence_save_session_and_generate_plan(root, tmp_path, monke
     assert sessions[0]["minutes"] == 35
     assert sessions[0]["chapter"] == "Ray Optics"
 
+    # The recent-session table must support deleting one selected entry.
+    selected_row = app.recent_table.get_children()[0]
+    app.recent_table.selection_set(selected_row)
+    click(root, "Delete selected session")
+    assert studyhub.load_sessions(data / "study_sessions.csv") == []
+
     click(root, "Generate adaptive plan")
     planned = [app.plan_table.item(iid, "values")
                for iid in app.plan_table.get_children()]
