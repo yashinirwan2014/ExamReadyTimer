@@ -13,7 +13,7 @@ from theme import apply_dark_theme
 from navigation import add_home_button
 from study_engine import (
     build_adaptive_plan, build_recovery_plan, complete_revision,
-    load_due_revisions, load_sessions, log_session, schedule_revision,
+    delete_session, load_due_revisions, load_sessions, log_session, schedule_revision,
     session_analytics,
 )
 
@@ -168,6 +168,7 @@ class StudyIntelligence:
             self.recent_table.heading(key, text=label)
             self.recent_table.column(key, width=width, anchor="center" if key in ("date", "minutes", "type") else "w")
         self.recent_table.pack(fill="both", expand=True)
+        ttk.Button(tab, text="Delete selected session", command=self.delete_selected_session).pack(anchor="e", pady=(8, 0))
 
     def build_plan(self):
         tab = self.plan_tab
@@ -402,7 +403,8 @@ class StudyIntelligence:
     def refresh_sessions(self):
         self.recent_table.delete(*self.recent_table.get_children())
         sessions = load_sessions(SESSION_FILE)
-        for item in reversed(sessions[-12:]):
+        self.visible_sessions = list(reversed(sessions[-12:]))
+        for index, item in enumerate(self.visible_sessions):
             # load_sessions preserves the CSV date string and exposes the parsed
             # datetime.date separately as "day".
             session_day = item.get("day")
@@ -411,9 +413,45 @@ class StudyIntelligence:
                     session_day = date.fromisoformat(str(item.get("date", "")))
                 except ValueError:
                     continue
-            self.recent_table.insert("", "end", values=(session_day.isoformat(), item["subject"],
-                                                        item.get("chapter", ""), item["minutes"],
-                                                        item.get("session_type", "Focus")))
+            self.recent_table.insert("", "end", iid=f"session-{index}",
+                                     values=(session_day.isoformat(), item["subject"],
+                                             item.get("chapter", ""), item["minutes"],
+                                             item.get("session_type", "Focus")))
+
+    def delete_selected_session(self):
+        """Remove one explicitly selected study-ledger entry."""
+        selection = self.recent_table.selection()
+        if not selection:
+            messagebox.showinfo("Select a session", "Choose a study session in the recent-sessions table first.",
+                                parent=self.root)
+            return
+        try:
+            index = int(selection[0].removeprefix("session-"))
+            selected = self.visible_sessions[index]
+        except (ValueError, IndexError):
+            messagebox.showwarning("Session unavailable", "Refresh the session list and try again.",
+                                   parent=self.root)
+            return
+        summary = (f'{selected.get("subject", "Study")} • '
+                   f'{selected.get("chapter") or "General study"} • '
+                   f'{selected.get("minutes", 0)} minutes')
+        if not messagebox.askyesno(
+            "Delete this session?",
+            f"Delete this entry from your study history?\\n\\n{summary}\\n\\n"
+            "This does not delete your revision reminders.",
+            parent=self.root,
+        ):
+            return
+        try:
+            removed = delete_session(SESSION_FILE, selected)
+        except OSError as exc:
+            messagebox.showerror("Could not delete session", str(exc), parent=self.root)
+            return
+        if not removed:
+            messagebox.showwarning("Session not found",
+                                   "This entry may already have been removed. The list will refresh.",
+                                   parent=self.root)
+        self.refresh_all()
 
     def refresh_revisions(self):
         self.revision_table.delete(*self.revision_table.get_children())
