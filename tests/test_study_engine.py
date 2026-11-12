@@ -5,7 +5,7 @@ import pytest
 
 from study_engine import (
     build_adaptive_plan, build_recovery_plan, complete_revision,
-    load_due_revisions, load_sessions, log_session, schedule_revision,
+    delete_session, load_due_revisions, load_sessions, log_session, schedule_revision,
     session_analytics,
 )
 
@@ -26,6 +26,24 @@ def test_log_session_persists_and_loads_session(tmp_path):
 def test_log_session_rejects_invalid_duration(tmp_path, minutes):
     with pytest.raises(ValueError):
         log_session(tmp_path / "sessions.csv", "Maths", "Algebra", minutes)
+
+
+def test_delete_session_removes_only_the_selected_ledger_entry(tmp_path):
+    path = tmp_path / "sessions.csv"
+    first = log_session(path, "Physics", "Ray Optics", 45, "Pomodoro",
+                        started_at=datetime(2026, 11, 8, 10, 0),
+                        ended_at=datetime(2026, 11, 8, 10, 45))
+    second = log_session(path, "Maths", "Probability", 30, "Focus",
+                         started_at=datetime(2026, 11, 8, 11, 0),
+                         ended_at=datetime(2026, 11, 8, 11, 30))
+
+    selected = load_sessions(path)[0]
+    assert delete_session(path, selected) is True
+    remaining = load_sessions(path)
+    assert len(remaining) == 1
+    assert remaining[0]["subject"] == "Maths"
+    assert remaining[0]["chapter"] == "Probability"
+    assert delete_session(path, selected) is False
 
 
 def test_analytics_reports_subject_totals_weekly_hours_and_streak():
