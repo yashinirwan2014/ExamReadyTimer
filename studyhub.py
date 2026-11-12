@@ -437,7 +437,7 @@ class StudyIntelligence:
                    f'{selected.get("minutes", 0)} minutes')
         if not messagebox.askyesno(
             "Delete this session?",
-            f"Delete this entry from your study history?\\n\\n{summary}\\n\\n"
+            f"Delete this entry from your study history?\n\n{summary}\n\n"
             "This does not delete your revision reminders.",
             parent=self.root,
         ):
