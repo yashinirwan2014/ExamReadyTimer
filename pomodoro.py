@@ -92,14 +92,25 @@ class PomodoroTimer:
         self.progress.pack(fill="x", pady=14)
         self.session_label = tk.Label(body, text="Session 1 of 4", bg=BG, fg=MUTED)
         self.session_label.pack()
+        # Keep every timer action in a clearly visible, roomy two-row control panel.
         controls = tk.Frame(body, bg=BG)
-        controls.pack(pady=24)
-        ttk.Button(controls, text="Start", command=self.start).pack(side="left", padx=5)
-        ttk.Button(controls, text="Pause", command=self.pause).pack(side="left", padx=5)
-        ttk.Button(controls, text="Resume", command=self.resume).pack(side="left", padx=5)
-        ttk.Button(controls, text="Reset", command=self.reset).pack(side="left", padx=5)
-        tk.Label(body, text="You can pause or reset a session at any time.",
-                 bg=BG, fg=MUTED, font=("Momo Trust Display", 9)).pack(pady=(8, 0))
+        controls.pack(fill="x", pady=18)
+        self.start_button = ttk.Button(controls, text="Start", command=self.start, width=14)
+        self.pause_button = ttk.Button(controls, text="Pause", command=self.pause, width=14)
+        self.resume_button = ttk.Button(controls, text="Resume", command=self.resume, width=14)
+        self.stop_button = ttk.Button(controls, text="Stop", command=self.stop, width=14)
+        self.reset_button = ttk.Button(controls, text="Reset", command=self.reset, width=14)
+        for button, row, column in (
+            (self.start_button, 0, 0), (self.pause_button, 0, 1),
+            (self.resume_button, 0, 2), (self.stop_button, 1, 0),
+            (self.reset_button, 1, 1),
+        ):
+            button.grid(row=row, column=column, padx=5, pady=5, sticky="ew")
+        for column in range(3):
+            controls.columnconfigure(column, weight=1)
+        tk.Label(body, text="Pause keeps your remaining time. Stop ends the current timer; Reset starts the set over.",
+                 bg=BG, fg=MUTED, font=("Momo Trust Display", 9),
+                 wraplength=430, justify="center").pack(pady=(4, 0))
 
     def start(self):
         if self.completed:
@@ -256,6 +267,22 @@ class PomodoroTimer:
             self.root.after_cancel(self.after_id)
             self.after_id = None
         self.save_state()
+
+    def stop(self):
+        """End the current timer and return to the ready state."""
+        self.running = False
+        if self.after_id is not None:
+            self.root.after_cancel(self.after_id)
+            self.after_id = None
+        self.session, self.phase, self.remaining = 1, "Study", 0
+        self.phase_duration_seconds = 0
+        self.completed = False
+        self.saved_session_pending = False
+        clear_session(SESSION_STATE_FILE)
+        self.clock.config(text=f"{self.study_minutes.get():02d}:00")
+        self.phase_label.config(text="Stopped — ready to focus?")
+        self.session_label.config(text=f"Session 1 of {self.total_sessions.get()}")
+        self.progress["value"] = 0
 
     def reset(self):
         self.pause()
