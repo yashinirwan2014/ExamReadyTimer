@@ -300,6 +300,12 @@ def test_study_intelligence_save_session_and_generate_plan(root, tmp_path, monke
     assert sessions[0]["minutes"] == 35
     assert sessions[0]["chapter"] == "Ray Optics"
 
+    # The recent-session table must support deleting one selected entry.
+    selected_row = app.recent_table.get_children()[0]
+    app.recent_table.selection_set(selected_row)
+    click(root, "Delete selected session")
+    assert studyhub.load_sessions(data / "study_sessions.csv") == []
+
     click(root, "Generate adaptive plan")
     planned = [app.plan_table.item(iid, "values")
                for iid in app.plan_table.get_children()]
@@ -425,3 +431,47 @@ def test_declining_restore_does_not_erase_or_silently_replace_session(
     assert restored["remaining"] == 777
     assert restored["subject"] == "Physics"
 
+
+
+def test_pomodoro_exposes_start_pause_resume_stop_reset_controls(
+        root, tmp_path, monkeypatch):
+    data = tmp_path / "pomodoro-controls"
+    data.mkdir()
+    monkeypatch.setattr(pomodoro, "DATA_DIR", data)
+    monkeypatch.setattr(pomodoro, "SESSION_FILE", data / "study_sessions.csv")
+    monkeypatch.setattr(pomodoro, "REVISION_FILE", data / "revision_schedule.csv")
+    monkeypatch.setattr(pomodoro, "SUBJECT_FILE", data / "dataorsubjects.csv")
+    monkeypatch.setattr(pomodoro, "SESSION_STATE_FILE", data / "pomodoro_state.json")
+    silence_dialogs(monkeypatch, pomodoro)
+
+    app = pomodoro.PomodoroTimer(root)
+    # Assert the actual Tk buttons are created with the exact user-facing labels.
+    for label in ("Start", "Pause", "Resume", "Stop", "Reset"):
+        assert button(root, label) is not None, f"Pomodoro is missing its {label} button"
+
+    click(root, "Start")
+    assert app.running is True
+    click(root, "Pause")
+    paused_remaining = app.remaining
+    assert app.running is False
+    assert paused_remaining > 0
+
+    click(root, "Resume")
+    assert app.running is True
+    assert app.remaining <= paused_remaining
+
+    click(root, "Stop")
+    assert app.running is False
+    assert app.after_id is None
+    assert app.remaining == 0
+    assert app.phase == "Study"
+    assert app.session == 1
+    assert app.phase_label.cget("text") == "Stopped — ready to focus?"
+    assert not (data / "pomodoro_state.json").exists()
+
+    click(root, "Start")
+    assert app.running is True
+    click(root, "Reset")
+    assert app.running is False
+    assert app.remaining == 0
+    assert app.phase_label.cget("text") == "Ready to focus?"

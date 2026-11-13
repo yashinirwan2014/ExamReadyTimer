@@ -45,6 +45,23 @@ def load_sessions(path: str | Path) -> list[dict]:
     return sorted(result, key=lambda x: (x["day"], x.get("started_at", "")))
 
 
+def delete_session(path: str | Path, session: dict) -> bool:
+    """Delete exactly one selected ledger entry; leave other sessions untouched.
+
+    The CSV format predates unique session IDs, so the complete stored row is
+    used as its identity. If identical entries exist, one matching entry is
+    removed per call.
+    """
+    rows = _read_rows(path)
+    target = {field: str(session.get(field, "")) for field in SESSION_FIELDS}
+    for index, row in enumerate(rows):
+        if all(str(row.get(field, "")) == target[field] for field in SESSION_FIELDS):
+            del rows[index]
+            _write_rows(path, SESSION_FIELDS, rows)
+            return True
+    return False
+
+
 def log_session(path: str | Path, subject: str, chapter: str, minutes: int,
                 session_type: str = "Focus", notes: str = "",
                 started_at: datetime | None = None, ended_at: datetime | None = None) -> dict:
