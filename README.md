@@ -12,7 +12,7 @@ The app uses **Tkinter** for its windows and buttons, **CSV files** for local st
 - **Subject tracker:** add chapters and mark them complete or pending.
 - **Progress view:** see completed chapters and subject-wise progress.
 - **Focus timer:** run a dedicated study timer. It does not block websites or other applications.
-- **Study sessions:** record time spent on a subject and chapter, and review basic totals.
+- **Study sessions:** record time spent on a subject and chapter, review totals, and select and delete individual logged sessions.
 - **Revision list:** keep track of topics due for another review.
 - **Backup and restore:** save the app's local data in a ZIP file and restore it later.
 
@@ -42,10 +42,10 @@ Keep the starter CSV files with the project when running from source. On first l
 
 The published downloads and release notes are on the [GitHub Releases page](https://github.com/yashinirwan2014/ExamReadyTimer/releases).
 
-- [Windows ZIP](https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.1.1/ExamReadyTimer-Windows.zip)
-- [Linux ZIP](https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.1.1/ExamReadyTimer-Linux.zip)
-- [macOS experimental ZIP](https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.1.1/ExamReadyTimer-macOS.zip) — ad-hoc signed, not Apple-notarized; Gatekeeper may block it.
-- [SHA-256 checksums](https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.1.1/SHA256SUMS.txt)
+- [Windows ZIP](https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.4.0/ExamReadyTimer-Windows.zip)
+- [Linux ZIP](https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.4.0/ExamReadyTimer-Linux.zip)
+- [macOS experimental ZIP](https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.4.0/ExamReadyTimer-macOS.zip) — ad-hoc signed, not Apple-notarized; Gatekeeper may block it.
+- [SHA-256 checksums](https://github.com/yashinirwan2014/ExamReadyTimer/releases/download/v1.4.0/SHA256SUMS.txt)
 
 These are portable ZIP packages, not normal installers. Read the `README-FIRST.txt` file inside the ZIP before launching. Keep the files in the extracted folder together.
 
