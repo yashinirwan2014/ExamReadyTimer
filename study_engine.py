@@ -72,6 +72,30 @@ def log_session(path: str | Path, subject: str, chapter: str, minutes: int,
     return row
 
 
+def delete_sessions(path: str | Path, sessions: list[dict]) -> int:
+    """Delete the selected exact session records, preserving other history."""
+    if not sessions:
+        return 0
+    fields = SESSION_FIELDS
+    targets: dict[tuple[str, ...], int] = defaultdict(int)
+    for item in sessions:
+        key = tuple(str(item.get(field, "")) for field in fields)
+        targets[key] += 1
+    rows = _read_rows(path)
+    kept = []
+    deleted = 0
+    for row in rows:
+        key = tuple(str(row.get(field, "")) for field in fields)
+        if targets.get(key, 0) > 0:
+            targets[key] -= 1
+            deleted += 1
+        else:
+            kept.append(row)
+    if deleted:
+        _write_rows(path, SESSION_FIELDS, kept)
+    return deleted
+
+
 def session_analytics(sessions: list[dict], today: date | None = None) -> dict:
     today = today or date.today()
     by_subject = defaultdict(int)

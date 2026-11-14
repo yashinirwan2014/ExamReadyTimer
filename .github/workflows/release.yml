@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   validate:
-    name: Validate v1.1.1 source and GUI
+    name: Validate v1.4.0 source and GUI
     runs-on: ubuntu-24.04
     steps:
       - name: Check out source
@@ -192,7 +192,7 @@ jobs:
   publish-release:
     name: Publish permanent GitHub Release assets
     needs: [validate, build]
-    if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch' || (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, '[publish-v1.1.1]'))
+    if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch' || (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, '[publish-v1.4.0]'))
     runs-on: ubuntu-24.04
     permissions:
       contents: write
@@ -225,13 +225,13 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           token: ${{ github.token }}
-          tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.1.1' }}
+          tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.4.0' }}
           target_commitish: ${{ github.sha }}
-          name: ExamReadyTimer ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.1.1' }}
+          name: ExamReadyTimer ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.4.0' }}
           body: |
-            ## ExamReadyTimer ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.1.1' }}
+            ## ExamReadyTimer ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.4.0' }}
 
-            ExamReadyTimer v1.1.1 adds a consistent Back to Home control across feature windows, protects saved unfinished Pomodoro sessions from accidental replacement, and retains automatic focus/break cycles with the original two-tone completion chime. Existing study data remains in the separate per-user data folder.
+            ExamReadyTimer v1.4.0 adds a consistent Back to Home control across feature windows, protects saved unfinished Pomodoro sessions from accidental replacement, and retains automatic focus/break cycles with the original two-tone completion chime. Existing study data remains in the separate per-user data folder.
 
             **macOS notice:** The macOS ZIP is an experimental community build. It is ad-hoc signed only; it is NOT Developer ID signed or Apple-notarized. Gatekeeper may block it. Do not treat a successful GitHub build as Apple approval. Download only if you understand this limitation.
 

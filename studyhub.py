@@ -14,7 +14,7 @@ from navigation import add_home_button
 from study_engine import (
     build_adaptive_plan, build_recovery_plan, complete_revision,
     load_due_revisions, load_sessions, log_session, schedule_revision,
-    session_analytics,
+    session_analytics, delete_sessions,
 )
 
 APP_DIR = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent
@@ -161,13 +161,19 @@ class StudyIntelligence:
         tk.Label(tab, text="RECENT STUDY SESSIONS", bg=BG, fg="#E8EEFF",
                  font=("Arial", 10, "bold")).pack(anchor="w", pady=(8, 5))
         self.recent_table = ttk.Treeview(tab, columns=("date", "subject", "chapter", "minutes", "type"),
-                                         show="headings", height=8)
+                                         show="headings", height=8, selectmode="extended")
         for key, label, width in [("date", "DATE", 100), ("subject", "SUBJECT", 180),
                                   ("chapter", "CHAPTER / TOPIC", 300), ("minutes", "MINUTES", 85),
                                   ("type", "TYPE", 110)]:
             self.recent_table.heading(key, text=label)
             self.recent_table.column(key, width=width, anchor="center" if key in ("date", "minutes", "type") else "w")
         self.recent_table.pack(fill="both", expand=True)
+        session_controls = tk.Frame(tab, bg=BG)
+        session_controls.pack(fill="x", pady=(8, 0))
+        ttk.Button(session_controls, text="Delete selected session(s)",
+                   command=self.delete_selected_sessions).pack(side="left")
+        tk.Label(session_controls, text="Select one or more rows (Ctrl / Shift-click) before deleting.",
+                 bg=BG, fg=MUTED, font=("Arial", 9)).pack(side="left", padx=10)
 
     def build_plan(self):
         tab = self.plan_tab
@@ -402,7 +408,8 @@ class StudyIntelligence:
     def refresh_sessions(self):
         self.recent_table.delete(*self.recent_table.get_children())
         sessions = load_sessions(SESSION_FILE)
-        for item in reversed(sessions[-12:]):
+        self.session_rows = {}
+        for row_number, item in enumerate(reversed(sessions[-12:])):
             # load_sessions preserves the CSV date string and exposes the parsed
             # datetime.date separately as "day".
             session_day = item.get("day")
@@ -411,9 +418,32 @@ class StudyIntelligence:
                     session_day = date.fromisoformat(str(item.get("date", "")))
                 except ValueError:
                     continue
-            self.recent_table.insert("", "end", values=(session_day.isoformat(), item["subject"],
-                                                        item.get("chapter", ""), item["minutes"],
-                                                        item.get("session_type", "Focus")))
+            iid = f"session-{row_number}"
+            self.session_rows[iid] = item
+            self.recent_table.insert("", "end", iid=iid, values=(session_day.isoformat(), item["subject"],
+                                                                 item.get("chapter", ""), item["minutes"],
+                                                                 item.get("session_type", "Focus")))
+
+    def delete_selected_sessions(self):
+        selected = self.recent_table.selection()
+        if not selected:
+            messagebox.showinfo("Choose sessions", "Select one or more study sessions in the table first.", parent=self.root)
+            return
+        count = len(selected)
+        if not messagebox.askyesno(
+            "Delete study sessions?",
+            f"Delete {count} selected session(s) from your study history? This cannot be undone.",
+            parent=self.root,
+        ):
+            return
+        targets = [self.session_rows[iid] for iid in selected if iid in self.session_rows]
+        try:
+            deleted = delete_sessions(SESSION_FILE, targets)
+        except OSError as exc:
+            messagebox.showerror("Could not delete sessions", str(exc), parent=self.root)
+            return
+        self.timer_status.config(text=f"Deleted {deleted} selected study session(s).")
+        self.refresh_all()
 
     def refresh_revisions(self):
         self.revision_table.delete(*self.revision_table.get_children())
