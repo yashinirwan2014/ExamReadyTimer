@@ -186,6 +186,9 @@ def test_syllabus_tracker_full_crud_through_buttons(root, tmp_path, monkeypatch)
     click(root, "Delete")
     assert all(x["chapter"] != "Ray Optics - Updated"
                for x in tracker.load_subjects()["Physics"])
+    assert tracker.load_subjects()["Physics"] == []
+    saved_rows = (data / "dataorsubjects.csv").read_text(encoding="utf-8")
+    assert "Full subject syllabus" not in saved_rows
 
     click(root, "Rename subject")
     assert "Physics II" in tracker.load_subjects()
