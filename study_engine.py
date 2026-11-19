@@ -218,7 +218,7 @@ def build_adaptive_plan(subjects: dict[str, list[dict]], exams: list[dict],
     for subject, chapters in subjects.items():
         pending = [x for x in chapters if str(x.get("status", "Pending")).casefold() != "completed"
                    and str(x.get("chapter", "")).strip()
-                   and str(x.get("chapter", "")).casefold() != "full subject syllabus"]
+]
         for chapter in pending:
             key = subject.casefold()
             score = urgency.get(key, 1.0) / (1 + recent[key] / 300)
