@@ -22,7 +22,7 @@ def calculate_progress(path=DATA_FILE):
         for row in csv.DictReader(stream):
             subject = (row.get("Subject") or "").strip()
             chapter = (row.get("Chapter") or "").strip()
-            if not subject or not chapter or chapter.casefold() == "full subject syllabus":
+            if not subject or not chapter:
                 continue
             entry = results.setdefault(subject, {"total": 0, "completed": 0})
             entry["total"] += 1
