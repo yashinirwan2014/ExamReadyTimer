@@ -8,7 +8,6 @@ from storage import initialize_user_data
 from theme import apply_dark_theme
 from navigation import add_home_button
 
-PLACEHOLDER = "Full subject syllabus"
 APP_DIR = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent
 DATA_DIR = initialize_user_data(app_dir=APP_DIR)
 DATA_FILE = DATA_DIR / "dataorsubjects.csv"
@@ -23,10 +22,12 @@ def load_subjects():
             subject = (row.get("Subject") or "").strip()
             chapter = (row.get("Chapter") or "").strip()
             status = (row.get("Status") or "Pending").strip().title()
-            if subject and chapter:
-                if status not in {"Pending", "Completed"}:
-                    status = "Pending"
-                subjects.setdefault(subject, []).append({"chapter": chapter, "status": status})
+            if subject:
+                chapters = subjects.setdefault(subject, [])
+                if chapter:
+                    if status not in {"Pending", "Completed"}:
+                        status = "Pending"
+                    chapters.append({"chapter": chapter, "status": status})
     return subjects
 
 
@@ -37,6 +38,9 @@ def save_subjects(subjects):
         writer = csv.writer(file)
         writer.writerow(["Subject", "Chapter", "Status"])
         for subject, chapters in subjects.items():
+            if not chapters:
+                writer.writerow([subject, "", ""])
+                continue
             for item in chapters:
                 writer.writerow([subject, item["chapter"], item["status"]])
     temporary.replace(DATA_FILE)
@@ -216,7 +220,7 @@ class SyllabusTracker:
         self.chapter_table.delete(*self.chapter_table.get_children())
         query = self.chapter_search_var.get().strip().casefold()
         all_chapters = [item for item in self.subjects.get(subject, [])
-                        if item["chapter"].casefold() != PLACEHOLDER.casefold()]
+                        if item.get("chapter", "").strip()]
         chapters = [item for item in all_chapters if query in item["chapter"].casefold()]
         done = sum(item["status"] == "Completed" for item in all_chapters)
         total = len(all_chapters)
@@ -254,7 +258,7 @@ class SyllabusTracker:
             messagebox.showinfo("Choose a subject", "Select a subject first.")
             return None
         return [item for item in self.subjects[self.selected_subject]
-                if item["chapter"].casefold() != PLACEHOLDER.casefold()]
+                if item.get("chapter", "").strip()]
 
     def add_subject(self):
         name = simpledialog.askstring("Add subject", "Enter a subject name:", parent=self.root)
@@ -266,7 +270,7 @@ class SyllabusTracker:
         elif any(existing.casefold() == name.casefold() for existing in self.subjects):
             messagebox.showwarning("Already exists", "That subject is already in your list.")
         else:
-            self.subjects[name] = [{"chapter": PLACEHOLDER, "status": "Pending"}]
+            self.subjects[name] = []
             if self.persist():
                 self.refresh_subjects(name)
 
@@ -317,7 +321,6 @@ class SyllabusTracker:
             messagebox.showwarning("Already exists", "That chapter is already listed.")
             return
         current = self.subjects[self.selected_subject]
-        current[:] = [item for item in current if item["chapter"].casefold() != PLACEHOLDER.casefold()]
         current.append({"chapter": name, "status": "Pending"})
         if self.persist():
             self.show_subject(self.selected_subject)
@@ -360,8 +363,6 @@ class SyllabusTracker:
             return
         if messagebox.askyesno("Delete chapter", f"Delete '{item['chapter']}'?"):
             self.subjects[self.selected_subject].remove(item)
-            if not self.subjects[self.selected_subject]:
-                self.subjects[self.selected_subject].append({"chapter": PLACEHOLDER, "status": "Pending"})
             if self.persist():
                 self.show_subject(self.selected_subject)
 
