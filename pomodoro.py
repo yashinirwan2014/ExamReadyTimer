@@ -45,7 +45,7 @@ class PomodoroTimer:
                 for row in csv.DictReader(stream):
                     subject = (row.get("Subject") or "").strip()
                     chapter = (row.get("Chapter") or "").strip()
-                    if subject and chapter and chapter.casefold() != "full subject syllabus":
+                    if subject and chapter:
                         self.subjects.setdefault(subject, []).append(chapter)
         self.subject_var = tk.StringVar()
         self.chapter_var = tk.StringVar()
