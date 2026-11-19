@@ -35,7 +35,7 @@ def read_subjects() -> dict[str, list[dict]]:
         for row in csv.DictReader(stream):
             subject = (row.get("Subject") or "").strip()
             chapter = (row.get("Chapter") or "").strip()
-            if not subject or not chapter or chapter.casefold() == "full subject syllabus":
+            if not subject or not chapter:
                 continue
             subjects.setdefault(subject, []).append({
                 "chapter": chapter, "status": (row.get("Status") or "Pending").strip()
@@ -248,7 +248,7 @@ class StudyIntelligence:
             self.update_chapters()
 
     def update_chapters(self, _event=None):
-        chapters = [x["chapter"] for x in self.subjects.get(self.subject_var.get(), []) if x.get("chapter") and x["chapter"].casefold() != "full subject syllabus"]
+        chapters = [x["chapter"] for x in self.subjects.get(self.subject_var.get(), []) if x.get("chapter")]
         self.chapter_combo["values"] = chapters
         if chapters and self.chapter_var.get() not in chapters:
             self.chapter_var.set(chapters[0])
