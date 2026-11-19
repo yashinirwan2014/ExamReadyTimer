@@ -60,7 +60,7 @@ def test_loaders_read_existing_csv_schemas(tmp_path):
     exams.write_text("Exam,Year,Month,Day,Subject,Priority\nPhysics,2026,11,18,Physics,High\nBad,row\n",
                      encoding="utf-8")
     syllabus = tmp_path / "subjects.csv"
-    syllabus.write_text("Subject,Chapter,Status\nPhysics,Optics,Pending\nPhysics,Mechanics,Completed\nPhysics,Full subject syllabus,Pending\n",
+    syllabus.write_text("Subject,Chapter,Status\nPhysics,Optics,Pending\nPhysics,Mechanics,Completed\nPhysics,,Pending\n",
                         encoding="utf-8")
     assert load_exam_data(exams)[0]["subject"] == "Physics"
     assert load_syllabus_data(syllabus)["Physics"] == {"total": 2, "completed": 1, "pending": 1}
