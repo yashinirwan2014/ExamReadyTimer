@@ -69,9 +69,9 @@ def test_adaptive_plan_prioritizes_nearer_high_priority_exam(tmp_path):
     assert sum(item["minutes"] for item in plan) == 60
 
 
-def test_adaptive_plan_ignores_placeholder_and_completed_chapters():
+def test_adaptive_plan_ignores_empty_and_completed_chapters():
     subjects = {"Physics": [
-        {"chapter": "Full subject syllabus", "status": "Pending"},
+        {"chapter": "", "status": "Pending"},
         {"chapter": "Optics", "status": "Completed"},
         {"chapter": "Waves", "status": "Pending"},
     ]}
