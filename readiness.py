@@ -48,7 +48,7 @@ def load_exam_data(path: str | Path = EXAMS_FILE) -> list[dict]:
 
 
 def load_syllabus_data(path: str | Path = SYLLABUS_FILE) -> dict[str, dict]:
-    """Return chapter counts by subject, ignoring the empty starter placeholder."""
+    """Return chapter counts by subject, ignoring rows without a chapter."""
     subjects: dict[str, dict] = {}
     path = Path(path)
     if not path.exists():
@@ -57,7 +57,7 @@ def load_syllabus_data(path: str | Path = SYLLABUS_FILE) -> dict[str, dict]:
         for row in csv.DictReader(stream):
             subject = (row.get("Subject") or "").strip()
             chapter = (row.get("Chapter") or "").strip()
-            if not subject or not chapter or chapter.casefold() == "full subject syllabus":
+            if not subject or not chapter:
                 continue
             item = subjects.setdefault(subject, {"total": 0, "completed": 0, "pending": 0})
             item["total"] += 1
