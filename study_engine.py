@@ -72,6 +72,18 @@ def log_session(path: str | Path, subject: str, chapter: str, minutes: int,
     return row
 
 
+def delete_session(path: str | Path, session: dict) -> bool:
+    """Delete one exact ledger entry. Returns False if it no longer exists."""
+    rows = _read_rows(path)
+    target = {field: str(session.get(field, "")) for field in SESSION_FIELDS}
+    for index, row in enumerate(rows):
+        if all(str(row.get(field, "")) == target[field] for field in SESSION_FIELDS):
+            del rows[index]
+            _write_rows(path, SESSION_FIELDS, rows)
+            return True
+    return False
+
+
 def session_analytics(sessions: list[dict], today: date | None = None) -> dict:
     today = today or date.today()
     by_subject = defaultdict(int)
