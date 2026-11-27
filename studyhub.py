@@ -13,7 +13,7 @@ from theme import apply_dark_theme
 from navigation import add_home_button
 from study_engine import (
     build_adaptive_plan, build_recovery_plan, complete_revision,
-    load_due_revisions, load_sessions, log_session, schedule_revision,
+    delete_session, load_due_revisions, load_sessions, log_session, schedule_revision,
     session_analytics,
 )
 
@@ -168,6 +168,8 @@ class StudyIntelligence:
             self.recent_table.heading(key, text=label)
             self.recent_table.column(key, width=width, anchor="center" if key in ("date", "minutes", "type") else "w")
         self.recent_table.pack(fill="both", expand=True)
+        ttk.Button(tab, text="Delete selected session", command=self.delete_selected_session).pack(anchor="e", pady=(8, 0))
+        self.session_rows = {}
 
     def build_plan(self):
         tab = self.plan_tab
@@ -399,19 +401,43 @@ class StudyIntelligence:
             return
         self.refresh_revisions()
 
+    def delete_selected_session(self):
+        selection = self.recent_table.selection()
+        if not selection:
+            messagebox.showinfo("Choose a session", "Select a session in the recent study sessions table first.", parent=self.root)
+            return
+        session = self.session_rows.get(selection[0])
+        if not session:
+            messagebox.showwarning("Session not found", "Refresh the ledger and select the session again.", parent=self.root)
+            return
+        details = f'{session.get("subject", "Unknown subject")} · {session.get("chapter", "")} · {session.get("minutes", 0)} minutes'
+        if not messagebox.askyesno("Delete study session", f"Delete this ledger entry?\\n\\n{details}\\n\\nThis cannot be undone.", parent=self.root):
+            return
+        try:
+            deleted = delete_session(SESSION_FILE, session)
+        except OSError as exc:
+            messagebox.showwarning("Could not delete session", str(exc), parent=self.root)
+            return
+        if not deleted:
+            messagebox.showwarning("Session not found", "This session may already have been removed. The ledger will refresh.", parent=self.root)
+        self.refresh_all()
+
     def refresh_sessions(self):
         self.recent_table.delete(*self.recent_table.get_children())
+        self.session_rows = {}
         sessions = load_sessions(SESSION_FILE)
-        for item in reversed(sessions[-12:]):
-            # load_sessions preserves the CSV date string and exposes the parsed
-            # datetime.date separately as "day".
+        for index, item in enumerate(reversed(sessions[-12:])):
+            # Keep the full row behind each visible table item so deletion targets
+            # the selected record rather than relying on display text alone.
             session_day = item.get("day")
             if not isinstance(session_day, date):
                 try:
                     session_day = date.fromisoformat(str(item.get("date", "")))
                 except ValueError:
                     continue
-            self.recent_table.insert("", "end", values=(session_day.isoformat(), item["subject"],
+            iid = f"session_{index}"
+            self.session_rows[iid] = item
+            self.recent_table.insert(iid, "end", values=(session_day.isoformat(), item["subject"],
                                                         item.get("chapter", ""), item["minutes"],
                                                         item.get("session_type", "Focus")))
 
