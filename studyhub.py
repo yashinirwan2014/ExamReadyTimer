@@ -411,7 +411,7 @@ class StudyIntelligence:
             messagebox.showwarning("Session not found", "Refresh the ledger and select the session again.", parent=self.root)
             return
         details = f'{session.get("subject", "Unknown subject")} · {session.get("chapter", "")} · {session.get("minutes", 0)} minutes'
-        if not messagebox.askyesno("Delete study session", f"Delete this ledger entry?\\n\\n{details}\\n\\nThis cannot be undone.", parent=self.root):
+        if not messagebox.askyesno("Delete study session", f"Delete this ledger entry?\n\n{details}\n\nThis cannot be undone.", parent=self.root):
             return
         try:
             deleted = delete_session(SESSION_FILE, session)
@@ -437,7 +437,7 @@ class StudyIntelligence:
                     continue
             iid = f"session_{index}"
             self.session_rows[iid] = item
-            self.recent_table.insert(iid, "end", values=(session_day.isoformat(), item["subject"],
+            self.recent_table.insert("", "end", iid=iid, values=(session_day.isoformat(), item["subject"],
                                                         item.get("chapter", ""), item["minutes"],
                                                         item.get("session_type", "Focus")))
 
