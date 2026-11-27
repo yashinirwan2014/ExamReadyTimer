@@ -5,7 +5,7 @@ import csv
 import focus
 import pomodoro
 import studyhub
-from study_engine import load_due_revisions, load_sessions
+from study_engine import delete_session, load_due_revisions, load_sessions, log_session
 
 
 class Value:
@@ -139,3 +139,37 @@ def test_studyhub_saves_full_elapsed_minutes_and_resets_timer(tmp_path, monkeypa
     assert len(load_due_revisions(revisions, date.max)) == 5
     assert timer.timer_total_seconds == 0
     assert timer.remaining_seconds == 0
+
+
+
+def test_selected_study_session_can_be_deleted_without_removing_other_rows(tmp_path):
+    sessions = tmp_path / "sessions.csv"
+    first = log_session(sessions, "Physics", "Ray Optics", 45, "Focus")
+    second = log_session(sessions, "Chemistry", "Amines", 30, "Revision")
+
+    loaded = load_sessions(sessions)
+    assert len(loaded) == 2
+    assert delete_session(sessions, loaded[0]) is True
+
+    remaining = load_sessions(sessions)
+    assert len(remaining) == 1
+    assert remaining[0]["subject"] == "Chemistry"
+    assert remaining[0]["chapter"] == "Amines"
+
+
+def test_deleting_missing_study_session_returns_false(tmp_path):
+    sessions = tmp_path / "sessions.csv"
+    log_session(sessions, "Physics", "Ray Optics", 45, "Focus")
+
+    missing = {
+        "date": "2020-01-01",
+        "started_at": "2020-01-01T09:00",
+        "ended_at": "2020-01-01T09:30",
+        "minutes": 30,
+        "subject": "Mathematics",
+        "chapter": "Probability",
+        "session_type": "Focus",
+        "notes": "",
+    }
+    assert delete_session(sessions, missing) is False
+    assert len(load_sessions(sessions)) == 1
